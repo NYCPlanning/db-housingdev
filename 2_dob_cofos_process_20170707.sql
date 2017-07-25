@@ -4,30 +4,6 @@
 -- Data specifications (July 2017)
 	--Job types: NB, A1, DM
 
--- Part 1: Import as CSV (e.g., "dob_cofos_orig") to Carto for cleaning (carto makes lower case and replaces spaces and special characters with _)
-
-ALTER TABLE dob_cofos_orig
-	RENAME COLUMN "job__" to "cofo_job_number";
-
-ALTER TABLE dob_cofos_orig
-	RENAME COLUMN "effective_date" to "cofo_date";
-ALTER TABLE dob_cofos_orig
-	ALTER COLUMN "cofo_date" TYPE date using TO_DATE(cofo_date, 'MM/DD/YYYY');
-
-ALTER TABLE dob_cofos_orig
-	RENAME COLUMN "__of_dwelling_units" to "cofo_units";	
-ALTER TABLE dob_cofos_orig
-	ALTER COLUMN "cofo_units" TYPE integer USING (cofo_units::text::integer);
-
-ALTER TABLE dob_cofos_orig
-	RENAME COLUMN "certificatetype" to "cofo_type";	
-
-ALTER TABLE dob_cofos_orig
-	ADD COLUMN cofo_year text;
-UPDATE dob_cofos_orig
-	SET cofo_year = left(cofo_date::text,4);
-
-
 --Part 2: Clean data and pivot to capture incremental units, per year, per job
 
 CREATE TABLE dob_cofos AS (

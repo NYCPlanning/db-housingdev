@@ -1,0 +1,41 @@
+DOB,DCP
+3,Suspended
+A,Application in progress
+B,Application in progress
+C,Application in progress
+D,Application filed
+E,Application filed
+F,Application filed
+H,Application filed
+J,Disapproved
+K,Application filed
+P,Application filed
+Q,Permit issued
+R,Permit issued
+X,Complete
+SUSPENDED,Suspended
+PRE-FILING,Application in progress
+APPLICATION PROCESSED-PART-NO PAYMENT,Application in progress
+APPLICATION PROCESSED - PAYMENT ONLY,Application in progress
+APPLICATION PROCESSED - ENTIRE,Application filed
+APPLICATION PROCESSED - NO PLAN EXAM,Application filed
+APPLICATION ASSIGNED TO PLAN EXAMINER,Application filed
+PLAN EXAM - IN PROCESS,Application filed
+PLAN EXAM - DISAPPROVED,Disapproved
+PLAN EXAM - PARTIAL APPROVAL,Application filed
+PLAN EXAM - APPROVED,Application filed
+PERMIT ISSUED - PARTIAL JOB,Permit issued
+PERMIT ISSUED - ENTIRE JOB/WORK,Permit issued
+SIGNED OFF,Complete
+PRE-FILED,Application in progress
+A/P UNPAID,Application in progress
+A/P TO D.E.A.R,Application in progress
+A/P ENTIRE,Application filed
+AP-NPE,Application filed
+ASSIGNED TO P/E,Application filed
+P/E IN PROCESS,Application filed
+P/E DISAPPROVED,Disapproved
+P/E PARTIAL APRV,Application filed
+APPROVED,Application filed
+PERMIT-PARTIAL,Permit issued
+PERMITE-ENTIRE,Permit issued

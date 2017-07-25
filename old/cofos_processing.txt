@@ -1,0 +1,39 @@
+-- General background and watchouts: [ADD here about receiving data from DOB]
+	--Open Data: ____
+
+-- Data specifications (July 2017)
+	--Job types: NB, A1, DM
+
+-- Import as CSV (named "dob_cofos") to Carto for cleaning (carto makes lower case and replaces spaces and special characters with _)
+
+ALTER TABLE dob_cofos
+	RENAME COLUMN "job__" to "dob_job_number";
+
+ALTER TABLE dob_cofos
+	RENAME COLUMN "effective_date" to "cofo_date";
+ALTER TABLE dob_cofos
+	ALTER COLUMN "cofo_date" TYPE date using TO_DATE(cofo_date, 'MM/DD/YYYY');
+
+ALTER TABLE dob_cofos
+	RENAME COLUMN "__of_dwelling_units" to "cofo_units";	
+ALTER TABLE dob_cofos
+	ALTER COLUMN "cofo_units" TYPE integer USING (cofo_units::text::integer);
+
+ALTER TABLE dob_cofos
+	RENAME COLUMN "certificatetype" to "cofo_type";	
+
+
+WITH annual_cofos as (
+	SELECT 
+		DISTINCT(dob_job_number)
+		MAX(cofo_units) where YEAR(cofo_date) = 2007 AS cofo_units_2007,
+		MAX(cofo_units) where YEAR(cofo_date) = 2008 AS cofo_units_2008,
+		MAX(cofo_units) where YEAR(cofo_date) = 2009 AS cofo_units_2009,
+		MAX(cofo_units) where YEAR(cofo_date) = 2010 AS cofo_units_2010,
+		MAX(cofo_units) where YEAR(cofo_date) = 2011 AS cofo_units_2011,
+		MAX(cofo_units) where YEAR(cofo_date) = 2012 AS cofo_units_2012,
+		MAX(cofo_units) where YEAR(cofo_date) = 2013 AS cofo_units_2013,
+		MAX(cofo_units) where YEAR(cofo_date) = 2014 AS cofo_units_2014,
+		MAX(cofo_units) where YEAR(cofo_date) = 2015 AS cofo_units_2015,
+		MAX(cofo_units) where YEAR(cofo_date) = 2016 AS cofo_units_2016,
+		MAX(cofo_units) where YEAR(cofo_date) = 2017 AS cofo_units_2017)

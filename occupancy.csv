@@ -1,0 +1,91 @@
+DOB,DCP
+"ASSEMBLY (CHURCHES, CONCERT HALLS)",Retail and Leisure
+ASSEMBLY (MUSEUMS),Retail and Leisure
+ASSEMBLY (OUTDOORS),Retail and Leisure
+ASSEMBLY (RESTAURANTS),Retail and Leisure
+ASSEMBLY (THEATERS),Retail and Leisure
+ASSEMBLY: EATING & DRINKING,Retail and Leisure
+ASSEMBLY: INDOOR SPORTS,Retail and Leisure
+ASSEMBLY: OTHER,Retail and Leisure
+ASSEMBLY: OUTDOORS,Retail and Leisure
+"ASSEMBLY: THEATERS, CONCERT HALLS",Retail and Leisure
+BUSINESS,Commercial
+COMMERCIAL BUILDINGS - OLD CODE,Commercial
+EDUCATION,Civic
+EDUCATIONAL,Civic
+FACTORY/INDUSTRIAL: LOW HAZARD,Industrial
+FACTORY/INDUSTRIAL: MODERATE HAZARD,Industrial
+HIGH HAZARD,Industrial
+HIGH HAZARD: ACCELERATED BURNING,Industrial
+HIGH HAZARD: EXPLOSIVE DETONATION,Industrial
+HIGH HAZARD: HEALTH,Industrial
+HIGH HAZARD: SEMICONDUCTORS,Industrial
+HIGH HAZARD: SUPPORTS COMBUSTION,Industrial
+INDUSTRIAL (LOW HAZARD),Industrial
+INDUSTRIAL (MODERATE HAZARD),Industrial
+INSTITUTION: ASSISTED LIVING,Civic
+INSTITUTION: DAY CARE,Civic
+INSTITUTION: INCAPACITATED,Civic
+INSTITUTION: RESTRAINED,Civic
+INSTITUTIONAL (INCAPACITATED),Civic
+INSTITUTIONAL (RESTRAINED),Civic
+MERCANTILE,Retail and Leisure
+MISCELLANEOUS,Misc
+PUBLIC BLDG - OLD CODE,Civic
+RESID. BLDG - OLD CODE,Residential
+RESIDENTIAL (HOTELS),Other Accomodations
+RESIDENTIAL 1-2 FAMILY HOUSES,Residential
+RESIDENTIAL APT HOUSE,Residential
+RESIDENTIAL: 1 & 2 FAMILY HOUSES,Residential
+RESIDENTIAL: APARTMENT HOUSES,Residential
+"RESIDENTIAL: HOTELS, DORMITORIES",Other Accomodations
+STORAGE (LOW HAZARD),Storage
+STORAGE (MODERATE HAZARD),Storage
+STORAGE: LOW HAZARD,Storage
+STORAGE: MODERATE HAZARD,Storage
+THREE FAMILY DWELLING,Residential
+UTILITY / MISCELLANEOUS,Misc
+A,Retail and Leisure
+A-1,Retail and Leisure
+A-2,Retail and Leisure
+A-3,Retail and Leisure
+A-4,Retail and Leisure
+A-5,Retail and Leisure
+B,Commercial
+B-1,Industrial
+B-2,Industrial
+C,Retail and Leisure
+COM,Commercial
+D-1,Industrial
+D-2,Industrial
+E,Civic
+F-1,Industrial
+F-1A,Industrial
+F-1B,Industrial
+F-2,Industrial
+F-3,Industrial
+F-4,Industrial
+G,Civic
+H-1,Industrial
+H-2,Industrial
+H-3,Industrial
+H-4,Industrial
+H-5,Industrial
+I-1,Civic
+I-2,Civic
+I-3,Civic
+I-4,Civic
+J-0,Residential
+J-1,Other Accomodations
+J-2,Residential
+J-3,Residential
+K,Misc
+M,Retail and Leisure
+PUB,Civic
+R-1,Other Accomodations
+R-2,Residential
+R-3,Residential
+RES,Residential
+S-1,Storage
+S-2,Storage
+U,Misc

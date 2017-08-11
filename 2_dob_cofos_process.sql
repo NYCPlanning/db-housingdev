@@ -8,7 +8,8 @@
 
 CREATE TABLE dob_cofos AS (
 
--- This selects the largest CofO per job, for each year
+-- STEP 1.
+-- This selects the largest CofO per job, for each year. Multiple temporary CofOs could be issued in one year. We select the largest in order to get a single value for each year. If no CofO were issued in a cgiven year, the units_20XX field will be blank
 WITH dob_cofos_byjob AS
 (SELECT
 	cofo_job_number,
@@ -29,7 +30,8 @@ WITH dob_cofos_byjob AS
 FROM dob_cofos_orig
 GROUP BY cofo_job_number),
 
--- This selects CofO units each year, as well as units in the most recent year
+-- STEP 2.
+-- This adds a new field units_latest that captures the number of units on the CofO from the most recent year
 dob_cofos_byjob_unitslatest AS
 (SELECT
 	*,
@@ -37,7 +39,9 @@ dob_cofos_byjob_unitslatest AS
 FROM
 	dob_cofos_byjob),
 
--- Compares earlier CofOs to most recent; if earlier years are erroneously higher than most recent, replaces with most recent  
+-- STEP 3.
+-- Compares earlier CofOs to most recent; if earlier years are erroneously higher than the most recent CofO, this query replaces the unit count with most recent, lower unit count.
+-- This query also replaces all NULL values with 0, because....
 dob_cofos_byjob_cleaned AS
 (SELECT
 	cofo_job_number,
@@ -103,20 +107,21 @@ dob_cofos_byjob_cleaned AS
 FROM
 	dob_cofos_byjob_unitslatest)
 
--- Calculate incremental unit change per change
+-- STEP 4.
+-- Calculate incremental unit change per year from most recent increase in units. If the incremental change is the first 
 SELECT
 	cofo_job_number,
 	units_2007,
 	CASE WHEN units_2008 <> 0 THEN units_2008 - units_2007 ELSE 0 END as units_2008_increm,
-	CASE WHEN units_2009 <> 0 THEN units_2009 - greatest(units_2008,units_2007) ELSE 0 END as units_2009_increm,
-	CASE WHEN units_2010 <> 0 THEN units_2010 - greatest(units_2009,units_2008,units_2007) ELSE 0 END as units_2010_increm,
-	CASE WHEN units_2011 <> 0 THEN units_2011 - greatest(units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2011_increm,
-	CASE WHEN units_2012 <> 0 THEN units_2012 - greatest(units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2012_increm,
-	CASE WHEN units_2013 <> 0 THEN units_2013 - greatest(units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2013_increm,
-	CASE WHEN units_2014 <> 0 THEN units_2014 - greatest(units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2014_increm,
-	CASE WHEN units_2015 <> 0 THEN units_2015 - greatest(units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2015_increm,
-	CASE WHEN units_2016 <> 0 THEN units_2016 - greatest(units_2015,units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2016_increm,
-	CASE WHEN units_2017 <> 0 THEN units_2017 - greatest(units_2016,units_2015,units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2017_increm,
+	CASE WHEN units_2009 <> 0 THEN units_2009 - GREATEST(units_2008,units_2007) ELSE 0 END as units_2009_increm,
+	CASE WHEN units_2010 <> 0 THEN units_2010 - GREATEST(units_2009,units_2008,units_2007) ELSE 0 END as units_2010_increm,
+	CASE WHEN units_2011 <> 0 THEN units_2011 - GREATEST(units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2011_increm,
+	CASE WHEN units_2012 <> 0 THEN units_2012 - GREATEST(units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2012_increm,
+	CASE WHEN units_2013 <> 0 THEN units_2013 - GREATEST(units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2013_increm,
+	CASE WHEN units_2014 <> 0 THEN units_2014 - GREATEST(units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2014_increm,
+	CASE WHEN units_2015 <> 0 THEN units_2015 - GREATEST(units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2015_increm,
+	CASE WHEN units_2016 <> 0 THEN units_2016 - GREATEST(units_2015,units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2016_increm,
+	CASE WHEN units_2017 <> 0 THEN units_2017 - GREATEST(units_2016,units_2015,units_2014,units_2013,units_2012,units_2011,units_2010,units_2009,units_2008,units_2007) ELSE 0 END as units_2017_increm,
 	units_latest,
 	cofo_latest,
 	cofo_earliest,

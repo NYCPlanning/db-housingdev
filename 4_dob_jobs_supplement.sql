@@ -1,36 +1,136 @@
--- General background and watchouts: [ADD here about receiving data from DOB]
-	--Open Data: ____
-	--Duplicates: ____
-	--Record dropping: ____
-	--Unintional exclusion of records: ____
-	--Field names and values coming through differently: 
-	--Permits is a misnomer; DOB thinks of as "jobs"
+-- Extra step given limitations of DOB data -- append data with completions from prior datasets, which do not appear in latest dataset
 
--- Data specifications (July 2017)
-	--Job types: NB, A1, DM
-	--Timespan: D Date (Application processed) > 1/1/2007
-	--Record type: Doc 01 only (i.e., only capturing primary permit/subpermit)
+SELECT
+the_geom,
+dob_permit_address as address,
+dob_permit_bbl as bbl,
+dob_permit_block as block,
+dob_permit_borough as boro,
+dob_permit_lot as lot,
+dcp_type_2 as type,
+dob_permit_exist_occupancy as dob_occupancy_exist,
+dob_permit_proposed_occupancy as dob_occupancy_prop,
+dob_permit_exist_units as xunits_exist_raw,
+dob_permit_proposed_units as xunits_prop_raw,
+dob_permit_current_job_status as dob_status,
+dob_permit_status_update as dob_status_date,
+dob_adate,
+dob_ddate,
+dob_pdate,
+dob_qdate,
+dob_rdate,
+dob_xdate,
+dob_job_number
+FROM (
 
+SELECT 
+a.*,
+b.dob_job_number as a_july2017match
+FROM q42016_permits_dates_cofos_v4 as a
+LEFT JOIN nchatterjee.dob_jobs as b
+on a.dob_job_number = b.dob_job_number
+) as c
 
--- Import as CSV (e.g. "dob_jobs_orig") to Carto for cleaning
+WHERE c.a_july2017match is null AND dcp_pipeline_status in ('Complete', 'Demolition (complete)','Partial complete')
 
--- DATA GATHERING AND PROCESSING
+-- Save as dob_jobs_jan17
 
 -- Capture datafreshness
 
-ALTER TABLE dob_jobs
-	ADD COLUMN x_datafreshness text;
-UPDATE dob_jobs
-	SET x_datafreshness = 'July 2017'
+ALTER TABLE dob_jobs_jan17
+ADD COLUMN x_datafreshness text;
+UPDATE dob_jobs_jan17
+SET x_datafreshness = 'January 2017';
+
+--Standardize values to mimic latest data
+
+UPDATE dob_jobs_jan17
+SET boro = CASE
+	WHEN boro = '1' THEN 'Manhattan'
+	WHEN boro = '2' THEN 'Bronx'
+	WHEN boro = '3' THEN 'Brooklyn'
+	WHEN boro = '4' THEN 'Queens'
+	WHEN boro = '5' THEN 'Staten Island'
+	ELSE boro END;
+
+UPDATE dob_jobs_jan17
+SET type = CASE
+	WHEN type = 'New Building' THEN 'NB'
+	WHEN type = 'Alteration' THEN 'A1'
+	WHEN type = 'Demolition' THEN 'DM'
+	ELSE type END
+	
+
+-- Start at Part 2 of standard jobs processing
+
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN dcp_occupancy_exist text;
+UPDATE dob_jobs_jan17
+	SET dcp_occupancy_exist =
+	(SELECT occupancy.dcp FROM occupancy
+	WHERE occupancy.dob = dob_occupancy_exist); 
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN dcp_occupancy_prop text;
+UPDATE dob_jobs_jan17
+	SET dcp_occupancy_prop =
+	(SELECT occupancy.dcp FROM occupancy
+	WHERE occupancy.dob = dob_occupancy_prop); 
+
+-- Create field to create single category to express occupancy type; order of case/when logic is intended to capture most likely impact of development; already limited to residential, so extraction not needed
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN dcp_category_occupancy text;
+UPDATE dob_jobs_jan17
+	SET dcp_category_occupancy = CASE
+		WHEN dcp_occupancy_prop = 'Other Accomodations' THEN 'Other Accomodations'
+		WHEN dcp_occupancy_prop = 'Residential' OR dcp_occupancy_exist = 'Residential' THEN 'Residential'
+		WHEN dcp_occupancy_exist = 'Other Accomodations' THEN 'Other Accomodations'
+		ELSE 'Other'
+	END;
+
+--Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous record); modified since existing units is number in this dataset
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN "units_exist" integer;
+UPDATE dob_jobs_jan17
+	SET units_exist = xunits_exist_raw where xunits_exist_raw is not null;
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN "units_prop" integer;
+UPDATE dob_jobs_jan17
+	SET units_prop = xunits_prop_raw::integer where xunits_prop_raw <>''; 
+
+-- Create field to capture incremental units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN "units_net" integer;
+UPDATE dob_jobs_jan17 
+	SET units_net = CASE
+		WHEN type = 'DM' THEN units_exist * -1
+		WHEN type = 'NB' THEN units_prop
+		WHEN type = 'A1' AND units_exist IS NOT null AND units_prop IS NOT null THEN units_prop - units_exist
+		ELSE null 
+	END;
+
+-- Create field to translate DCP status categories  (note: demolitions considered complete if status is permit issued; withdrawal flag n/a in this dataset)
+
+ALTER TABLE dob_jobs_jan17
+	ADD COLUMN "dcp_status" text;
+UPDATE dob_jobs_jan17
+SET dcp_status = 
+	(SELECT status.dcp FROM status
+	WHERE status.dob = dob_jobs_jan17.dob_status);
+UPDATE dob_jobs_jan17
+	set dcp_status = 'Complete (demolition)' WHERE type = 'DM' AND dcp_status in ('Complete','Permit issued');
 
 
 
---Part 2: Translate to DCP categories and extract Housing developments. Note: this will require having supplementary Occupancy table, which translate DOB field values to DCP conventions
+-- Create field to translate to DCP development types
 
-
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN dcp_category_development text;
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 	SET dcp_category_development = CASE
 		WHEN type = 'NB' THEN 'New Building'
 		WHEN type = 'A1' THEN 'Alteration'
@@ -39,138 +139,33 @@ UPDATE dob_jobs
 	END;
 
 
-ALTER TABLE dob_jobs_orig
-	ADD COLUMN dcp_occupancy_exist text;
-UPDATE dob_jobs_orig
-	SET dcp_occupancy_exist =
-	(SELECT occupancy.dcp FROM occupancy
-	WHERE occupancy.dob = dob_occupancy_exist); 
+-- Address field already created
 
-ALTER TABLE dob_jobs_orig
-	ADD COLUMN dcp_occupancy_prop text;
-UPDATE dob_jobs_orig
-	SET dcp_occupancy_prop =
-	(SELECT occupancy.dcp FROM occupancy
-	WHERE occupancy.dob = dob_occupancy_prop); 
-
--- Create field to create single category to express occupancy type; order of case/when logic is intended to capture most likely impact of development; extract only residential 
-
-ALTER TABLE dob_jobs_orig
-	ADD COLUMN dcp_category_occupancy text;
-UPDATE dob_jobs_orig
-	SET dcp_category_occupancy = CASE
-		WHEN dcp_occupancy_prop = 'Other Accomodations' THEN 'Other Accomodations'
-		WHEN dcp_occupancy_prop = 'Residential' OR dcp_occupancy_exist = 'Residential' THEN 'Residential'
-		WHEN dcp_occupancy_exist = 'Other Accomodations' THEN 'Other Accomodations'
-		ELSE 'Other'
-	END;
-
-SELECT *
-FROM dob_jobs_orig
-WHERE dcp_category_occupancy in ('Other Accomodations', 'Residential') 
-
--- Save as new file (e.g., dob_jobs)
-
-
---Part 3: Create and populate additional columns, which will be used for analysis and categorization; Note: this will require having supplementary Status table, which translate DOB field values to DCP conventions
-
---Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous reocrd)
-
-ALTER TABLE dob_jobs
-	ADD COLUMN "units_exist" integer;
-UPDATE dob_jobs
-	SET units_exist = xunits_exist_raw::integer where xunits_exist_raw <>'';
-
-ALTER TABLE dob_jobs
-	ADD COLUMN "units_prop" integer;
-UPDATE dob_jobs
-	SET units_prop = xunits_prop_raw::integer where xunits_prop_raw <>''; 
-
--- Create field to capture incremental units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
-
-ALTER TABLE dob_jobs
-	ADD COLUMN "units_net" integer;
-UPDATE dob_jobs 
-	SET units_net = CASE
-		WHEN type = 'DM' THEN units_exist * -1
-		WHEN type = 'NB' THEN units_prop
-		WHEN type = 'A1' AND units_exist IS NOT null AND units_prop IS NOT null THEN units_prop - units_exist
-		ELSE null 
-	END;
-
--- Part 4: Create field to translate DCP status categories AND flag if job is withdrawn (note: demolitions considered complete if status is permit issued)
-
-ALTER TABLE dob_jobs
-	ADD COLUMN "dcp_status" text;
-UPDATE dob_jobs
-SET dcp_status = 
-	(SELECT status.dcp FROM status
-	WHERE status.dob = dob_jobs.dob_status);
-UPDATE dob_jobs
-	SET dcp_status = 'Withdrawn' WHERE withdrawal_flag = 'Withdrawn';
-UPDATE dob_jobs
-	set dcp_status = 'Complete (demolition)' WHERE type = 'DM' AND dcp_status in ('Complete','Permit issued');
-
-
--- Part 5 Create address field and flag suspected duplicates; create unique ID based on matching job types, address and BBL; identify most recent status update date associated with unique ID; if records status update date does not match, flagged as potential duplicate
-
-ALTER TABLE dob_jobs
-	ADD COLUMN address text;
-UPDATE dob_jobs
-	SET address = CONCAT(address_house,' ',address_street);
-
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN x_dup_id text;
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 	SET x_dup_id = CONCAT(type,bbl,address);
 
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN x_dup_id_maxdate date;
-UPDATE dob_jobs
+UPDATE nchatterjee.dob_jobs_jan17
 	SET x_dup_id_maxdate = x
 	FROM (SELECT 
           	x_dup_id,
           	MAX(dob_status_date) as x
-          FROM dob_jobs
+          FROM nchatterjee.dob_jobs_jan17
           GROUP BY x_dup_id) as a
-	WHERE dob_jobs.x_dup_id = a.x_dup_id;
+	WHERE nchatterjee.dob_jobs_jan17.x_dup_id = a.x_dup_id;
 
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN x_dup_flag text;
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 	SET x_dup_flag = 'Possible duplicate' WHERE x_dup_id_maxdate <> dob_status_date;
 
 
--- Part 6: GEOCODE
--- Part 6a: pull in geographies from previous pipeline
-UPDATE dob_jobs
-SET the_geom = b.the_geom
-FROM q42016_permits_dates_cofos_v4 as b
-WHERE dob_jobs.dob_job_number = b.dob_job_number
-
---Part 6b: pull in geographies from PLUTO
-UPDATE dob_jobs
-SET the_geom = st_centroid(b.the_geom)
-FROM dcp_mappluto as b
-WHERE 
-	dob_jobs.the_geom is null AND 
-	dob_jobs.bbl= b.bbl::text
-
---Part 6c: pull in geographies from PLUTO, using old BBLs
-UPDATE dob_jobs
-SET the_geom = st_centroid(b.the_geom)
-FROM dcp_mappluto as b
-WHERE 
-	dob_jobs.the_geom is null AND 
-	dob_jobs.bbl= b.appbbl::text
-
--- Note: engage GSS for further manual geocoding
-
-
--- DATA INTEGREation
 -- Create fields to capture join with CofOs (requires processing CofO data first)
 
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN units_complete_2007_net integer,
 	ADD COLUMN units_complete_2008_increm_net integer,
 	ADD COLUMN units_complete_2009_increm_net integer,
@@ -189,9 +184,7 @@ ALTER TABLE dob_jobs
 	ADD COLUMN cofo_latesttype text;
 
 
-
--- Want to correct this to only subtract units_exist from the first imcremental change
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 SET
 	units_complete_2007_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2007 <> 0 THEN b.units_2007 - units_exist ELSE b.units_2007 END,
 	units_complete_2008_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2008_increm <> 0  THEN b.units_2008_increm - units_exist ELSE b.units_2008_increm END,
@@ -211,24 +204,23 @@ SET
 
 FROM dob_cofos b
 
-WHERE dob_jobs.dob_job_number = b.cofo_job_number;
-
+WHERE dob_jobs_jan17.dob_job_number = b.cofo_job_number;
 
 --Update status based on CofO data
 
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 SET
 	dcp_status = CASE 
 		WHEN cofo_latestunits is null THEN dcp_status
 		WHEN units_prop = 0 THEN dcp_status
-		WHEN (cofo_latestunits / units_prop) >= 0.8 OR dob_status = 'X' THEN 'Complete'
+		WHEN (cofo_latestunits / units_prop) >= 0.8 THEN 'Complete'
 		WHEN (cofo_latestunits / units_prop) < 0.8 THEN 'Partial complete'
 		ELSE dcp_status END;
 
 
--- Update units complete column, also capturing demolitions in a given year and proxying for CofO date
+-- Update units complete column, also capturing demolitions demolitions
 
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 SET
 	units_complete_2007_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2007' THEN units_net ELSE units_complete_2007_net END,
 	units_complete_2008_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2008' THEN units_net ELSE units_complete_2008_increm_net END,
@@ -244,74 +236,113 @@ SET
 	units_complete_net = CASE 
 		WHEN dcp_category_development = 'Alteration' THEN cofo_latestunits - units_exist 
 		WHEN dcp_status = 'Complete (demolition)' THEN units_net
-		ELSE cofo_latestunits END,
-	cofo_earliest = CASE -- capturing earliest date even though it doesn't actually have a CofO, for filtering in explorer
-		WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-		ELSE cofo_earliest END,
-	cofo_latest = CASE -- capturing lastest date even though it doesn't actually have a CofO, for filtering in explorer
-		WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-		ELSE cofo_latest END;
+		ELSE cofo_latestunits END;
 
--- Create and update column to capture outstanding (non-complete) units
-ALTER TABLE dob_jobs
+ALTER TABLE dob_jobs_jan17
 	ADD COLUMN units_incomplete_net integer;
 
-UPDATE dob_jobs
+UPDATE dob_jobs_jan17
 	SET units_incomplete_net = CASE 
 	WHEN units_complete_net is not null THEN (units_net - units_complete_net)
 	ELSE units_net END;
 
 
--- At this point data was supplemented with January 2017 data (completions), see that file for steps. Assuming supplement is not needed in future, proceed with steps below
+-- Insert into jobs table
 
--- Append dataset with key geographies used for analyses
+INSERT INTO nchatterjee.dob_jobs (
+  the_geom, 
+  the_geom_webmercator,
+  x_datafreshness,
+  address,
+  bbl,
+  block,
+  boro,
+  cofo_earliest,
+  cofo_latest,
+  cofo_latesttype,
+  cofo_latestunits,
+  dcp_category_development,
+  dcp_category_occupancy,
+  dcp_occupancy_exist,
+  dcp_occupancy_prop,
+  dcp_status,
+  dob_adate,
+  dob_ddate,
+  dob_job_number,
+  dob_occupancy_exist,
+  dob_occupancy_prop,
+  dob_pdate,
+  dob_qdate,
+  dob_rdate,
+  dob_status,
+  dob_xdate,
+  lot,
+  type,
+  units_complete_2007_net,
+  units_complete_2008_increm_net,
+  units_complete_2009_increm_net,
+  units_complete_2010_increm_net,
+  units_complete_2011_increm_net,
+  units_complete_2012_increm_net,
+  units_complete_2013_increm_net,
+  units_complete_2014_increm_net,
+  units_complete_2015_increm_net,
+  units_complete_2016_increm_net,
+  units_complete_2017_increm_net,
+  units_complete_net,
+  units_incomplete_net,
+  units_exist,
+  units_net,
+  units_prop,
+  x_dup_flag,
+  x_dup_id)
 
-ALTER TABLE dob_jobs
-	ADD COLUMN geog_mszone201718 text,
-	ADD COLUMN geog_pszone201718 text,
-	ADD COLUMN geog_csd text,
-	ADD COLUMN geog_subdistrict text,
-	ADD COLUMN geog_ntacode text,
-	ADD COLUMN geog_ntaname text,
-	ADD COLUMN geog_censusblock text,
-	ADD COLUMN geog_cd text;
+SELECT
+  the_geom, 
+  the_geom_webmercator,
+  x_datafreshness,
+  address,
+  bbl,
+  block,
+  boro,
+  cofo_earliest,
+  cofo_latest,
+  cofo_latesttype,
+  cofo_latestunits,
+  dcp_category_development,
+  dcp_category_occupancy,
+  dcp_occupancy_exist,
+  dcp_occupancy_prop,
+  dcp_status,
+  dob_adate,
+  dob_ddate,
+  dob_job_number,
+  dob_occupancy_exist,
+  dob_occupancy_prop,
+  dob_pdate,
+  dob_qdate,
+  dob_rdate,
+  dob_status,
+  dob_xdate,
+  lot,
+  type,
+  units_complete_2007_net,
+  units_complete_2008_increm_net,
+  units_complete_2009_increm_net,
+  units_complete_2010_increm_net,
+  units_complete_2011_increm_net,
+  units_complete_2012_increm_net,
+  units_complete_2013_increm_net,
+  units_complete_2014_increm_net,
+  units_complete_2015_increm_net,
+  units_complete_2016_increm_net,
+  units_complete_2017_increm_net,
+  units_complete_net,
+  units_incomplete_net,
+  units_exist,
+  units_net,
+  units_prop,
+  x_dup_flag,
+  x_dup_id
 
-UPDATE dob_jobs
-	SET geog_mszone201718 = b.dbn
-	FROM ms_zones_2017_18 as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_pszone201718 = b.dbn
-	FROM ps_zones_2017_18 as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_csd = b.schooldist::text
-	FROM subdistricts as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom)
-
-UPDATE dob_jobs
-	SET geog_subdistrict = b.distzone
-	FROM subdistricts as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_ntacode = b.ntacode
-	FROM ntas as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_ntaname = b.ntaname
-	FROM ntas as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_censusblock = b.bctcb2010
-	FROM censusblocks as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
-	SET geog_cd = b.borocd::text
-	FROM dcp_cdboundaries as b
-	WHERE st_within(dob_jobs.the_geom,b.the_geom);
+FROM nchatterjee.dob_jobs_jan17

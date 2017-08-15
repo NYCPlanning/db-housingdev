@@ -5,7 +5,7 @@ This repo contains SQL code used to build the Housing Development Pipeline Datab
 
 ### DOB Jobs Data
 - This data is requested from DOB, because the NYC Open Data datasets exclude key fields that are needed for developing the housing pipline dataset.
-- The dobs data provides the more comprehensive list of projects,
+- The jobs data provides the more comprehensive list of projects,
 - For each projects, the jobs data captures the initial # of existing units and proposed units.
 
 ### DOB Certificates of Occupancy (CofOs) Data

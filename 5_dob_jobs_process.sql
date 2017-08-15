@@ -1,96 +1,131 @@
--- DATA INTEGRATION
--- Create fields to capture join with CofOs (requires processing CofO data first)
+CREATE TABLE dob_jobs AS (
+	SELECT * FROM dob_jobs_orig
+);
+
+
+---Part 2: Translate to DCP categories and extract Housing developments. Note: this will require having supplementary Occupancy table, which translate DOB field values to DCP conventions
+ 
+ 
+ALTER TABLE dob_jobs
+	ADD COLUMN dcp_category_development text;
+UPDATE dob_jobs
+	SET dcp_category_development = CASE
+		WHEN type = 'NB' THEN 'New Building'
+		WHEN type = 'A1' THEN 'Alteration'
+		WHEN type = 'DM' THEN 'Demolition'
+		ELSE null
+	END;
+
 
 ALTER TABLE dob_jobs
-	ADD COLUMN units_complete_2007_net integer,
-	ADD COLUMN units_complete_2008_increm_net integer,
-	ADD COLUMN units_complete_2009_increm_net integer,
-	ADD COLUMN units_complete_2010_increm_net integer,
-	ADD COLUMN units_complete_2011_increm_net integer,
-	ADD COLUMN units_complete_2012_increm_net integer,
-	ADD COLUMN units_complete_2013_increm_net integer,
-	ADD COLUMN units_complete_2014_increm_net integer,
-	ADD COLUMN units_complete_2015_increm_net integer,
-	ADD COLUMN units_complete_2016_increm_net integer,
-	ADD COLUMN units_complete_2017_increm_net integer,
-	ADD COLUMN cofo_latestunits integer,
-	ADD COLUMN units_complete_net integer,
-	ADD COLUMN cofo_latest date,
-	ADD COLUMN cofo_earliest date,
-	ADD COLUMN cofo_latesttype text;
-
-
-
--- Want to correct this to only subtract units_exist from the first imcremental change
+	ADD COLUMN dcp_occupancy_exist text;
 UPDATE dob_jobs
-SET
-	units_complete_2007_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2007 <> 0 THEN b.units_2007 - units_exist ELSE b.units_2007 END,
-	units_complete_2008_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2008_increm <> 0  THEN b.units_2008_increm - units_exist ELSE b.units_2008_increm END,
-	units_complete_2009_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2009_increm <> 0  THEN b.units_2009_increm - units_exist ELSE b.units_2009_increm END,
-	units_complete_2010_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2010_increm <> 0  THEN b.units_2010_increm - units_exist ELSE b.units_2010_increm END,
-	units_complete_2011_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2011_increm <> 0  THEN b.units_2011_increm - units_exist ELSE b.units_2011_increm END,
-	units_complete_2012_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2012_increm <> 0  THEN b.units_2012_increm - units_exist ELSE b.units_2012_increm END,
-	units_complete_2013_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2013_increm <> 0  THEN b.units_2013_increm - units_exist ELSE b.units_2013_increm END,
-	units_complete_2014_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2014_increm <> 0  THEN b.units_2014_increm - units_exist ELSE b.units_2014_increm END,
-	units_complete_2015_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2015_increm <> 0  THEN b.units_2015_increm - units_exist ELSE b.units_2015_increm END,
-	units_complete_2016_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2016_increm <> 0  THEN b.units_2016_increm - units_exist ELSE b.units_2016_increm END,
-	units_complete_2017_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2017_increm <> 0  THEN b.units_2017_increm - units_exist ELSE b.units_2017_increm END,
-	cofo_latestunits = b.units_latest,
-	cofo_latest = b.cofo_latest,
-	cofo_earliest = b.cofo_earliest,
-	cofo_latesttype = b.cofo_latesttype
+	SET dcp_occupancy_exist =
+	(SELECT lookup_occupancy.dcp FROM lookup_occupancy
+	WHERE lookup_occupancy.dob = dob_occupancy_exist); 
 
-FROM dob_cofos b
-
-WHERE dob_jobs.dob_job_number = b.cofo_job_number;
-
-
---Update status based on CofO data
-
-UPDATE dob_jobs
-SET
-	dcp_status = CASE 
-		WHEN cofo_latestunits is null THEN dcp_status
-		WHEN units_prop = 0 THEN dcp_status
-		WHEN (cofo_latestunits / units_prop) >= 0.8 OR dob_status = 'X' THEN 'Complete'
-		WHEN (cofo_latestunits / units_prop) < 0.8 THEN 'Partial complete'
-		ELSE dcp_status END;
-
-
--- Update units complete column, also capturing demolitions in a given year and proxying for CofO date
-
-UPDATE dob_jobs
-SET
-	units_complete_2007_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2007' THEN units_net ELSE units_complete_2007_net END,
-	units_complete_2008_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2008' THEN units_net ELSE units_complete_2008_increm_net END,
-	units_complete_2009_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2009' THEN units_net ELSE units_complete_2009_increm_net END,
-	units_complete_2010_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2010' THEN units_net ELSE units_complete_2010_increm_net END,
-	units_complete_2011_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2011' THEN units_net ELSE units_complete_2011_increm_net END,
-	units_complete_2012_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2012' THEN units_net ELSE units_complete_2012_increm_net END,
-	units_complete_2013_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2013' THEN units_net ELSE units_complete_2013_increm_net END,
-	units_complete_2014_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2014' THEN units_net ELSE units_complete_2014_increm_net END,
-	units_complete_2015_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2015' THEN units_net ELSE units_complete_2015_increm_net END,
-	units_complete_2016_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2016' THEN units_net ELSE units_complete_2016_increm_net END,
-	units_complete_2017_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2017' THEN units_net ELSE units_complete_2017_increm_net END,
-	units_complete_net = CASE 
-		WHEN dcp_category_development = 'Alteration' THEN cofo_latestunits - units_exist 
-		WHEN dcp_status = 'Complete (demolition)' THEN units_net
-		ELSE cofo_latestunits END,
-	cofo_earliest = CASE -- capturing earliest date even though it doesn't actually have a CofO, for filtering in explorer
-		WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-		ELSE cofo_earliest END,
-	cofo_latest = CASE -- capturing lastest date even though it doesn't actually have a CofO, for filtering in explorer
-		WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-		ELSE cofo_latest END;
-
--- Create and update column to capture outstanding (non-complete) units
 ALTER TABLE dob_jobs
-	ADD COLUMN units_incomplete_net integer;
-
+	ADD COLUMN dcp_occupancy_prop text;
 UPDATE dob_jobs
-	SET units_incomplete_net = CASE 
-	WHEN units_complete_net is not null THEN (units_net - units_complete_net)
-	ELSE units_net END;
+	SET dcp_occupancy_prop =
+	(SELECT lookup_occupancy.dcp FROM lookup_occupancy
+	WHERE lookup_occupancy.dob = dob_occupancy_prop); 
 
 
--- At this point data was supplemented with January 2017 data (completions), see that file for steps. Assuming supplement is not needed in future, proceed with steps below
+
+-- Create field to create single category to express occupancy type; order of case/when logic is intended to capture most likely impact of development; extract only residential 
+ 
+ALTER TABLE dob_jobs
+	ADD COLUMN dcp_category_occupancy text;
+UPDATE dob_jobs
+	SET dcp_category_occupancy =
+		CASE
+			WHEN dcp_occupancy_prop = 'Other Accomodations' THEN 'Other Accomodations'
+			WHEN dcp_occupancy_prop = 'Residential' OR dcp_occupancy_exist = 'Residential' THEN 'Residential'
+			WHEN dcp_occupancy_exist = 'Other Accomodations' THEN 'Other Accomodations'
+			ELSE 'Other'
+		END;
+
+DELETE FROM dob_jobs
+WHERE dcp_category_occupancy NOT in ('Other Accomodations', 'Residential');
+
+
+
+--Part 3: Create and populate additional columns, which will be used for analysis and categorization; Note: this will require having supplementary Status table, which translate DOB field values to DCP conventions
+
+--Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous reocrd)
+
+ALTER TABLE dob_jobs
+	ADD COLUMN "units_exist" integer;
+UPDATE dob_jobs
+	SET units_exist = xunits_exist_raw::integer where xunits_exist_raw <>'';
+
+ALTER TABLE dob_jobs
+	ADD COLUMN "units_prop" integer;
+UPDATE dob_jobs
+	SET units_prop = xunits_prop_raw::integer where xunits_prop_raw <>''; 
+
+
+-- Create field to capture incremental units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
+
+ALTER TABLE dob_jobs
+	ADD COLUMN "units_net" integer;
+UPDATE dob_jobs 
+	SET units_net =
+		CASE
+			WHEN type = 'DM' THEN units_exist * -1
+			WHEN type = 'NB' THEN units_prop
+			WHEN type = 'A1' AND units_exist IS NOT null AND units_prop IS NOT null THEN units_prop - units_exist
+			ELSE null 
+		END;
+
+
+
+-- Part 4: Create field to translate DCP status categories AND flag if job is withdrawn (note: demolitions considered complete if status is permit issued)
+
+ALTER TABLE dob_jobs
+	ADD COLUMN "dcp_status" text;
+UPDATE dob_jobs
+SET dcp_status = 
+	(SELECT lookup_status.dcp FROM lookup_status
+	WHERE lookup_status.dob = dob_jobs.dob_status);
+UPDATE dob_jobs
+	SET dcp_status = 'Withdrawn' WHERE withdrawal_flag = 'Withdrawn';
+UPDATE dob_jobs
+	set dcp_status = 'Complete (demolition)' WHERE type = 'DM' AND dcp_status in ('Complete','Permit issued');
+
+
+
+
+-- Part 5 Create address field and flag suspected duplicates; create unique ID based on matching job types, address and BBL; identify most recent status update date associated with unique ID; if records status update date does not match, flagged as potential duplicate
+
+ALTER TABLE dob_jobs
+	ADD COLUMN address text;
+UPDATE dob_jobs
+	SET address = CONCAT(address_house,' ',address_street);
+
+
+
+-- Create a unique ID of type-bbl-address for indentifying duplicates
+ALTER TABLE dob_jobs
+	ADD COLUMN x_dup_id text;
+UPDATE dob_jobs
+	SET x_dup_id = CONCAT(type,bbl,address);
+
+-- Assign the maximum status date for each duplicate ID
+ALTER TABLE dob_jobs
+	ADD COLUMN x_dup_id_maxdate date;
+UPDATE dob_jobs
+	SET x_dup_id_maxdate = x
+	FROM (SELECT 
+       	x_dup_id,
+       	MAX(dob_status_date) as x
+       FROM dob_jobs
+       GROUP BY x_dup_id) as a
+	WHERE dob_jobs.x_dup_id = a.x_dup_id;
+
+
+ALTER TABLE dob_jobs
+	ADD COLUMN x_dup_flag text;
+UPDATE dob_jobs
+	SET x_dup_flag = 'Possible duplicate' WHERE x_dup_id_maxdate <> dob_status_date;

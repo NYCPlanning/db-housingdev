@@ -31,3 +31,5 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ## Process Diagram
 
 ![process](https://github.com/NYCPlanning/housingpipeline-db/blob/master/diagram_housingdb_build.png)
+
+[Link to old data dictionary and use guide](https://github.com/NYCPlanning/cpdocs/blob/master/docs/pipeline.md)

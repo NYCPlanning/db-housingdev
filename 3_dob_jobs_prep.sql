@@ -41,7 +41,7 @@ ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_occupancy_classification_description" to "dob_occupancy_prop";
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "existing_dwelling_units" to "xunits_exist_raw"; --this is to preserve original data, while we set this to 0 for calcs; appended with x for ordering 
+	RENAME COLUMN "existing_dwelling_units" to "xunits_init_raw"; --this is to preserve original data, while we set this to 0 for calcs; appended with x for ordering 
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_dwelling_units" to "xunits_prop_raw"; --this is to preserve original data, while we set this to 0 for calcs; appended with x for ordering 

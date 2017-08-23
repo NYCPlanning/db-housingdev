@@ -10,7 +10,7 @@ dob_permit_lot as lot,
 dcp_type_2 as type,
 dob_permit_exist_occupancy as dob_occupancy_exist,
 dob_permit_proposed_occupancy as dob_occupancy_prop,
-dob_permit_exist_units as xunits_exist_raw,
+dob_permit_exist_units as xunits_init_raw,
 dob_permit_proposed_units as xunits_prop_raw,
 dob_permit_current_job_status as dob_status,
 dob_permit_status_update as dob_status_date,
@@ -92,9 +92,9 @@ UPDATE dob_jobs_jan17
 
 --Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous record); modified since existing units is number in this dataset
 ALTER TABLE dob_jobs_jan17
-	ADD COLUMN "units_exist" integer;
+	ADD COLUMN "units_init" integer;
 UPDATE dob_jobs_jan17
-	SET units_exist = xunits_exist_raw where xunits_exist_raw is not null;
+	SET units_init = xunits_init_raw where xunits_init_raw is not null;
 
 ALTER TABLE dob_jobs_jan17
 	ADD COLUMN "units_prop" integer;
@@ -107,9 +107,9 @@ ALTER TABLE dob_jobs_jan17
 	ADD COLUMN "units_net" integer;
 UPDATE dob_jobs_jan17 
 	SET units_net = CASE
-		WHEN type = 'DM' THEN units_exist * -1
+		WHEN type = 'DM' THEN units_init * -1
 		WHEN type = 'NB' THEN units_prop
-		WHEN type = 'A1' AND units_exist IS NOT null AND units_prop IS NOT null THEN units_prop - units_exist
+		WHEN type = 'A1' AND units_init IS NOT null AND units_prop IS NOT null THEN units_prop - units_init
 		ELSE null 
 	END;
 
@@ -186,17 +186,17 @@ ALTER TABLE dob_jobs_jan17
 
 UPDATE dob_jobs_jan17
 SET
-	units_complete_2007_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2007 <> 0 THEN b.units_2007 - units_exist ELSE b.units_2007 END,
-	units_complete_2008_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2008_increm <> 0  THEN b.units_2008_increm - units_exist ELSE b.units_2008_increm END,
-	units_complete_2009_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2009_increm <> 0  THEN b.units_2009_increm - units_exist ELSE b.units_2009_increm END,
-	units_complete_2010_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2010_increm <> 0  THEN b.units_2010_increm - units_exist ELSE b.units_2010_increm END,
-	units_complete_2011_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2011_increm <> 0  THEN b.units_2011_increm - units_exist ELSE b.units_2011_increm END,
-	units_complete_2012_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2012_increm <> 0  THEN b.units_2012_increm - units_exist ELSE b.units_2012_increm END,
-	units_complete_2013_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2013_increm <> 0  THEN b.units_2013_increm - units_exist ELSE b.units_2013_increm END,
-	units_complete_2014_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2014_increm <> 0  THEN b.units_2014_increm - units_exist ELSE b.units_2014_increm END,
-	units_complete_2015_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2015_increm <> 0  THEN b.units_2015_increm - units_exist ELSE b.units_2015_increm END,
-	units_complete_2016_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2016_increm <> 0  THEN b.units_2016_increm - units_exist ELSE b.units_2016_increm END,
-	units_complete_2017_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2017_increm <> 0  THEN b.units_2017_increm - units_exist ELSE b.units_2017_increm END,
+	units_complete_2007_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2007 <> 0 THEN b.units_2007 - units_init ELSE b.units_2007 END,
+	units_complete_2008_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2008_increm <> 0  THEN b.units_2008_increm - units_init ELSE b.units_2008_increm END,
+	units_complete_2009_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2009_increm <> 0  THEN b.units_2009_increm - units_init ELSE b.units_2009_increm END,
+	units_complete_2010_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2010_increm <> 0  THEN b.units_2010_increm - units_init ELSE b.units_2010_increm END,
+	units_complete_2011_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2011_increm <> 0  THEN b.units_2011_increm - units_init ELSE b.units_2011_increm END,
+	units_complete_2012_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2012_increm <> 0  THEN b.units_2012_increm - units_init ELSE b.units_2012_increm END,
+	units_complete_2013_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2013_increm <> 0  THEN b.units_2013_increm - units_init ELSE b.units_2013_increm END,
+	units_complete_2014_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2014_increm <> 0  THEN b.units_2014_increm - units_init ELSE b.units_2014_increm END,
+	units_complete_2015_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2015_increm <> 0  THEN b.units_2015_increm - units_init ELSE b.units_2015_increm END,
+	units_complete_2016_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2016_increm <> 0  THEN b.units_2016_increm - units_init ELSE b.units_2016_increm END,
+	units_complete_2017_increm_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2017_increm <> 0  THEN b.units_2017_increm - units_init ELSE b.units_2017_increm END,
 	cofo_latestunits = b.units_latest,
 	cofo_latest = b.cofo_latest,
 	cofo_earliest = b.cofo_earliest,
@@ -234,7 +234,7 @@ SET
 	units_complete_2016_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2016' THEN units_net ELSE units_complete_2016_increm_net END,
 	units_complete_2017_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2017' THEN units_net ELSE units_complete_2017_increm_net END,
 	units_complete_net = CASE 
-		WHEN dcp_category_development = 'Alteration' THEN cofo_latestunits - units_exist 
+		WHEN dcp_category_development = 'Alteration' THEN cofo_latestunits - units_init 
 		WHEN dcp_status = 'Complete (demolition)' THEN units_net
 		ELSE cofo_latestunits END;
 
@@ -291,7 +291,7 @@ INSERT INTO nchatterjee.dob_jobs (
   units_complete_2017_increm_net,
   units_complete_net,
   units_incomplete_net,
-  units_exist,
+  units_init,
   units_net,
   units_prop,
   x_dup_flag,
@@ -339,7 +339,7 @@ SELECT
   units_complete_2017_increm_net,
   units_complete_net,
   units_incomplete_net,
-  units_exist,
+  units_init,
   units_net,
   units_prop,
   x_dup_flag,

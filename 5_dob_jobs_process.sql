@@ -1,11 +1,7 @@
-CREATE TABLE dob_jobs AS (
-	SELECT * FROM dob_jobs_orig
-);
-
+-- CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS
 
 ---Part 2: Translate to DCP categories and extract Housing developments. Note: this will require having supplementary Occupancy table, which translate DOB field values to DCP conventions
- 
- 
+
 ALTER TABLE dob_jobs
 	ADD COLUMN dcp_category_development text;
 UPDATE dob_jobs
@@ -46,6 +42,8 @@ UPDATE dob_jobs
 			ELSE 'Other'
 		END;
 
+
+-- Drop commercial and other non-residential records from jobs data
 DELETE FROM dob_jobs
 WHERE dcp_category_occupancy NOT in ('Other Accomodations', 'Residential');
 
@@ -56,9 +54,9 @@ WHERE dcp_category_occupancy NOT in ('Other Accomodations', 'Residential');
 --Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous reocrd)
 
 ALTER TABLE dob_jobs
-	ADD COLUMN "units_exist" integer;
+	ADD COLUMN "units_init" integer;
 UPDATE dob_jobs
-	SET units_exist = xunits_exist_raw::integer where xunits_exist_raw <>'';
+	SET units_init = xunits_init_raw::integer where xunits_init_raw <>'';
 
 ALTER TABLE dob_jobs
 	ADD COLUMN "units_prop" integer;
@@ -73,9 +71,10 @@ ALTER TABLE dob_jobs
 UPDATE dob_jobs 
 	SET units_net =
 		CASE
-			WHEN type = 'DM' THEN units_exist * -1
+			WHEN type = 'DM' THEN units_init * -1
 			WHEN type = 'NB' THEN units_prop
-			WHEN type = 'A1' AND units_exist IS NOT null AND units_prop IS NOT null THEN units_prop - units_exist
+			WHEN type = 'A1' AND units_init IS NOT null AND units_prop IS NOT null THEN units_prop - units_init
+			-- Should we use units_prop if units_init is null?
 			ELSE null 
 		END;
 

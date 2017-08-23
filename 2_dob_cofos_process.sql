@@ -6,7 +6,7 @@
 
 --Part 2: Clean data and pivot to capture incremental units, per year, per job
 
-CREATE TABLE dob_cofos AS (
+-- SAVE THE RESULTS OF THIS FOLLOWING QUERY (steps 1-4) AS dob_cofos
 
 -- STEP 1.
 -- This selects the largest CofO per job, for each year. Multiple temporary CofOs could be issued in one year. We select the largest in order to get a single value for each year. If no CofO were issued in a cgiven year, the units_20XX field will be blank
@@ -109,9 +109,22 @@ FROM
 
 -- STEP 4.
 -- Calculate incremental unit change per year from most recent increase in units. If the incremental change is the first 
+
+-- ** I think subtracting the greatest might be wrong in cases where the number of units decreases over time and then increases **
+
 SELECT
 	cofo_job_number,
-	units_2007,
+	units_2007,          
+	units_2008,
+	units_2009,           
+	units_2010,
+ 	units_2011,
+ 	units_2012,  
+	units_2013,
+ 	units_2014,
+ 	units_2015,
+ 	units_2016,
+ 	units_2017,
 	CASE WHEN units_2008 <> 0 THEN units_2008 - units_2007 ELSE 0 END as units_2008_increm,
 	CASE WHEN units_2009 <> 0 THEN units_2009 - GREATEST(units_2008,units_2007) ELSE 0 END as units_2009_increm,
 	CASE WHEN units_2010 <> 0 THEN units_2010 - GREATEST(units_2009,units_2008,units_2007) ELSE 0 END as units_2010_increm,
@@ -127,4 +140,6 @@ SELECT
 	cofo_earliest,
 	cofo_latesttype
 FROM
-	dob_cofos_byjob_cleaned)
+	dob_cofos_byjob_cleaned
+
+-- SAVE THE RESULTS OF THIS QUERY AS dob_cofos

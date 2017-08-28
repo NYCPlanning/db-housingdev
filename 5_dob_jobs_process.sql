@@ -116,3 +116,10 @@ ALTER TABLE dob_jobs
 	ADD COLUMN x_edited BOOLEAN,
 	ADD COLUMN x_inactive BOOLEAN;
 
+UPDATE dob_jobs
+	SET x_inactive =
+		(CASE
+			WHEN (CURRENT_DATE - dob_status_date)/365 >= 5 THEN TRUE
+			ELSE FALSE
+		END);
+

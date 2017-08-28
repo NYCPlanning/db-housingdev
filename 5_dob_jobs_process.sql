@@ -121,5 +121,8 @@ UPDATE dob_jobs
 		(CASE
 			WHEN (CURRENT_DATE - dob_status_date)/365 >= 5 THEN TRUE
 			ELSE FALSE
-		END);
+		END)
+	WHERE
+		dcp_status <> 'Complete'
+		AND dcp_status <> 'Complete (demolition)';
 

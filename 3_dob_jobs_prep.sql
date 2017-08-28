@@ -21,13 +21,13 @@ ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_number" to "dob_job_number";
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "job_type" to "type";
+	RENAME COLUMN "job_type" to "dob_type";
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "current_job_status_description" to "dob_status";	
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "withdrawal_description" to "withdrawal_flag";
+	RENAME COLUMN "withdrawal_description" to "x_withdrawal";
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_status_date" to "dob_status_date";
@@ -35,10 +35,10 @@ ALTER TABLE dob_jobs_orig
 	ALTER COLUMN "dob_status_date" TYPE date using TO_DATE(dob_status_date, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "existing_occupancy_classification_description" to "dob_occupancy_exist";	
+	RENAME COLUMN "existing_occupancy_classification_description" to "dob_occ_init";	
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "proposed_occupancy_classification_description" to "dob_occupancy_prop";
+	RENAME COLUMN "proposed_occupancy_classification_description" to "dob_occ_prop";
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "existing_dwelling_units" to "xunits_init_raw"; --this is to preserve original data, while we set this to 0 for calcs; appended with x for ordering 
@@ -47,13 +47,13 @@ ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_dwelling_units" to "xunits_prop_raw"; --this is to preserve original data, while we set this to 0 for calcs; appended with x for ordering 
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "existing_stories" to "stories_exist";	
+	RENAME COLUMN "existing_stories" to "stories_init";	
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_stories" to "stories_prop";	
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "existing_zoning_floor_area" to "zoningarea_exist";
+	RENAME COLUMN "existing_zoning_floor_area" to "zoningarea_init";
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_zoning_floor_area" to "zoningarea_prop"; 

@@ -1,11 +1,11 @@
 -- Part 6: GEOCODE
--- Part 6a: pull in geographies from previous pipeline
+-- Part 6a: pull in geometries from previous pipeline
 UPDATE dob_jobs
 SET the_geom = b.the_geom
 FROM q42016_permits_dates_cofos_v4 as b
 WHERE dob_jobs.dob_job_number = b.dob_job_number
 
---Part 6b: pull in geographies from PLUTO
+--Part 6b: pull in geometries from PLUTO
 UPDATE dob_jobs
 SET the_geom = st_centroid(b.the_geom)
 FROM dcp_mappluto as b
@@ -13,7 +13,7 @@ WHERE
 	dob_jobs.the_geom is null AND 
 	dob_jobs.bbl= b.bbl::text
 
---Part 6c: pull in geographies from PLUTO, using old BBLs
+--Part 6c: pull in geometries from PLUTO, using old BBLs
 UPDATE dob_jobs
 SET the_geom = st_centroid(b.the_geom)
 FROM dcp_mappluto as b

@@ -1,136 +1,256 @@
--- Create fields to capture join with CofOs (requires processing CofO data first)
+-- RUN EACH STEP INDIVIDUALLY
 
+-- STEP 1
+-- Add unit calculation columns to dob_jobs table
 ALTER TABLE dob_jobs
-	ADD COLUMN units_complete_2007_net integer,
-	ADD COLUMN units_complete_2008_increm_net integer,
-	ADD COLUMN units_complete_2009_increm_net integer,
-	ADD COLUMN units_complete_2010_increm_net integer,
-	ADD COLUMN units_complete_2011_increm_net integer,
-	ADD COLUMN units_complete_2012_increm_net integer,
-	ADD COLUMN units_complete_2013_increm_net integer,
-	ADD COLUMN units_complete_2014_increm_net integer,
-	ADD COLUMN units_complete_2015_increm_net integer,
-	ADD COLUMN units_complete_2016_increm_net integer,
-	ADD COLUMN units_complete_2017_increm_net integer,
 	ADD COLUMN cofo_latestunits integer,
-	ADD COLUMN units_complete_net integer,
+	ADD COLUMN u_net_complete integer,
+	ADD COLUMN u_net_incomplete integer,
 	ADD COLUMN cofo_latest date,
 	ADD COLUMN cofo_earliest date,
-	ADD COLUMN cofo_latesttype text;
+	ADD COLUMN cofo_latesttype text,
 
--- This calculation updates the very first incremental change value to subtract the number of exisitng units that was listed in the jobs record
+	ADD COLUMN u_2007_totalexist integer,
+	ADD COLUMN u_2008_totalexist integer,
+	ADD COLUMN u_2009_totalexist integer,
+	ADD COLUMN u_2010_totalexist integer,
+	ADD COLUMN u_2011_totalexist integer,
+	ADD COLUMN u_2012_totalexist integer,
+	ADD COLUMN u_2013_totalexist integer,
+	ADD COLUMN u_2014_totalexist integer,
+	ADD COLUMN u_2015_totalexist integer,
+	ADD COLUMN u_2016_totalexist integer,
+	ADD COLUMN u_2017_totalexist integer,
+
+	ADD COLUMN u_2007_netcomplete integer,
+	ADD COLUMN u_2008_netcomplete integer,
+	ADD COLUMN u_2009_netcomplete integer,
+	ADD COLUMN u_2010_netcomplete integer,
+	ADD COLUMN u_2011_netcomplete integer,
+	ADD COLUMN u_2012_netcomplete integer,
+	ADD COLUMN u_2013_netcomplete integer,
+	ADD COLUMN u_2014_netcomplete integer,
+	ADD COLUMN u_2015_netcomplete integer,
+	ADD COLUMN u_2016_netcomplete integer,
+	ADD COLUMN u_2017_netcomplete integer,
+
+	ADD COLUMN u_2007_increm integer,
+	ADD COLUMN u_2008_increm integer,
+	ADD COLUMN u_2009_increm integer,
+	ADD COLUMN u_2010_increm integer,
+	ADD COLUMN u_2011_increm integer,
+	ADD COLUMN u_2012_increm integer,
+	ADD COLUMN u_2013_increm integer,
+	ADD COLUMN u_2014_increm integer,
+	ADD COLUMN u_2015_increm integer,
+	ADD COLUMN u_2016_increm integer,
+	ADD COLUMN u_2017_increm integer;
+
+
+-- STEP 2
+-- Fill in gaps in total existing units between cofos and before first cofo. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
+UPDATE dob_jobs
+	SET
+		cofo_latestunits = b.u_latest,
+		cofo_latest = b.cofo_latest,
+		cofo_earliest = b.cofo_earliest,
+		cofo_latesttype = b.cofo_latesttype,
+		u_2017_totalexist = 
+			(CASE 
+				WHEN b.u_2017_totalexist IS NULL
+				THEN COALESCE(b.u_2016_totalexist, b.u_2015_totalexist, b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2017_totalexist IS NOT NULL THEN b.u_2017_totalexist
+			END),
+		u_2016_totalexist = 
+			(CASE 
+				WHEN b.u_2016_totalexist IS NULL
+				THEN COALESCE(b.u_2015_totalexist, b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2016_totalexist IS NOT NULL THEN b.u_2016_totalexist
+			END),
+		u_2015_totalexist = 
+			(CASE 
+				WHEN b.u_2015_totalexist IS NULL
+				THEN COALESCE(b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2015_totalexist IS NOT NULL THEN b.u_2015_totalexist
+			END),
+		u_2014_totalexist = 
+			(CASE 
+				WHEN b.u_2014_totalexist IS NULL
+				THEN COALESCE(b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2014_totalexist IS NOT NULL THEN b.u_2014_totalexist
+			END),
+		u_2013_totalexist = 
+			(CASE 
+				WHEN b.u_2013_totalexist IS NULL
+				THEN COALESCE(b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2013_totalexist IS NOT NULL THEN b.u_2013_totalexist
+			END),
+		u_2012_totalexist = 
+			(CASE 
+				WHEN b.u_2012_totalexist IS NULL
+				THEN COALESCE(b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2012_totalexist IS NOT NULL THEN b.u_2012_totalexist
+			END),
+		u_2011_totalexist = 
+			(CASE 
+				WHEN b.u_2011_totalexist IS NULL
+				THEN COALESCE(b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2011_totalexist IS NOT NULL THEN b.u_2011_totalexist 
+			END),
+		u_2010_totalexist = 
+			(CASE 
+				WHEN b.u_2010_totalexist IS NULL
+				THEN COALESCE(b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2010_totalexist IS NOT NULL THEN b.u_2010_totalexist 
+			END),
+		u_2009_totalexist = 
+			(CASE 
+				WHEN b.u_2009_totalexist IS NULL
+				THEN COALESCE(b.u_2008_totalexist, b.u_2007_totalexist, u_init)
+				WHEN b.u_2009_totalexist IS NOT NULL THEN b.u_2009_totalexist
+			END),
+		u_2008_totalexist = 
+			(CASE 
+				WHEN b.u_2008_totalexist IS NULL
+				THEN COALESCE(b.u_2007_totalexist, u_init)
+				WHEN b.u_2008_totalexist IS NOT NULL THEN b.u_2008_totalexist
+			END),
+		u_2007_totalexist = 
+			(CASE 
+				WHEN b.u_2007_totalexist IS NULL
+				THEN COALESCE(u_init)
+				WHEN b.u_2007_totalexist IS NOT NULL THEN b.u_2007_totalexist
+			END)
+	FROM dob_cofos AS b
+	WHERE dob_jobs.dob_job_number = b.cofo_job_number;
+
+
+-- STEP 3
+-- Calculate cummulative completed units for each year and annual incremental changes
+UPDATE dob_jobs 
+	SET
+		u_2017_netcomplete = u_2017_totalexist - u_init,
+		u_2016_netcomplete = u_2016_totalexist - u_init,
+		u_2015_netcomplete = u_2015_totalexist - u_init,
+		u_2014_netcomplete = u_2014_totalexist - u_init,
+		u_2013_netcomplete = u_2013_totalexist - u_init,
+		u_2012_netcomplete = u_2012_totalexist - u_init,
+		u_2011_netcomplete = u_2011_totalexist - u_init,
+		u_2010_netcomplete = u_2010_totalexist - u_init,
+		u_2009_netcomplete = u_2009_totalexist - u_init,
+		u_2008_netcomplete = u_2008_totalexist - u_init,
+		u_2007_netcomplete = u_2007_totalexist - u_init,
+		u_2017_increm = u_2017_totalexist - u_2016_totalexist,
+		u_2016_increm = u_2016_totalexist - u_2015_totalexist,
+		u_2015_increm = u_2015_totalexist - u_2014_totalexist,
+		u_2014_increm = u_2014_totalexist - u_2013_totalexist,
+		u_2013_increm = u_2013_totalexist - u_2012_totalexist,
+		u_2012_increm = u_2012_totalexist - u_2011_totalexist,
+		u_2011_increm = u_2011_totalexist - u_2010_totalexist,
+		u_2010_increm = u_2010_totalexist - u_2009_totalexist,
+		u_2009_increm = u_2009_totalexist - u_2008_totalexist,
+		u_2008_increm = u_2008_totalexist - u_2007_totalexist,
+		u_2007_increm = u_2007_totalexist - u_init;
+
+
+-- STEP 4
+-- Update status based on CofO data and assign number of completed units
 UPDATE dob_jobs
 SET
-	units_complete_2007_net = CASE WHEN dcp_category_development = 'Alteration' AND b.units_2007 <> 0 THEN b.units_2007 - units_init ELSE b.units_2007 END,
-	units_complete_2008_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2008_increm <> 0 AND (b.units_2007) = 0 THEN b.units_2008_increm - units_init 
-			ELSE b.units_2008_increm 
-		END,
-	units_complete_2009_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2009_increm <> 0 AND (b.units_2007 + b.units_2008) = 0 THEN b.units_2009_increm - units_init 
-			ELSE b.units_2009_increm 
-		END,
-	units_complete_2010_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2010_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009) = 0 THEN b.units_2010_increm - units_init 
-			ELSE b.units_2010_increm 
-		END,
-	units_complete_2011_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2011_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010) = 0 THEN b.units_2011_increm - units_init 
-			ELSE b.units_2011_increm 
-		END,
-	units_complete_2012_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2012_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011) = 0 THEN b.units_2012_increm - units_init 
-			ELSE b.units_2012_increm 
-		END,
-	units_complete_2013_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2013_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011 + b.units_2012) = 0 THEN b.units_2013_increm - units_init 
-			ELSE b.units_2013_increm 
-		END,
-	units_complete_2014_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2014_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011 + b.units_2012 + b.units_2013) = 0 THEN b.units_2014_increm - units_init 
-			ELSE b.units_2014_increm 
-		END,
-	units_complete_2015_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2015_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011 + b.units_2012 + b.units_2013 + b.units_2014) = 0 THEN b.units_2015_increm - units_init 
-			ELSE b.units_2015_increm 
-		END,
-	units_complete_2016_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2016_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011 + b.units_2012 + b.units_2013 + b.units_2014 + b.units_2015) = 0 THEN b.units_2016_increm - units_init 
-			ELSE b.units_2016_increm 
-		END,
-	units_complete_2017_increm_net = 
-		CASE 
-			WHEN dcp_category_development = 'Alteration' AND b.units_2017_increm <> 0 AND (b.units_2007 + b.units_2008 + b.units_2009 + b.units_2010 + b.units_2011 + b.units_2012 + b.units_2013 + b.units_2014 + b.units_2015 + b.units_2016) = 0 THEN b.units_2017_increm - units_init 
-			ELSE b.units_2017_increm 
-		END,
-	cofo_latestunits = b.units_latest,
-	cofo_latest = b.cofo_latest,
-	cofo_earliest = b.cofo_earliest,
-	cofo_latesttype = b.cofo_latesttype
-
-FROM dob_cofos b
-
-WHERE dob_jobs.dob_job_number = b.cofo_job_number;
+	dcp_status =
+		(CASE 
+			WHEN cofo_latestunits IS NULL THEN dcp_status
+			WHEN u_prop = 0 THEN dcp_status
+			WHEN (cofo_latestunits / u_prop) >= 0.8 OR dob_status = 'X' OR cofo_latesttype = 'C- CO' THEN 'Complete'
+			WHEN (cofo_latestunits / u_prop) < 0.8 THEN 'Partial complete'
+			ELSE dcp_status
+		END),
+	u_net_complete =
+		(CASE 
+			WHEN dcp_dev_category = 'Alteration' THEN cofo_latestunits - u_init 
+			WHEN dcp_status = 'Complete (demolition)' THEN u_net
+			WHEN cofo_latestunits IS NOT NULL THEN cofo_latestunits
+			WHEN cofo_latestunits IS NULL THEN 0
+		END);
 
 
---Update status based on CofO data
+-- STEP 5
+-- Capture demolitions in a given year and proxy for CofO date
+UPDATE dob_jobs
+	SET
+		cofo_earliest = dob_qdate,
+		cofo_latest = dob_qdate,
+		u_2007_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2007' THEN u_net ELSE u_2007_increm
+			END),
+		u_2008_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2008' THEN u_net ELSE u_2008_increm
+			END),
+		u_2009_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2009' THEN u_net ELSE u_2009_increm
+			END),
+		u_2010_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2010' THEN u_net ELSE u_2010_increm
+			END),
+		u_2011_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2011' THEN u_net ELSE u_2011_increm
+			END),
+		u_2012_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2012' THEN u_net ELSE u_2012_increm
+			END),
+		u_2013_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2013' THEN u_net ELSE u_2013_increm
+			END),
+		u_2014_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2014' THEN u_net ELSE u_2014_increm
+			END),
+		u_2015_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2015' THEN u_net ELSE u_2015_increm
+			END),
+		u_2016_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2016' THEN u_net ELSE u_2016_increm
+			END),
+		u_2017_increm = 
+			(CASE
+				WHEN LEFT (dob_qdate::text, 4) = '2017' THEN u_net ELSE u_2017_increm
+			END)
+	WHERE dcp_status = 'Complete (demolition)';
 
 UPDATE dob_jobs
-SET
-	dcp_status = CASE 
-		WHEN cofo_latestunits is null THEN dcp_status
-		WHEN units_prop = 0 THEN dcp_status
-		WHEN (cofo_latestunits / units_prop) >= 0.8 OR dob_status = 'X' THEN 'Complete'
-		WHEN (cofo_latestunits / units_prop) < 0.8 THEN 'Partial complete'
-		ELSE dcp_status END;
+	SET
+		u_2007_netcomplete = u_2007_increm,
+		u_2008_netcomplete = u_2008_increm,
+		u_2009_netcomplete = u_2009_increm,
+		u_2010_netcomplete = u_2010_increm,
+		u_2011_netcomplete = u_2011_increm,
+		u_2012_netcomplete = u_2012_increm,
+		u_2013_netcomplete = u_2013_increm,
+		u_2014_netcomplete = u_2014_increm,
+		u_2015_netcomplete = u_2015_increm,
+		u_2016_netcomplete = u_2016_increm,
+		u_2017_netcomplete = u_2017_increm
+	WHERE dcp_status = 'Complete (demolition)';
 
 
--- Update units complete column, also capturing demolitions in a given year and proxying for CofO date
+-- STEP 6
+-- Update column to capture outstanding (non-complete) units
 
 UPDATE dob_jobs
-SET
-	units_complete_2007_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2007' THEN units_net ELSE units_complete_2007_net END,
-	units_complete_2008_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2008' THEN units_net ELSE units_complete_2008_increm_net END,
-	units_complete_2009_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2009' THEN units_net ELSE units_complete_2009_increm_net END,
-	units_complete_2010_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2010' THEN units_net ELSE units_complete_2010_increm_net END,
-	units_complete_2011_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2011' THEN units_net ELSE units_complete_2011_increm_net END,
-	units_complete_2012_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2012' THEN units_net ELSE units_complete_2012_increm_net END,
-	units_complete_2013_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2013' THEN units_net ELSE units_complete_2013_increm_net END,
-	units_complete_2014_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2014' THEN units_net ELSE units_complete_2014_increm_net END,
-	units_complete_2015_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2015' THEN units_net ELSE units_complete_2015_increm_net END,
-	units_complete_2016_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2016' THEN units_net ELSE units_complete_2016_increm_net END,
-	units_complete_2017_increm_net = CASE WHEN dcp_status = 'Complete (demolition)' AND left (dob_qdate::text, 4) = '2017' THEN units_net ELSE units_complete_2017_increm_net END,
-	units_complete_net =
+	SET u_net_incomplete =
 		CASE 
-			WHEN dcp_category_development = 'Alteration' THEN cofo_latestunits - units_init 
-			WHEN dcp_status = 'Complete (demolition)' THEN units_net
-			ELSE cofo_latestunits
-		END,
-	cofo_earliest =
-		CASE -- capturing earliest date even though it doesn't actually have a CofO, for filtering in explorer
-			WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-			ELSE cofo_earliest END,
-	cofo_latest =
-		CASE -- capturing lastest date even though it doesn't actually have a CofO, for filtering in explorer
-			WHEN dcp_status = 'Complete (demolition)' THEN dob_qdate
-			ELSE cofo_latest
+			WHEN dcp_status = 'Complete' THEN 0
+			WHEN dcp_status <> 'Complete' AND u_net_complete IS NOT NULL THEN (u_net - u_net_complete)
+			ELSE u_net
 		END;
 
--- Create and update column to capture outstanding (non-complete) units
-ALTER TABLE dob_jobs
-	ADD COLUMN units_incomplete_net integer;
-
-UPDATE dob_jobs
-	SET units_incomplete_net =
-		CASE 
-			WHEN units_complete_net is not null THEN (units_net - units_complete_net)
-		ELSE units_net END;
+		

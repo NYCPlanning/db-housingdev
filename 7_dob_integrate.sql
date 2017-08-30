@@ -129,17 +129,17 @@ UPDATE dob_jobs
 -- Calculate cummulative completed units for each year and annual incremental changes
 UPDATE dob_jobs 
 	SET
-		u_2017_netcomplete = u_2017_totalexist - u_init,
-		u_2016_netcomplete = u_2016_totalexist - u_init,
-		u_2015_netcomplete = u_2015_totalexist - u_init,
-		u_2014_netcomplete = u_2014_totalexist - u_init,
-		u_2013_netcomplete = u_2013_totalexist - u_init,
-		u_2012_netcomplete = u_2012_totalexist - u_init,
-		u_2011_netcomplete = u_2011_totalexist - u_init,
-		u_2010_netcomplete = u_2010_totalexist - u_init,
-		u_2009_netcomplete = u_2009_totalexist - u_init,
-		u_2008_netcomplete = u_2008_totalexist - u_init,
-		u_2007_netcomplete = u_2007_totalexist - u_init,
+		u_2017_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2017_totalexist - u_init END),
+		u_2016_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2016_totalexist - u_init END),
+		u_2015_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2015_totalexist - u_init END),
+		u_2014_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2014_totalexist - u_init END),
+		u_2013_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2013_totalexist - u_init END),
+		u_2012_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2012_totalexist - u_init END),
+		u_2011_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2011_totalexist - u_init END),
+		u_2010_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2010_totalexist - u_init END),
+		u_2009_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2009_totalexist - u_init END),
+		u_2008_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2008_totalexist - u_init END),
+		u_2007_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2007_totalexist - u_init END),
 		u_2017_increm = u_2017_totalexist - u_2016_totalexist,
 		u_2016_increm = u_2016_totalexist - u_2015_totalexist,
 		u_2015_increm = u_2015_totalexist - u_2014_totalexist,
@@ -150,7 +150,8 @@ UPDATE dob_jobs
 		u_2010_increm = u_2010_totalexist - u_2009_totalexist,
 		u_2009_increm = u_2009_totalexist - u_2008_totalexist,
 		u_2008_increm = u_2008_totalexist - u_2007_totalexist,
-		u_2007_increm = u_2007_totalexist - u_init;
+		u_2007_increm = u_2007_totalexist - u_init
+	;
 
 
 -- STEP 4
@@ -166,11 +167,12 @@ SET
 			ELSE dcp_status
 		END),
 	u_net_complete =
-		(CASE 
-			WHEN dcp_dev_category = 'Alteration' THEN cofo_latestunits - u_init 
-			WHEN dcp_status = 'Complete (demolition)' THEN u_net
-			WHEN cofo_latestunits IS NOT NULL THEN cofo_latestunits
-			WHEN cofo_latestunits IS NULL THEN 0
+	-- Calculation is not performed if u_init or u_prop were NULL
+		(CASE
+			WHEN dcp_status = 'Complete (demolition)' AND u_net IS NOT NULL THEN u_net
+			WHEN cofo_latestunits IS NULL AND u_net IS NOT NULL THEN 0 
+			WHEN dob_type = 'A1' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits - u_init 
+			WHEN dob_type = 'NB' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits
 		END);
 
 
@@ -248,8 +250,8 @@ UPDATE dob_jobs
 UPDATE dob_jobs
 	SET u_net_incomplete =
 		CASE 
-			WHEN dcp_status = 'Complete' THEN 0
-			WHEN dcp_status <> 'Complete' AND u_net_complete IS NOT NULL THEN (u_net - u_net_complete)
+			WHEN u_net IS NOT NULL AND dcp_status = 'Complete' THEN 0
+			WHEN u_net IS NOT NULL AND dcp_status <> 'Complete' THEN (u_net - u_net_complete)
 			ELSE u_net
 		END;
 

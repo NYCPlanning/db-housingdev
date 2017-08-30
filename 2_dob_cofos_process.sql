@@ -6,6 +6,7 @@
 -- STEP 1: This selects the largest CofO per job, for each year. Multiple temporary CofOs could be issued in one year. We select the largest in order to get a single value for each year. If no CofO were issued in a cgiven year, the u_20XX_totalexist field will be blank
 -- STEP 2: This adds a new field u_latest that captures the number of units on the CofO from the most recent year
 -- STEP 3: Compares earlier CofOs to most recent; if earlier years are erroneously higher than the most recent CofO this query replaces the unit count with most recent lower unit count.
+-- Not sure we should trust Step 3 as is. There are many cases of building alterations where units are taken out of comission while renovations are being done, so an earlier CofO would have a higher unit count if the project is still being developed.
 
 
 

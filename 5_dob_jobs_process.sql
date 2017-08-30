@@ -62,11 +62,20 @@ WHERE dcp_occ_category NOT in ('Other Accomodations', 'Residential');
 
 
 -- STEP 3
--- Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous reocrd)
+-- Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous record)
+-- Assumes all new buildings have a u_init=0 and all demos have a u_prop=0
 UPDATE dob_jobs
 	SET
-		u_init = CASE WHEN xunits_init_raw <>'' THEN xunits_init_raw::integer END,
-		u_prop = CASE WHEN xunits_prop_raw <>'' THEN xunits_prop_raw::integer END;
+		u_init = 
+			(CASE
+				WHEN xunits_init_raw <> '' THEN xunits_init_raw::integer
+				WHEN dob_type = 'NB' AND xunits_init_raw = '' AND xunits_prop_raw <> '' THEN 0
+			END),
+		u_prop =
+			(CASE
+				WHEN xunits_prop_raw <> '' THEN xunits_prop_raw::integer
+				WHEN dob_type = 'DM' AND xunits_prop_raw = '' THEN 0
+			END);
 
 
 -- Create field to capture incremental units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)

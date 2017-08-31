@@ -27,6 +27,9 @@ WHERE dob_type = 'DM' AND (u_prop <> 0 or u_prop IS NULL))
 UNION
 (SELECT * FROM dob_jobs
 WHERE dob_type = 'NB' AND (u_init <> 0 or u_init IS NULL))
+UNION
+(SELECT * FROM dob_jobs
+WHERE dcp_status IS NULL)
 
 -- ALTERATIONS WITHOUT AN INITIAL NUMBER OF UNITS REPORTED
 -- Check to make sure u_XXXX_increm calculations aren't being done when first CofO appears on record for A1 records where u_init is null

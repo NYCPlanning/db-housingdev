@@ -57,67 +57,67 @@ UPDATE dob_jobs
 		cofo_latesttype = b.cofo_latesttype,
 		u_2017_totalexist = 
 			(CASE 
-				WHEN b.u_2017_totalexist IS NULL
+				WHEN b.u_2017_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2016_totalexist, b.u_2015_totalexist, b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2017_totalexist IS NOT NULL THEN b.u_2017_totalexist
 			END),
 		u_2016_totalexist = 
 			(CASE 
-				WHEN b.u_2016_totalexist IS NULL
+				WHEN b.u_2016_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2015_totalexist, b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2016_totalexist IS NOT NULL THEN b.u_2016_totalexist
 			END),
 		u_2015_totalexist = 
 			(CASE 
-				WHEN b.u_2015_totalexist IS NULL
+				WHEN b.u_2015_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2014_totalexist, b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2015_totalexist IS NOT NULL THEN b.u_2015_totalexist
 			END),
 		u_2014_totalexist = 
 			(CASE 
-				WHEN b.u_2014_totalexist IS NULL
+				WHEN b.u_2014_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2013_totalexist, b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2014_totalexist IS NOT NULL THEN b.u_2014_totalexist
 			END),
 		u_2013_totalexist = 
 			(CASE 
-				WHEN b.u_2013_totalexist IS NULL
+				WHEN b.u_2013_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2012_totalexist, b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2013_totalexist IS NOT NULL THEN b.u_2013_totalexist
 			END),
 		u_2012_totalexist = 
 			(CASE 
-				WHEN b.u_2012_totalexist IS NULL
+				WHEN b.u_2012_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2011_totalexist, b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2012_totalexist IS NOT NULL THEN b.u_2012_totalexist
 			END),
 		u_2011_totalexist = 
 			(CASE 
-				WHEN b.u_2011_totalexist IS NULL
+				WHEN b.u_2011_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2010_totalexist, b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2011_totalexist IS NOT NULL THEN b.u_2011_totalexist 
 			END),
 		u_2010_totalexist = 
 			(CASE 
-				WHEN b.u_2010_totalexist IS NULL
+				WHEN b.u_2010_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2009_totalexist, b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2010_totalexist IS NOT NULL THEN b.u_2010_totalexist 
 			END),
 		u_2009_totalexist = 
 			(CASE 
-				WHEN b.u_2009_totalexist IS NULL
+				WHEN b.u_2009_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2008_totalexist, b.u_2007_totalexist, u_init)
 				WHEN b.u_2009_totalexist IS NOT NULL THEN b.u_2009_totalexist
 			END),
 		u_2008_totalexist = 
 			(CASE 
-				WHEN b.u_2008_totalexist IS NULL
+				WHEN b.u_2008_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2007_totalexist, u_init)
 				WHEN b.u_2008_totalexist IS NOT NULL THEN b.u_2008_totalexist
 			END),
 		u_2007_totalexist = 
 			(CASE 
-				WHEN b.u_2007_totalexist IS NULL
+				WHEN b.u_2007_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(u_init)
 				WHEN b.u_2007_totalexist IS NOT NULL THEN b.u_2007_totalexist
 			END)

@@ -16,12 +16,12 @@
 WITH dob_cofos_byjob AS
 (SELECT
 	cofo_job_number,
-	max(CASE WHEN cofo_year = '2007' THEN cofo_units END) as u_2007_totalexist,           
+	max(CASE WHEN cofo_year = '2007' THEN cofo_units END) as u_2007_totalexist,
 	max(CASE WHEN cofo_year = '2008' THEN cofo_units END) as u_2008_totalexist,
-	max(CASE WHEN cofo_year = '2009' THEN cofo_units END) as u_2009_totalexist,           
+	max(CASE WHEN cofo_year = '2009' THEN cofo_units END) as u_2009_totalexist,
 	max(CASE WHEN cofo_year = '2010' THEN cofo_units END) as u_2010_totalexist,
  	max(CASE WHEN cofo_year = '2011' THEN cofo_units END) as u_2011_totalexist,
- 	max(CASE WHEN cofo_year = '2012' THEN cofo_units END) as u_2012_totalexist,  
+ 	max(CASE WHEN cofo_year = '2012' THEN cofo_units END) as u_2012_totalexist,
 	max(CASE WHEN cofo_year = '2013' THEN cofo_units END) as u_2013_totalexist,
  	max(CASE WHEN cofo_year = '2014' THEN cofo_units END) as u_2014_totalexist,
  	max(CASE WHEN cofo_year = '2015' THEN cofo_units END) as u_2015_totalexist,
@@ -29,8 +29,7 @@ WITH dob_cofos_byjob AS
  	max(CASE WHEN cofo_year = '2017' THEN cofo_units END) as u_2017_totalexist,
  	max(cofo_date) AS cofo_latest,
  	min(cofo_date) AS cofo_earliest,
- 	min(cofo_type) AS cofo_latesttype,
- 	NULL::integer AS u_latest
+ 	min(cofo_type) AS cofo_latesttype
 FROM dob_cofos_orig
 GROUP BY cofo_job_number),
 
@@ -108,98 +107,3 @@ FROM
 	dob_cofos_byjob_unitslatest
 
 -- SAVE THE RESULTS OF THIS QUERY AS dob_cofos
-
-
--- SELECT
--- 	cofo_job_number,
--- 	max(CASE WHEN cofo_year = '2007' THEN cofo_units END) as u_2007_totalexist,           
--- 	max(CASE WHEN cofo_year = '2008' THEN cofo_units END) as u_2008_totalexist,
--- 	max(CASE WHEN cofo_year = '2009' THEN cofo_units END) as u_2009_totalexist,           
--- 	max(CASE WHEN cofo_year = '2010' THEN cofo_units END) as u_2010_totalexist,
---  	max(CASE WHEN cofo_year = '2011' THEN cofo_units END) as u_2011_totalexist,
---  	max(CASE WHEN cofo_year = '2012' THEN cofo_units END) as u_2012_totalexist,  
--- 	max(CASE WHEN cofo_year = '2013' THEN cofo_units END) as u_2013_totalexist,
---  	max(CASE WHEN cofo_year = '2014' THEN cofo_units END) as u_2014_totalexist,
---  	max(CASE WHEN cofo_year = '2015' THEN cofo_units END) as u_2015_totalexist,
---  	max(CASE WHEN cofo_year = '2016' THEN cofo_units END) as u_2016_totalexist,
---  	max(CASE WHEN cofo_year = '2017' THEN cofo_units END) as u_2017_totalexist,
---  	max(cofo_date) AS cofo_latest,
---  	min(cofo_date) AS cofo_earliest,
---  	min(cofo_type) AS cofo_latesttype,
---  	NULL AS u_latest
--- FROM dob_cofos_orig
--- GROUP BY cofo_job_number;
-
-
--- UPDATE dob_cofos
--- 	SET u_latest = COALESCE(
--- 		u_2017_totalexist,
--- 		u_2016_totalexist,
--- 		u_2015_totalexist,
--- 		u_2014_totalexist,
--- 		u_2013_totalexist,
--- 		u_2012_totalexist,
--- 		u_2011_totalexist,
--- 		u_2010_totalexist,
--- 		u_2009_totalexist,
--- 		u_2008_totalexist,
--- 		u_2007_totalexist);
-
-
--- UPDATE dob_cofos
--- 	SET
--- 		u_2007_totalexist = 
--- 			(CASE
--- 				WHEN u_2007_totalexist > u_latest THEN u_latest
--- 				ELSE u_2007_totalexist 
--- 			END),
--- 		u_2008_totalexist = 
--- 			(CASE
--- 				WHEN u_2008_totalexist > u_latest THEN u_latest
--- 				ELSE u_2008_totalexist 
--- 			END),
--- 		u_2009_totalexist = 
--- 			(CASE
--- 				WHEN u_2009_totalexist > u_latest THEN u_latest
--- 				ELSE u_2009_totalexist 
--- 			END),
--- 		u_2010_totalexist = 
--- 			(CASE
--- 				WHEN u_2010_totalexist > u_latest THEN u_latest
--- 				ELSE u_2010_totalexist 
--- 			END),
--- 		u_2011_totalexist = 
--- 			(CASE
--- 				WHEN u_2011_totalexist > u_latest THEN u_latest
--- 				ELSE u_2011_totalexist 
--- 			END),
--- 		u_2012_totalexist = 
--- 			(CASE
--- 				WHEN u_2012_totalexist > u_latest THEN u_latest
--- 				ELSE u_2012_totalexist 
--- 			END),
--- 		u_2013_totalexist = 
--- 			(CASE
--- 				WHEN u_2013_totalexist > u_latest THEN u_latest
--- 				ELSE u_2013_totalexist 
--- 			END),
--- 		u_2014_totalexist = 
--- 			(CASE
--- 				WHEN u_2014_totalexist > u_latest THEN u_latest
--- 				ELSE u_2014_totalexist 
--- 			END),
--- 		u_2015_totalexist = 
--- 			(CASE
--- 				WHEN u_2015_totalexist > u_latest THEN u_latest
--- 				ELSE u_2015_totalexist 
--- 			END),
--- 		u_2016_totalexist = 
--- 			(CASE
--- 				WHEN u_2016_totalexist > u_latest THEN u_latest
--- 				ELSE u_2016_totalexist 
--- 			END),
--- 		u_2017_totalexist = 
--- 			(CASE
--- 				WHEN u_2017_totalexist > u_latest THEN u_latest
--- 				ELSE u_2017_totalexist 
--- 			END);

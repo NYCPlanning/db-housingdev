@@ -72,12 +72,12 @@ UPDATE dob_jobs
 		u_init = 
 			(CASE
 				WHEN xunits_init_raw <> '' THEN xunits_init_raw::integer
-				WHEN dob_type = 'NB' AND xunits_init_raw = '' AND xunits_prop_raw <> '' THEN 0
+				WHEN dob_type = 'NB' AND (xunits_init_raw = '' OR xunits_init_raw IS NULL) THEN 0
 			END),
 		u_prop =
 			(CASE
 				WHEN xunits_prop_raw <> '' THEN xunits_prop_raw::integer
-				WHEN dob_type = 'DM' AND xunits_prop_raw = '' THEN 0
+				WHEN dob_type = 'DM' AND (xunits_prop_raw = '' OR xunits_prop_raw IS NULL) THEN 0
 			END);
 
 
@@ -88,7 +88,6 @@ UPDATE dob_jobs
 			WHEN dob_type = 'DM' THEN u_init * -1
 			WHEN dob_type = 'NB' THEN u_prop
 			WHEN dob_type = 'A1' AND u_init IS NOT NULL AND u_prop IS NOT NULL THEN u_prop - u_init
-			-- Should we use u_prop if u_init is NULL?
 			ELSE NULL 
 		END;
 

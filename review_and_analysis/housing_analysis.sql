@@ -105,7 +105,6 @@ WHERE
   	AND RIGHT(geog_ntacode::text, 2) <> '99'
   	AND RIGHT(geog_ntacode::text, 2) <> '98'
 	AND the_geom IS NOT NULL
-	AND u_net is not null
 	AND dcp_status <> 'Withdrawn'
 	AND x_dup_flag IS NULL
 	AND x_outlier IS NOT TRUE
@@ -162,7 +161,6 @@ WHERE
   	AND RIGHT(geog_ntacode::text, 2) <> '99'
   	AND RIGHT(geog_ntacode::text, 2) <> '98'
 	AND the_geom IS NOT NULL
-    AND u_net is not null
 	AND dcp_status <> 'Withdrawn'
 	AND dcp_status NOT LIKE '%Application%'
 	AND x_dup_flag IS NULL

@@ -13,8 +13,10 @@ ALTER TABLE dob_jobs
 	ADD COLUMN u_init integer,
 	ADD COLUMN u_prop integer,
 	ADD COLUMN u_net integer,
-	ADD COLUMN dcp_status text,
-	ADD COLUMN address text;
+	ADD COLUMN dcp_status text
+	-- ,
+	-- ADD COLUMN address text
+	;
 
 UPDATE dob_jobs
 	SET
@@ -50,6 +52,7 @@ UPDATE dob_jobs
 			(CASE
 				WHEN x_withdrawal = 'Withdrawn' THEN 'Withdrawn'
 				WHEN dob_type = 'DM' AND dcp_status IN ('Complete','Permit issued') THEN 'Complete (demolition)'
+				ELSE dcp_status
 			END);
 
 
@@ -123,7 +126,9 @@ UPDATE dob_jobs
 -- Create additional fields for flagging data quality concerns
 ALTER TABLE dob_jobs
 	ADD COLUMN x_edited BOOLEAN,
-	ADD COLUMN x_inactive BOOLEAN;
+	ADD COLUMN x_inactive BOOLEAN,
+	ADD COLUMN x_outlier BOOLEAN,
+	ADD COLUMN x_notes text;
 
 UPDATE dob_jobs
 	SET x_inactive =

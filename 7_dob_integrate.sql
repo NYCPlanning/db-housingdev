@@ -48,7 +48,7 @@ ALTER TABLE dob_jobs
 
 
 -- STEP 2
--- Fill in gaps in total existing units between cofos and before first cofo. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
+-- Fill in gaps in total existing units between CofOs and before first CofO. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
 UPDATE dob_jobs
 	SET
 		cofo_latestunits = b.u_latest,
@@ -126,6 +126,108 @@ UPDATE dob_jobs
 
 
 -- STEP 3
+-- Capture demolitions in a given year and proxy for CofO date
+UPDATE dob_jobs
+	SET
+		cofo_earliest = dob_qdate,
+		cofo_latest = dob_qdate,
+		u_2007_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2007' THEN 0 ELSE u_2007_totalexist END),
+		u_2008_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2008' THEN 0 ELSE u_2008_totalexist END),
+		u_2009_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2009' THEN 0 ELSE u_2009_totalexist END),
+		u_2010_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2010' THEN 0 ELSE u_2010_totalexist END),
+		u_2011_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2011' THEN 0 ELSE u_2011_totalexist END),
+		u_2012_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2012' THEN 0 ELSE u_2012_totalexist END),
+		u_2013_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2013' THEN 0 ELSE u_2013_totalexist END),
+		u_2014_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2014' THEN 0 ELSE u_2014_totalexist END),
+		u_2015_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2015' THEN 0 ELSE u_2015_totalexist END),
+		u_2016_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2016' THEN 0 ELSE u_2016_totalexist END),
+		u_2017_totalexist = 
+			(CASE WHEN LEFT (dob_qdate::text, 4) = '2017' THEN 0 ELSE u_2017_totalexist END)
+	WHERE dcp_status = 'Complete (demolition)';
+
+
+UPDATE dob_jobs
+	SET
+		u_2017_totalexist = 
+			(CASE
+				WHEN u_2017_totalexist IS NULL 
+				THEN COALESCE(u_2016_totalexist, u_2015_totalexist, u_2014_totalexist, u_2013_totalexist, u_2012_totalexist, u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2017_totalexist
+			END),
+		u_2016_totalexist = 
+			(CASE
+				WHEN u_2016_totalexist IS NULL 
+				THEN COALESCE(u_2015_totalexist, u_2014_totalexist, u_2013_totalexist, u_2012_totalexist, u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2016_totalexist
+			END),
+		u_2015_totalexist = 
+			(CASE
+				WHEN u_2015_totalexist IS NULL 
+				THEN COALESCE(u_2014_totalexist, u_2013_totalexist, u_2012_totalexist, u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2015_totalexist
+			END),
+		u_2014_totalexist = 
+			(CASE
+				WHEN u_2014_totalexist IS NULL 
+				THEN COALESCE(u_2013_totalexist, u_2012_totalexist, u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2014_totalexist
+			END),
+		u_2013_totalexist = 
+			(CASE
+				WHEN u_2013_totalexist IS NULL 
+				THEN COALESCE(u_2012_totalexist, u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2013_totalexist
+			END),
+		u_2012_totalexist = 
+			(CASE
+				WHEN u_2012_totalexist IS NULL 
+				THEN COALESCE(u_2011_totalexist, u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2012_totalexist
+			END),
+		u_2011_totalexist = 
+			(CASE
+				WHEN u_2011_totalexist IS NULL 
+				THEN COALESCE(u_2010_totalexist, u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2011_totalexist
+			END),
+		u_2010_totalexist = 
+			(CASE
+				WHEN u_2010_totalexist IS NULL 
+				THEN COALESCE(u_2009_totalexist, u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2010_totalexist
+			END),
+		u_2009_totalexist = 
+			(CASE
+				WHEN u_2009_totalexist IS NULL 
+				THEN COALESCE(u_2008_totalexist, u_2007_totalexist, u_init)
+				ELSE u_2009_totalexist
+			END),
+		u_2008_totalexist = 
+			(CASE
+				WHEN u_2008_totalexist IS NULL 
+				THEN COALESCE(u_2007_totalexist, u_init)
+				ELSE u_2008_totalexist
+			END),
+		u_2007_totalexist = 
+			(CASE
+				WHEN u_2007_totalexist IS NULL 
+				THEN COALESCE(u_2007_totalexist, u_init)
+				ELSE u_2007_totalexist
+			END)
+	WHERE dcp_status = 'Complete (demolition)';
+
+
+-- STEP 4
 -- Calculate cummulative completed units for each year and annual incremental changes
 UPDATE dob_jobs 
 	SET
@@ -154,7 +256,7 @@ UPDATE dob_jobs
 	;
 
 
--- STEP 4
+-- STEP 5
 -- Update status based on CofO data and assign number of completed units
 UPDATE dob_jobs
 SET
@@ -174,74 +276,6 @@ SET
 			WHEN dob_type = 'A1' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits - u_init 
 			WHEN dob_type = 'NB' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits
 		END);
-
-
--- STEP 5
--- Capture demolitions in a given year and proxy for CofO date
-UPDATE dob_jobs
-	SET
-		cofo_earliest = dob_qdate,
-		cofo_latest = dob_qdate,
-		u_2007_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2007' THEN u_net ELSE u_2007_increm
-			END),
-		u_2008_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2008' THEN u_net ELSE u_2008_increm
-			END),
-		u_2009_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2009' THEN u_net ELSE u_2009_increm
-			END),
-		u_2010_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2010' THEN u_net ELSE u_2010_increm
-			END),
-		u_2011_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2011' THEN u_net ELSE u_2011_increm
-			END),
-		u_2012_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2012' THEN u_net ELSE u_2012_increm
-			END),
-		u_2013_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2013' THEN u_net ELSE u_2013_increm
-			END),
-		u_2014_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2014' THEN u_net ELSE u_2014_increm
-			END),
-		u_2015_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2015' THEN u_net ELSE u_2015_increm
-			END),
-		u_2016_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2016' THEN u_net ELSE u_2016_increm
-			END),
-		u_2017_increm = 
-			(CASE
-				WHEN LEFT (dob_qdate::text, 4) = '2017' THEN u_net ELSE u_2017_increm
-			END)
-	WHERE dcp_status = 'Complete (demolition)';
-
-UPDATE dob_jobs
-	SET
-		u_2007_netcomplete = u_2007_increm,
-		u_2008_netcomplete = u_2008_increm,
-		u_2009_netcomplete = u_2009_increm,
-		u_2010_netcomplete = u_2010_increm,
-		u_2011_netcomplete = u_2011_increm,
-		u_2012_netcomplete = u_2012_increm,
-		u_2013_netcomplete = u_2013_increm,
-		u_2014_netcomplete = u_2014_increm,
-		u_2015_netcomplete = u_2015_increm,
-		u_2016_netcomplete = u_2016_increm,
-		u_2017_netcomplete = u_2017_increm
-	WHERE dcp_status = 'Complete (demolition)';
 
 
 -- STEP 6

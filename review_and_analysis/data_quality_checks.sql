@@ -33,14 +33,14 @@ WHERE dcp_status IS NULL)
 SELECT * FROM dob_jobs
 WHERE
 dob_type = 'A1'
-AND u_2007_totalexist IS NULL
+AND u_2007_existtotal IS NULL
 AND c_date_latest IS NOT NULL
 AND u_init IS NULL
 ORDER BY random()
 LIMIT 10
 
 -- ALTERATIONS WITH AN INITIAL NUMBER OF UNITS REPORTED
--- Check to make sure u_XXXX_increm, u_XXXX_totalexist, and u_XXXX_netcomplete are filled in with u_init until first CofO, and that u_XXXX_increm, u_XXXX_totalexist, and u_XXXX_netcomplete all continue to add up afterward.
+-- Check to make sure u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete are filled in with u_init until first CofO, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward.
 
 SELECT * FROM dob_jobs
 WHERE
@@ -51,7 +51,7 @@ ORDER BY random()
 LIMIT 10
 
 -- NEW BUILDINGS
--- Check to make sure u_XXXX_increm, u_XXXX_totalexist, and u_XXXX_netcomplete are filled in with 0 until first CofO, and that u_XXXX_increm, u_XXXX_totalexist, and u_XXXX_netcomplete all continue to add up afterward.
+-- Check to make sure u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete are filled in with 0 until first CofO, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward.
 
 SELECT * FROM dob_jobs
 WHERE
@@ -61,7 +61,7 @@ ORDER BY random()
 LIMIT 10
 
 -- DEMOLITIONS WITH AN INITIAL NUMBER OF UNITS REPORTED
--- Check to make sure u_XXXX_totalexist fields iare filled in with u_init until demolition is completed, and that u_XXXX_increm, u_XXXX_totalexist, and u_XXXX_netcomplete all continue to add up afterward with u_XXXX_totalexist=0.
+-- Check to make sure u_XXXX_existtotal fields iare filled in with u_init until demolition is completed, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward with u_XXXX_existtotal=0.
 
 SELECT * FROM dob_jobs
 WHERE

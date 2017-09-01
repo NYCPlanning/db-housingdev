@@ -3,12 +3,12 @@
 -- STEP 1
 -- Add unit calculation columns to dob_jobs table
 ALTER TABLE dob_jobs
-	ADD COLUMN cofo_latestunits integer,
+	ADD COLUMN c_u_latest integer,
 	ADD COLUMN u_net_complete integer,
 	ADD COLUMN u_net_incomplete integer,
-	ADD COLUMN cofo_latest date,
-	ADD COLUMN cofo_earliest date,
-	ADD COLUMN cofo_latesttype text,
+	ADD COLUMN c_date_latest date,
+	ADD COLUMN c_date_earliest date,
+	ADD COLUMN c_type_latest text,
 
 	ADD COLUMN u_2007_totalexist integer,
 	ADD COLUMN u_2008_totalexist integer,
@@ -51,10 +51,10 @@ ALTER TABLE dob_jobs
 -- Fill in gaps in total existing units between CofOs and before first CofO. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
 UPDATE dob_jobs
 	SET
-		cofo_latestunits = b.u_latest,
-		cofo_latest = b.cofo_latest,
-		cofo_earliest = b.cofo_earliest,
-		cofo_latesttype = b.cofo_latesttype,
+		c_u_latest = b.u_latest,
+		c_date_latest = b.c_date_latest,
+		c_date_earliest = b.c_date_earliest,
+		c_type_latest = b.c_type_latest,
 		u_2017_totalexist = 
 			(CASE 
 				WHEN b.u_2017_totalexist IS NULL AND dcp_status <> 'Complete (demolition)'
@@ -129,8 +129,8 @@ UPDATE dob_jobs
 -- Capture demolitions in a given year and proxy for CofO date
 UPDATE dob_jobs
 	SET
-		cofo_earliest = status_q,
-		cofo_latest = status_q,
+		c_date_earliest = status_q,
+		c_date_latest = status_q,
 		u_2007_totalexist = 
 			(CASE WHEN LEFT (status_q::text, 4) = '2007' THEN 0 ELSE u_2007_totalexist END),
 		u_2008_totalexist = 
@@ -262,19 +262,19 @@ UPDATE dob_jobs
 SET
 	dcp_status =
 		(CASE 
-			WHEN cofo_latestunits IS NULL THEN dcp_status
+			WHEN c_u_latest IS NULL THEN dcp_status
 			WHEN u_prop = 0 THEN dcp_status
-			WHEN u_net IS NOT NULL AND (cofo_latestunits / u_prop) >= 0.8 OR status_latest = 'X' OR cofo_latesttype = 'C- CO' THEN 'Complete'
-			WHEN dob_type <> 'DM' AND u_net IS NOT NULL AND (cofo_latestunits / u_prop) < 0.8 THEN 'Partial complete'
+			WHEN u_net IS NOT NULL AND (c_u_latest / u_prop) >= 0.8 OR status_latest = 'X' OR c_type_latest = 'C- CO' THEN 'Complete'
+			WHEN dob_type <> 'DM' AND u_net IS NOT NULL AND (c_u_latest / u_prop) < 0.8 THEN 'Partial complete'
 			ELSE dcp_status
 		END),
 	u_net_complete =
 	-- Calculation is not performed if u_init or u_prop were NULL
 		(CASE
 			WHEN dcp_status = 'Complete (demolition)' AND u_net IS NOT NULL THEN u_net
-			WHEN cofo_latestunits IS NULL AND u_net IS NOT NULL THEN 0 
-			WHEN dob_type = 'A1' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits - u_init 
-			WHEN dob_type = 'NB' AND cofo_latestunits IS NOT NULL AND u_net IS NOT NULL THEN cofo_latestunits
+			WHEN c_u_latest IS NULL AND u_net IS NOT NULL THEN 0 
+			WHEN dob_type = 'A1' AND c_u_latest IS NOT NULL AND u_net IS NOT NULL THEN c_u_latest - u_init 
+			WHEN dob_type = 'NB' AND c_u_latest IS NOT NULL AND u_net IS NOT NULL THEN c_u_latest
 		END);
 
 
@@ -286,7 +286,7 @@ UPDATE dob_jobs
 		CASE 
 			WHEN u_net IS NOT NULL AND dcp_status LIKE '%Complete%' THEN 0
 			WHEN u_net IS NOT NULL AND dcp_status <> 'Complete' THEN (u_net - u_net_complete)
-			WHEN u_init IS NULL AND u_prop IS NOT NULL AND cofo_latestunits IS NOT NULL THEN u_prop - cofo_latestunits
+			WHEN u_init IS NULL AND u_prop IS NOT NULL AND c_u_latest IS NOT NULL THEN u_prop - c_u_latest
 			ELSE u_net
 		END;
 

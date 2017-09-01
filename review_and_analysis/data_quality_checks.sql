@@ -17,7 +17,7 @@ UNION
 WHERE u_net IS NULL AND u_net_complete IS NOT NULL)
 UNION
 (SELECT * FROM dob_jobs
-WHERE cofo_latestunits IS NOT NULL AND u_prop IS NOT NULL AND u_net_incomplete IS NULL)
+WHERE c_u_latest IS NOT NULL AND u_prop IS NOT NULL AND u_net_incomplete IS NULL)
 UNION
 (SELECT * FROM dob_jobs
 WHERE dob_type = 'DM' AND (u_prop <> 0 or u_prop IS NULL))
@@ -34,7 +34,7 @@ SELECT * FROM dob_jobs
 WHERE
 dob_type = 'A1'
 AND u_2007_totalexist IS NULL
-AND cofo_latest IS NOT NULL
+AND c_date_latest IS NOT NULL
 AND u_init IS NULL
 ORDER BY random()
 LIMIT 10
@@ -45,7 +45,7 @@ LIMIT 10
 SELECT * FROM dob_jobs
 WHERE
 dob_type = 'A1'
-AND cofo_latest IS NOT NULL
+AND c_date_latest IS NOT NULL
 AND u_init IS NOT NULL
 ORDER BY random()
 LIMIT 10
@@ -56,7 +56,7 @@ LIMIT 10
 SELECT * FROM dob_jobs
 WHERE
 dob_type = 'NB'
-AND cofo_latest IS NOT NULL
+AND c_date_latest IS NOT NULL
 ORDER BY random()
 LIMIT 10
 
@@ -67,7 +67,7 @@ SELECT * FROM dob_jobs
 WHERE
 dob_type = 'DM'
 AND u_init IS NOT NULL
-AND cofo_latest IS NOT NULL
+AND c_date_latest IS NOT NULL
 ORDER BY random()
 LIMIT 10
 

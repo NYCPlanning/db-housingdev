@@ -6,14 +6,14 @@ UPDATE
 	dob_jobs
 SET
 	the_geom = edit.the_geom,
-	geog_mszone201718 = edit.geog_mszone201718,
-	geog_pszone201718 = edit.geog_pszone201718,
-	geog_csd = edit.geog_csd,
-	geog_subdistrict = edit.geog_subdistrict,
-	geog_ntacode = edit.geog_ntacode,
-	geog_ntaname = edit.geog_ntaname,
-	geog_censusblock = edit.geog_censusblock,
-	geog_cd = edit.geog_cd,
+	geo_mszone201718 = edit.geo_mszone201718,
+	geo_pszone201718 = edit.geo_pszone201718,
+	geo_csd = edit.geo_csd,
+	geo_subdistrict = edit.geo_subdistrict,
+	geo_ntacode = edit.geo_ntacode,
+	geo_ntaname = edit.geo_ntaname,
+	geo_censusblock = edit.geo_censusblock,
+	geo_cd = edit.geo_cd,
 	x_edited = TRUE
 FROM
 	dob_jobs_edited AS edit 

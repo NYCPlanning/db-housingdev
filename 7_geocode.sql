@@ -25,48 +25,48 @@ WHERE
 -- Part 7: Assign boundary IDs for administrative and statistical boundaries
 -- Need to run these in pieces. Carto can't handle running all 8 joins at once.
 ALTER TABLE dob_jobs
- 	ADD COLUMN geog_mszone201718 text,
- 	ADD COLUMN geog_pszone201718 text,
- 	ADD COLUMN geog_csd text,
- 	ADD COLUMN geog_subdistrict text,
- 	ADD COLUMN geog_ntacode text,
- 	ADD COLUMN geog_ntaname text,
- 	ADD COLUMN geog_censusblock text,
- 	ADD COLUMN geog_cd text;
+ 	ADD COLUMN geo_mszone201718 text,
+ 	ADD COLUMN geo_pszone201718 text,
+ 	ADD COLUMN geo_csd text,
+ 	ADD COLUMN geo_subdistrict text,
+ 	ADD COLUMN geo_ntacode text,
+ 	ADD COLUMN geo_ntaname text,
+ 	ADD COLUMN geo_censusblock text,
+ 	ADD COLUMN geo_cd text;
 
 UPDATE dob_jobs
-	SET geog_mszone201718 = b.dbn
+	SET geo_mszone201718 = b.dbn
 	FROM nchatterjee.ms_zones_2017_18 as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
-	SET geog_pszone201718 = b.dbn
+	SET geo_pszone201718 = b.dbn
 	FROM nchatterjee.ps_zones_2017_18 as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
-	SET geog_csd = b.schooldist::text
+	SET geo_csd = b.schooldist::text
 	FROM nchatterjee.subdistricts as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
 UPDATE dob_jobs
-	SET geog_subdistrict = b.distzone
+	SET geo_subdistrict = b.distzone
 	FROM nchatterjee.subdistricts as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
 	SET
-		geog_ntacode = b.ntacode,
-		geog_ntaname = b.ntaname
+		geo_ntacode = b.ntacode,
+		geo_ntaname = b.ntaname
 	FROM nchatterjee.ntas as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
-	SET geog_censusblock = b.bctcb2010
+	SET geo_censusblock = b.bctcb2010
 	FROM nchatterjee.censusblocks as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
-	SET geog_cd = b.borocd::text
+	SET geo_cd = b.borocd::text
 	FROM cpadmin.dcp_cdboundaries as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);

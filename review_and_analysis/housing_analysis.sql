@@ -5,7 +5,7 @@
 
 -- Key fields for analysis:
 -- u_net: used to take sum of net units
--- dob_ddate: used to filter date range of projects (>=2014)
+-- status_d: used to filter date range of projects (>=2014)
 
 
 -- Issues:
@@ -24,73 +24,73 @@
 -- Counts of net units by nta
 
 SELECT
-	geog_ntacode,
+	geo_ntacode,
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_ntacode IS NOT NULL
-  	AND RIGHT(geog_ntacode::text, 2) <> '99'
-  	AND RIGHT(geog_ntacode::text, 2) <> '98'
+	AND geo_ntacode IS NOT NULL
+  	AND RIGHT(geo_ntacode::text, 2) <> '99'
+  	AND RIGHT(geo_ntacode::text, 2) <> '98'
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_ntacode
+	geo_ntacode
 ORDER BY
-	geog_ntacode
+	geo_ntacode
 
 -- Counts of net units by nta by type of job
 
 SELECT
-	geog_ntacode,
+	geo_ntacode,
 	dcp_dev_category,
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_ntacode IS NOT NULL
-  	AND RIGHT(geog_ntacode::text, 2) <> '99'
-  	AND RIGHT(geog_ntacode::text, 2) <> '98'
+	AND geo_ntacode IS NOT NULL
+  	AND RIGHT(geo_ntacode::text, 2) <> '99'
+  	AND RIGHT(geo_ntacode::text, 2) <> '98'
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_ntacode,
+	geo_ntacode,
 	dcp_dev_category
 ORDER BY
-	geog_ntacode
+	geo_ntacode
 
 -- Counts of net units by nta by status
 
 SELECT
-	geog_ntacode,
+	geo_ntacode,
 	dcp_status,
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_ntacode IS NOT NULL
-  	AND RIGHT(geog_ntacode::text, 2) <> '99'
-  	AND RIGHT(geog_ntacode::text, 2) <> '98'
+	AND geo_ntacode IS NOT NULL
+  	AND RIGHT(geo_ntacode::text, 2) <> '99'
+  	AND RIGHT(geo_ntacode::text, 2) <> '98'
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_ntacode,
+	geo_ntacode,
 	dcp_status
 ORDER BY
-	geog_ntacode
+	geo_ntacode
 
 -- Baseline total legal unit couts per year since 2010
 
 WITH cumulative_sums AS (
 SELECT
-	geog_ntacode,
-	geog_ntaname,
+	geo_ntacode,
+	geo_ntaname,
 	sum(u_2011_increm) AS netchange_eo2011,
 	sum(u_2011_increm)+sum(u_2012_increm) AS netchange_eo2012,
 	sum(u_2011_increm)+sum(u_2012_increm)+sum(u_2013_increm) AS netchange_eo2013,
@@ -101,18 +101,18 @@ FROM
 	hkates.dob_jobs
 WHERE
 	1=1
-	AND geog_ntacode IS NOT NULL
-  	AND RIGHT(geog_ntacode::text, 2) <> '99'
-  	AND RIGHT(geog_ntacode::text, 2) <> '98'
+	AND geo_ntacode IS NOT NULL
+  	AND RIGHT(geo_ntacode::text, 2) <> '99'
+  	AND RIGHT(geo_ntacode::text, 2) <> '98'
 	AND the_geom IS NOT NULL
 	AND dcp_status <> 'Withdrawn'
 	AND x_dup_flag IS NULL
 	AND x_outlier IS NOT TRUE
 GROUP BY
-	geog_ntacode,
-	geog_ntaname
+	geo_ntacode,
+	geo_ntaname
 ORDER BY
-	geog_ntacode
+	geo_ntacode
 )
 
 SELECT
@@ -132,24 +132,24 @@ FROM
 LEFT JOIN
 	cpadmin.housingunits_nta_2010 AS h
 ON
-	h.ntacode = cumulative_sums.geog_ntacode
+	h.ntacode = cumulative_sums.geo_ntacode
 WHERE
-	geog_ntaname LIKE '%Queensbridge%'
-	OR geog_ntaname LIKE '%Hunters Point%'
-	OR geog_ntaname LIKE '%DUMBO%'
-	OR geog_ntaname LIKE '%Clinton%'
-	OR geog_ntaname LIKE '%Hudson Yards%'
-	OR geog_ntaname LIKE '%Greenpoint%'
+	geo_ntaname LIKE '%Queensbridge%'
+	OR geo_ntaname LIKE '%Hunters Point%'
+	OR geo_ntaname LIKE '%DUMBO%'
+	OR geo_ntaname LIKE '%Clinton%'
+	OR geo_ntaname LIKE '%Hudson Yards%'
+	OR geo_ntaname LIKE '%Greenpoint%'
 ORDER BY
-	geog_ntaname
+	geo_ntaname
 LIMIT 20
 
 -- Percent increase in housing units by nta
 
 WITH counts AS (
 SELECT
-	geog_ntacode,
-	geog_ntaname,
+	geo_ntacode,
+	geo_ntaname,
 	sum(u_2011_increm)+sum(u_2012_increm)+sum(u_2013_increm) AS change_by_beg2014,
 	sum(u_2014_increm)+sum(u_2015_increm)+sum(u_2016_increm) AS netchange_20142016,
   	sum(u_net_incomplete) AS new_u_incomplete
@@ -157,19 +157,19 @@ FROM
 	hkates.dob_jobs
 WHERE
 	1=1
-	AND geog_ntacode IS NOT NULL
-  	AND RIGHT(geog_ntacode::text, 2) <> '99'
-  	AND RIGHT(geog_ntacode::text, 2) <> '98'
+	AND geo_ntacode IS NOT NULL
+  	AND RIGHT(geo_ntacode::text, 2) <> '99'
+  	AND RIGHT(geo_ntacode::text, 2) <> '98'
 	AND the_geom IS NOT NULL
 	AND dcp_status <> 'Withdrawn'
 	AND dcp_status NOT LIKE '%Application%'
 	AND x_dup_flag IS NULL
 	AND x_outlier IS NOT TRUE
 GROUP BY
-	geog_ntacode,
-	geog_ntaname
+	geo_ntacode,
+	geo_ntaname
 ORDER BY
-	geog_ntacode
+	geo_ntacode
 )
 
 SELECT
@@ -186,7 +186,7 @@ FROM
 LEFT JOIN
 	cpadmin.housingunits_nta_2010 AS h
 ON
-	h.ntacode = counts.geog_ntacode
+	h.ntacode = counts.geo_ntacode
 WHERE
 	netchange_20142016 IS NOT NULL
 ORDER BY
@@ -220,69 +220,69 @@ LIMIT 20
 -- Counts of net units by CD
 
 SELECT
-	geog_cd,
+	geo_cd,
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_cd IS NOT NULL
-	AND geog_cd <> ''
+	AND geo_cd IS NOT NULL
+	AND geo_cd <> ''
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_cd
+	geo_cd
 ORDER BY
-	geog_cd
+	geo_cd
 
 -- Counts of net units by CD by type of job
 
 SELECT
-	geog_cd,
+	geo_cd,
 	dcp_dev_category, 
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_cd IS NOT NULL
-	AND geog_cd <> ''
+	AND geo_cd IS NOT NULL
+	AND geo_cd <> ''
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_cd,
+	geo_cd,
 	dcp_dev_category
 ORDER BY
-	geog_cd
+	geo_cd
 
 -- Counts of net units by CD by status
 
 SELECT
-	geog_cd,
+	geo_cd,
 	dcp_status,
 	sum(u_net) AS new_u_total
 FROM
 	dob_jobs
 WHERE
 	1=1
-	AND geog_cd IS NOT NULL
-	AND geog_cd <> ''
+	AND geo_cd IS NOT NULL
+	AND geo_cd <> ''
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_cd,
+	geo_cd,
 	dcp_status
 ORDER BY
-	geog_cd
+	geo_cd
 
 -- Percent increase in housing units by CD
 
 WITH counts AS (
 SELECT
-	geog_cd,
+	geo_cd,
 	sum(u_net) AS new_u_total,
   	sum(u_complete_net::numeric) AS new_u_complete,
   	sum(u_incomplete_net::numeric) AS new_u_incomplete
@@ -290,15 +290,15 @@ FROM
 	hkates.dob_jobs
 WHERE
 	1=1
-	AND geog_cd IS NOT NULL
-	AND geog_cd <> ''
+	AND geo_cd IS NOT NULL
+	AND geo_cd <> ''
 	AND u_net IS NOT NULL
 	AND the_geom IS NOT NULL
-	AND dob_ddate::text > '2014'
+	AND status_d::text > '2014'
 GROUP BY
-	geog_cd
+	geo_cd
 ORDER BY
-	geog_cd
+	geo_cd
 )
 
 SELECT
@@ -314,7 +314,7 @@ FROM
 LEFT JOIN
 	cpadmin.housingunits_cd_2010 AS h
 ON
-	h.cd = counts.geog_cd
+	h.cd = counts.geo_cd
 ORDER BY
 	incpercent DESC
 LIMIT 20
@@ -354,7 +354,7 @@ WHERE
 	AND
 	u_complete_2017_increm_net <> '0')
 	OR
-	dob_ddate > '2017'
+	status_d > '2017'
 
 
 

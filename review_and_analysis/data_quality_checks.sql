@@ -17,10 +17,7 @@ UNION
 WHERE u_net IS NULL AND u_net_complete IS NOT NULL)
 UNION
 (SELECT * FROM dob_jobs
-WHERE u_net IS NOT NULL AND u_net_incomplete IS NULL)
-UNION
-(SELECT * FROM dob_jobs
-WHERE u_net IS NULL AND u_net_incomplete IS NOT NULL)
+WHERE cofo_latestunits IS NOT NULL AND u_prop IS NOT NULL AND u_net_incomplete IS NULL)
 UNION
 (SELECT * FROM dob_jobs
 WHERE dob_type = 'DM' AND (u_prop <> 0 or u_prop IS NULL))
@@ -132,7 +129,7 @@ FROM
 	hkates.dob_jobs
 WHERE
 	u_net IS NOT NULL
-	AND (the_geom IS NULL OR geog_ntacode IS NULL)
+	AND (the_geom IS NULL OR geo_ntacode IS NULL)
 	AND x_outlier IS NOT TRUE
 	AND (u_net > 100 OR u_net < -100)
 	AND (dcp_status <> 'Withdrawn' OR dcp_status IS NULL)

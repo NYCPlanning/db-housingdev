@@ -68,34 +68,34 @@ ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_location_street_name" to "address_street";	
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "pre_file_date" to "dob_adate";
+	RENAME COLUMN "pre_file_date" to "status_a";
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_adate" TYPE date using TO_DATE(dob_adate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "application_process_date" to "dob_ddate";
+	RENAME COLUMN "application_process_date" to "status_d";
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_ddate" TYPE date using TO_DATE(dob_ddate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_d" TYPE date using TO_DATE(status_d, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "plan_approval_date" to "dob_pdate"; 
+	RENAME COLUMN "plan_approval_date" to "status_p"; 
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_pdate" TYPE date using TO_DATE(dob_pdate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_p" TYPE date using TO_DATE(status_p, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "first_permit_date" to "dob_qdate"; 
+	RENAME COLUMN "first_permit_date" to "status_q"; 
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_qdate" TYPE date using TO_DATE(dob_qdate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_q" TYPE date using TO_DATE(status_q, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "fully_permitted_date" to "dob_rdate";
+	RENAME COLUMN "fully_permitted_date" to "status_r";
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_rdate" TYPE date using TO_DATE(dob_rdate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_r" TYPE date using TO_DATE(status_r, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "signoff_date" to "dob_xdate";
+	RENAME COLUMN "signoff_date" to "status_x";
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_xdate" TYPE date using TO_DATE(dob_xdate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_total_far" to "xfar_prop"; --non-essential; appended with x

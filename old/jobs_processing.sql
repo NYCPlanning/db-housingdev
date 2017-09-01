@@ -67,9 +67,9 @@ ALTER TABLE dob_jobs
 	RENAME COLUMN "job_location_street_name" to "address_street";	
 
 ALTER TABLE dob_jobs
-	RENAME COLUMN "pre_file_date" to "dob_adate";
+	RENAME COLUMN "pre_file_date" to "status_a";
 ALTER TABLE dob_jobs
-	ALTER COLUMN "dob_adate" TYPE date using TO_DATE(dob_adate, 'MM/DD/YYYY');
+	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs
 	RENAME COLUMN "application_process_date" to "dob_ddate";

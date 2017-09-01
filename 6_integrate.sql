@@ -129,30 +129,30 @@ UPDATE dob_jobs
 -- Capture demolitions in a given year and proxy for CofO date
 UPDATE dob_jobs
 	SET
-		cofo_earliest = dob_qdate,
-		cofo_latest = dob_qdate,
+		cofo_earliest = status_q,
+		cofo_latest = status_q,
 		u_2007_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2007' THEN 0 ELSE u_2007_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2007' THEN 0 ELSE u_2007_totalexist END),
 		u_2008_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2008' THEN 0 ELSE u_2008_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2008' THEN 0 ELSE u_2008_totalexist END),
 		u_2009_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2009' THEN 0 ELSE u_2009_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2009' THEN 0 ELSE u_2009_totalexist END),
 		u_2010_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2010' THEN 0 ELSE u_2010_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2010' THEN 0 ELSE u_2010_totalexist END),
 		u_2011_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2011' THEN 0 ELSE u_2011_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2011' THEN 0 ELSE u_2011_totalexist END),
 		u_2012_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2012' THEN 0 ELSE u_2012_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2012' THEN 0 ELSE u_2012_totalexist END),
 		u_2013_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2013' THEN 0 ELSE u_2013_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2013' THEN 0 ELSE u_2013_totalexist END),
 		u_2014_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2014' THEN 0 ELSE u_2014_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2014' THEN 0 ELSE u_2014_totalexist END),
 		u_2015_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2015' THEN 0 ELSE u_2015_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2015' THEN 0 ELSE u_2015_totalexist END),
 		u_2016_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2016' THEN 0 ELSE u_2016_totalexist END),
+			(CASE WHEN LEFT (status_q::text, 4) = '2016' THEN 0 ELSE u_2016_totalexist END),
 		u_2017_totalexist = 
-			(CASE WHEN LEFT (dob_qdate::text, 4) = '2017' THEN 0 ELSE u_2017_totalexist END)
+			(CASE WHEN LEFT (status_q::text, 4) = '2017' THEN 0 ELSE u_2017_totalexist END)
 	WHERE dcp_status = 'Complete (demolition)';
 
 
@@ -284,8 +284,9 @@ SET
 UPDATE dob_jobs
 	SET u_net_incomplete =
 		CASE 
-			WHEN u_net IS NOT NULL AND dcp_status = 'Complete' THEN 0
+			WHEN u_net IS NOT NULL AND dcp_status LIKE '%Complete%' THEN 0
 			WHEN u_net IS NOT NULL AND dcp_status <> 'Complete' THEN (u_net - u_net_complete)
+			WHEN u_init IS NULL AND u_prop IS NOT NULL AND cofo_latestunits IS NOT NULL THEN u_prop - cofo_latestunits
 			ELSE u_net
 		END;
 

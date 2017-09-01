@@ -98,7 +98,7 @@ ALTER TABLE dob_jobs_orig
 	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "proposed_total_far" to "xfar_prop"; --non-essential; appended with x
+	RENAME COLUMN "proposed_total_far" to "far_prop"; --non-essential; appended with x
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "building_type_description" to "xbldgtype"; --non-essential; appended with x
+	RENAME COLUMN "building_type_description" to "dob_bldg_type"; --non-essential; appended with x

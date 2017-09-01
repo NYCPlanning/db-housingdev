@@ -21,11 +21,11 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | Script | Function |
 | :-- | :-- | 
 | 1_cofos_prep.sql | This script renames the column names in the CofO data to DCP's preferred column names that are used in the rest of the SQL code. |
-| 2_cofos_process.sql | This script aggregates CofOs to the DOB job ID, and transposes the data to capture the number of units reported per year in the CofO data. It then calculates the net incremental change in units per year based on the CofO units reported. |
+| 2_cofos_process.sql | This script aggregates CofOs to the DOB job ID, and transposes the data to capture the number of units reported per year in the CofO data. |
 | 3_jobs_prep.sql | This script renames the column names in the jobs data to DCP's preferred column names that are used in the rest of the SQL code. |
 | 4_jobs_supplement.sql | Non-recurring step: This script supplements the new data with old housing pipeline data to fill in the gaps for records that were accidentially exlcuded during the most recent data transfer from DOB. |
 | 5_jobs_process.sql | This script recodes DOB's labels to match DCP's preferred status, type, and occupancy values. It then calculates the proposed net change in units (units proposed - units existing) and flags potential duplicate records. |
-| 6_integrate.sql | This script joins the CofO data onto the jobs data, including the incremental yearly net change calculations. The first incremental change value is corrected to subtract the number of existing units from the job application. The job status is updated to "complete" based on whether the final CofO has been issued. Demos are accounted for in the incremental net change fields, and the number of outstanding, incomplete units is calculated.
+| 6_integrate.sql | This script joins the CofO data onto the jobs data, calculating the incremental yearly net change in units. Demos are accounted for in the incremental net change fields, and the number of net completed and net outstanding, incomplete units is calculated. The job status is updated to "complete" based on whether 80% of units of have completed and the final CofO has been issued.
 | 7_geocode.sql | This script geocodes all the jobs records and assigns their NTA, CD, school district, etc. boundaries. |
 
 ## Process Diagram

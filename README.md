@@ -97,7 +97,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | status_a | Date of pre-filing application |
 | status_d | Date of completed application on file |
 | status_date | Date of most recent job status update |
-| status_latest | Most recent job status, listed in DOB jobs data |
+| status_latest | Most recent job status, listed in DOB jobs data. More details on each status label: https://www1.nyc.gov/assets/buildings/pdf/bisjobstatus.pdf |
 | status_p | Date of plan examination approval |
 | status_q | Date of first partial permit issuance |
 | status_r | Date of full permit issuance |

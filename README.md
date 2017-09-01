@@ -6,6 +6,7 @@ This repo contains SQL code used to build the Housing Development Pipeline Datab
 - [Scripts](https://github.com/NYCPlanning/housingpipeline-db#scripts)
 - [Process Diagram](https://github.com/NYCPlanning/housingpipeline-db#process-diagram)
 - [Data Dictionary](https://github.com/NYCPlanning/housingpipeline-db#data-dictionary)
+- [Analysis: Important Caveats and Limitations](https://github.com/NYCPlanning/housingpipeline-db#caveats-and-limitations)
 
 ## Data Sources
 
@@ -106,3 +107,14 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | zoning_prop | Proposed zoning reported in DOB job application |
 
 [Link to old data dictionary and use guide](https://github.com/NYCPlanning/cpdocs/blob/master/docs/pipeline.md)
+
+## Caveats and Limitations
+
+Notes on Analysis:
+- Need to be wary of aggregations using u_net and u_net_complete and _incomplete for aggregations
+- It is better to use the annual incremental changes for most analyses
+- Important filtering criteria for all analyses:
+	- Withdrawn
+	- Applications (depending on degree of confidence you’re looking for — only 30% of job applications progress to getting permits)
+	- Duplicates
+	- Outliers

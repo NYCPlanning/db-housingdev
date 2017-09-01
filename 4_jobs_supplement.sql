@@ -20,7 +20,7 @@ INSERT INTO dob_jobs
 	xunits_init_raw,
 	xunits_prop_raw,
 	status_latest,
-	status_latest,
+	status_date,
 	status_a,
 	status_d,
 	status_p,

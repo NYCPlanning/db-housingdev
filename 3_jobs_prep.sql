@@ -24,15 +24,15 @@ ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_type" to "dob_type";
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "current_job_status_description" to "dob_status";	
+	RENAME COLUMN "current_job_status_description" to "status_latest";	
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "withdrawal_description" to "x_withdrawal";
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "job_status_date" to "dob_status_date";
+	RENAME COLUMN "job_status_date" to "status_date";
 ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "dob_status_date" TYPE date using TO_DATE(dob_status_date, 'MM/DD/YYYY');
+	ALTER COLUMN "status_date" TYPE date using TO_DATE(status_date, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "existing_occupancy_classification_description" to "dob_occ_init";	

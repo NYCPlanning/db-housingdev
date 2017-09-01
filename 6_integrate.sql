@@ -264,7 +264,7 @@ SET
 		(CASE 
 			WHEN cofo_latestunits IS NULL THEN dcp_status
 			WHEN u_prop = 0 THEN dcp_status
-			WHEN u_net IS NOT NULL AND (cofo_latestunits / u_prop) >= 0.8 OR dob_status = 'X' OR cofo_latesttype = 'C- CO' THEN 'Complete'
+			WHEN u_net IS NOT NULL AND (cofo_latestunits / u_prop) >= 0.8 OR status_latest = 'X' OR cofo_latesttype = 'C- CO' THEN 'Complete'
 			WHEN dob_type <> 'DM' AND u_net IS NOT NULL AND (cofo_latestunits / u_prop) < 0.8 THEN 'Partial complete'
 			ELSE dcp_status
 		END),

@@ -35,7 +35,7 @@ UPDATE dob_jobs
 			WHERE lookup_occupancy.dob = dob_occ_prop),
 		dcp_status = 
 			(SELECT lookup_status.dcp FROM lookup_status
-			WHERE lookup_status.dob = dob_jobs.dob_status);
+			WHERE lookup_status.dob = dob_jobs.status_latest);
 
 UPDATE dob_jobs
 	SET
@@ -112,13 +112,13 @@ UPDATE dob_jobs
 		x_dup_id_maxdate = maxdate
 	FROM (SELECT 
        	x_dup_id,
-       	MAX(dob_status_date) AS maxdate
+       	MAX(status_date) AS maxdate
        FROM dob_jobs
        GROUP BY x_dup_id) AS a
 	WHERE dob_jobs.x_dup_id = a.x_dup_id;
 
 UPDATE dob_jobs
-	SET x_dup_flag = 'Possible duplicate' WHERE x_dup_id_maxdate <> dob_status_date;
+	SET x_dup_flag = 'Possible duplicate' WHERE x_dup_id_maxdate <> status_date;
 
 
 -- STEP 5
@@ -132,7 +132,7 @@ ALTER TABLE dob_jobs
 UPDATE dob_jobs
 	SET x_inactive =
 		(CASE
-			WHEN (CURRENT_DATE - dob_status_date)/365 >= 5 THEN TRUE
+			WHEN (CURRENT_DATE - status_date)/365 >= 5 THEN TRUE
 			ELSE FALSE
 		END)
 	WHERE

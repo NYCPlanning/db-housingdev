@@ -32,7 +32,11 @@ ALTER TABLE dob_jobs
  	ADD COLUMN geo_ntacode text,
  	ADD COLUMN geo_ntaname text,
  	ADD COLUMN geo_censusblock text,
- 	ADD COLUMN geo_cd text;
+ 	ADD COLUMN geo_cd text,
+ 	ADD COLUMN f_firms2007_100yr text,
+ 	ADD COLUMN f_pfirms2015_100yr text,
+-- 	ADD COLUMN f_2050s_100yr text,
+  	ADD COLUMN f_2050s_hightide text;
 
 UPDATE dob_jobs
 	SET geo_mszone201718 = b.dbn
@@ -70,3 +74,23 @@ UPDATE dob_jobs
 	SET geo_cd = b.borocd::text
 	FROM cpadmin.dcp_cdboundaries as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
+
+UPDATE dob_jobs
+	SET f_firms2007_100yr = b.fld_zone
+	FROM cpadmin.f_firms2007_100yr
+	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
+
+UPDATE dob_jobs
+	SET f_pfirms2015_100yr = b.fld_zone
+	FROM cpadmin.f_pfirms2015_100yr
+	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
+
+-- UPDATE dob_jobs
+-- 	SET f_2050s_100yr = 
+-- 	FROM cpadmin.f_2050s_100yr
+-- 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
+
+UPDATE dob_jobs
+ 	SET f_2050s_hightide = 'Within 2050s high tide 30in'
+ 	FROM cpadmin.f_2050s_hightide
+ 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);

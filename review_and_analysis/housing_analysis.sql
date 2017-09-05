@@ -51,13 +51,6 @@ LEFT JOIN
 	cpadmin.housingunits_nta_2010 AS h
 ON
 	h.ntacode = cumulative_sums.geo_ntacode
-WHERE
-	geo_ntaname LIKE '%Queensbridge%'
-	OR geo_ntaname LIKE '%Hunters Point%'
-	OR geo_ntaname LIKE '%DUMBO%'
-	OR geo_ntaname LIKE '%Clinton%'
-	OR geo_ntaname LIKE '%Hudson Yards%'
-	OR geo_ntaname LIKE '%Greenpoint%'
 ORDER BY
 	geo_ntaname
 LIMIT 20

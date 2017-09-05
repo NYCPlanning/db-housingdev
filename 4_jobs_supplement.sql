@@ -1,6 +1,6 @@
 -- CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS
 
--- Extra step given limitations of DOB data -- append data with completions from prior datasets, which do not appear in latest dataset
+-- This is an extra step given limitations of last round of DOB data -- append data with completions from prior datasets, which do not appear in latest dataset
 
 ALTER TABLE dob_jobs
 	ADD COLUMN x_datafreshness text,
@@ -68,6 +68,7 @@ FROM
 WHERE
 	a_july2017match IS NULL 
 	AND dcp_pipeline_status in ('Complete', 'Demolition (complete)','Partial complete');
+
 
 UPDATE dob_jobs
 	SET

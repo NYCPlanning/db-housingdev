@@ -35,9 +35,12 @@ ALTER TABLE dob_jobs
  	ADD COLUMN geo_cd text,
  	ADD COLUMN f_firms2007_100yr text,
  	ADD COLUMN f_pfirms2015_100yr text,
--- 	ADD COLUMN f_2050s_100yr text,
+	ADD COLUMN f_2050s_100yr text,
   	ADD COLUMN f_2050s_hightide text;
 
+-- If manually geocoded was done previously, reapply those manual edits using reapply_manual_edits.sql before doing the following spatial joins
+
+-- 7.1
 UPDATE dob_jobs
 	SET geo_mszone201718 = b.dbn
 	FROM nchatterjee.ms_zones_2017_18 as b
@@ -48,16 +51,15 @@ UPDATE dob_jobs
 	FROM nchatterjee.ps_zones_2017_18 as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
+-- 7.2
 UPDATE dob_jobs
-	SET geo_csd = b.schooldist::text
+	SET
+		geo_csd = b.schooldist::text,
+		geo_subdistrict = b.distzone
 	FROM nchatterjee.subdistricts as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
-UPDATE dob_jobs
-	SET geo_subdistrict = b.distzone
-	FROM nchatterjee.subdistricts as b
-	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
-
+-- 7.3
 UPDATE dob_jobs
 	SET
 		geo_ntacode = b.ntacode,
@@ -66,25 +68,28 @@ UPDATE dob_jobs
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
 UPDATE dob_jobs
-	SET geo_censusblock = b.bctcb2010
-	FROM nchatterjee.censusblocks as b
-	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
-
-UPDATE dob_jobs
 	SET geo_cd = b.borocd::text
 	FROM cpadmin.dcp_cdboundaries as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
+-- 7.4
+UPDATE dob_jobs
+	SET geo_censusblock = b.bctcb2010
+	FROM nchatterjee.censusblocks as b
+	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
+
+-- 7.5
 UPDATE dob_jobs
 	SET f_firms2007_100yr = b.fld_zone
-	FROM cpadmin.f_firms2007_100yr
+	FROM cpadmin.f_firms2007_100yr as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
 UPDATE dob_jobs
 	SET f_pfirms2015_100yr = b.fld_zone
-	FROM cpadmin.f_pfirms2015_100yr
+	FROM cpadmin.f_pfirms2015_100yr as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
+-- 7.6
 -- UPDATE dob_jobs
 -- 	SET f_2050s_100yr = 
 -- 	FROM cpadmin.f_2050s_100yr
@@ -92,5 +97,5 @@ UPDATE dob_jobs
 
 UPDATE dob_jobs
  	SET f_2050s_hightide = 'Within 2050s high tide 30in'
- 	FROM cpadmin.f_2050s_hightide
+ 	FROM cpadmin.f_2050s_hightide as b
  	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);

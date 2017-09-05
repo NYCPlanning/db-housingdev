@@ -1,10 +1,4 @@
--- General background and watchouts: [ADD here about receiving data from DOB]
-	--Open Data: ____
-
--- Data specifications (July 2017)
-	--Job types: NB, A1, DM
-
--- Part 1: Import as CSV (e.g., "dob_cofos_orig") to Carto and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
+-- Part 1: Import original data as CSV to Carto, naming the table "dob_cofos_orig", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
 
 ALTER TABLE dob_cofos_orig
 	RENAME COLUMN "job__" to "cofo_job_number";

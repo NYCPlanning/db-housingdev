@@ -61,8 +61,8 @@ WITH counts AS (
 SELECT
 	geo_ntacode,
 	geo_ntaname,
-	sum(u_2011_increm)+sum(u_2012_increm)+sum(u_2013_increm) AS change_by_beg2014,
-	sum(u_2014_increm)+sum(u_2015_increm)+sum(u_2016_increm) AS netchange_20142016,
+	sum(u_2011_increm)+sum(u_2012_increm)+sum(u_2013_increm)+sum(u_2014_increm) AS change_by_beg2015,
+	sum(u_2015_increm)+sum(u_2016_increm)+sum(u_2017_increm) AS netchange_20152017,
   	sum(u_net_incomplete) AS new_u_incomplete
 FROM
 	hkates.dob_jobs
@@ -89,9 +89,9 @@ SELECT
 	h.the_geom_webmercator,
 	counts.*,
 	h.total_housing_units AS baseline_u_2010,
-	h.total_housing_units + change_by_beg2014 AS baseline_u_beg2014,
-	100*(counts.netchange_20142016 + new_u_incomplete)/(change_by_beg2014 + h.total_housing_units) AS incpercent,
-	row_number() over (ORDER BY 100*(counts.netchange_20142016 + new_u_incomplete)/(change_by_beg2014 + h.total_housing_units) DESC) AS rank
+	h.total_housing_units + change_by_beg2015 AS baseline_u_beg2015,
+	100*(counts.netchange_20152017 + new_u_incomplete)/(change_by_beg2015 + h.total_housing_units) AS incpercent,
+	row_number() over (ORDER BY 100*(counts.netchange_20152017 + new_u_incomplete)/(change_by_beg2015 + h.total_housing_units) DESC) AS rank
 FROM
 	counts
 LEFT JOIN
@@ -99,7 +99,7 @@ LEFT JOIN
 ON
 	h.ntacode = counts.geo_ntacode
 WHERE
-	netchange_20142016 IS NOT NULL
+	netchange_20152017 IS NOT NULL
 ORDER BY
 	incpercent DESC
 LIMIT 20

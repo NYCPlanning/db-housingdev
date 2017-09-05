@@ -1,4 +1,5 @@
--- CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS
+-- If skipping over 4_jobs_supplement.sql, CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS and uncomment the addition of the address field.
+
 -- RUN EACH STEP INDIVIDUALLY
 
 -- STEP 1
@@ -81,7 +82,7 @@ UPDATE dob_jobs
 			END);
 
 
--- Create field to capture incremental units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
+-- Create field to capture proposed net change in units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
 UPDATE dob_jobs 
 	SET u_net =
 		CASE

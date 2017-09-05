@@ -51,7 +51,7 @@ ALTER TABLE dob_jobs
 -- Fill in gaps in total existing units between CofOs and before first CofO. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
 UPDATE dob_jobs
 	SET
-		c_u_latest = b.u_latest,
+		c_u_latest = b.c_u_latest,
 		c_date_latest = b.c_date_latest,
 		c_date_earliest = b.c_date_earliest,
 		c_type_latest = b.c_type_latest,

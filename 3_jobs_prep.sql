@@ -1,21 +1,4 @@
--- General background and watchouts: [ADD here about receiving data from DOB]
-	--Open Data: ____
-	--Duplicates: ____
-	--Record dropping: ____
-	--Unintional exclusion of records: ____
-	--Field names and values coming through differently: 
-	--Permits is a misnomer; DOB thinks of as "jobs"
-
--- Data specifications (July 2017)
-	--Job types: NB, A1, DM
-	--Timespan: D Date (Application processed) > 1/1/2007
-	--Record type: Doc 01 only (i.e., only capturing primary permit/subpermit)
-
-
--- Import as CSV (e.g. "dob_jobs_orig") to Carto for cleaning
-
--- DATA GATHERING AND PROCESSING
---Part 1: Standardize column names and data types (Note: names in original data can change; Carto automatically replaces DOB"s spaces with "_" and converts to lower case)
+-- Import original data as CSV to Carto, naming the table "dob_jobs_orig", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_number" to "dob_job_number";
@@ -98,7 +81,7 @@ ALTER TABLE dob_jobs_orig
 	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "proposed_total_far" to "far_prop"; --non-essential; appended with x
+	RENAME COLUMN "proposed_total_far" to "far_prop";
 
 ALTER TABLE dob_jobs_orig
-	RENAME COLUMN "building_type_description" to "dob_bldg_type"; --non-essential; appended with x
+	RENAME COLUMN "building_type_description" to "dob_bldg_type";

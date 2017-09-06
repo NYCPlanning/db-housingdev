@@ -1,3 +1,5 @@
+-- This is the filter currently being applied by default in the explorer
+
 https://cartoprod.capitalplanning.nyc/user/cpp/api/v2/sql?skipfields=cartodb_id& = 
 SELECT
 *

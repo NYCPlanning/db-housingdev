@@ -26,7 +26,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ## Maintenance
 
 ### Checklist
-- [x] Obtain updated batch of DOB datasets
+- [x] Obtain updated batch of DOB datasets and upload to Carto as dob_cofos_orig and dob_jobs_orig
 - [x] Update the original, raw field names to be renamed in [1_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/1_cofos_prep.sql) and [3_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql)
 - [x] Make sure to update the year columns in [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql) and [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql), adding the latest year
 - [x] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)), upload to Carto, and rename to table names used in scripts
@@ -132,7 +132,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ## Caveats and Limitations
 
 ### Gaps in data available for analysis
-- Not all records could be geocoded. Many of these are cases where an address was entered incorrectly or a new address is being created that has not yet be incorporated in geocoding programs.
+- This data does not capture any illegal, non-DOB-permitted alterations or subdivisons of units.
+- Not all records could be geocoded. Many of these are cases where an address was entered incorrectly or a new address is being created that has not yet been incorporated in geocoding programs.
 - There are many cases where DOB jobs records do not provide the initial number of units or proposed number of units, so the proposed net change in units can not be calculated.
 
 ### Important notes on analysis approaches:

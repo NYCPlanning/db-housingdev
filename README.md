@@ -1,5 +1,5 @@
 # Housing Developments Database
-This repo contains SQL code used to build the Housing Developments Database and run frequently used analyses in Carto.
+This repo contains SQL code that is used to build the Housing Developments Database and is used to run frequently used analyses in Carto.
 
 ## Table of Contents
 - [Data Sources](https://github.com/NYCPlanning/housingpipeline-db#data-sources)

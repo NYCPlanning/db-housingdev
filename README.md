@@ -27,8 +27,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 ### Checklist
 - [x] Obtain updated batch of DOB datasets
-- [x] Update the original, raw field names to be renamed in 2_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_prep.sql) and 3_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql).
-- [x] Make sure to update the year columns in [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql) and [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql), adding the latest year.
+- [x] Update the original, raw field names to be renamed in [2_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_prep.sql) and [3_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql)
+- [x] Make sure to update the year columns in [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql) and [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql), adding the latest year
 - [x] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)), upload to Carto, and rename to table names used in scripts
 - [x] Run [1_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/1_cofos_prep.sql)
 - [x] Run [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql)
@@ -37,8 +37,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 - [x] Run [5_jobs_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/5_jobs_process.sql)
 - [x] Run [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql)
 - [x] Run [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)
-- [x] If any manual geocoding has been done previously, make sure to run [reapply_manual_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/reapply_manual_edits.sql).
-- [x] Run the queries in [data_quality_checks.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/data_quality_checks.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding.
+- [x] If any manual geocoding has been done previously, make sure to run [reapply_manual_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/reapply_manual_edits.sql)
+- [x] Run the queries in [data_quality_checks.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/data_quality_checks.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding
 - [x] Save final data as housingdev-db
 - [x] Update the housingdev-db file on the production server for the Capital Planning Platform explorer.
 

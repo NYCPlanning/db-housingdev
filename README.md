@@ -1,5 +1,5 @@
-# Housing Developments Pipeline Database
-This repo contains SQL code used to build the Housing Development Pipeline Database and run frequently used analyses in Carto.
+# Housing Developments Database
+This repo contains SQL code used to build the Housing Developments Database and run frequently used analyses in Carto.
 
 ## Table of Contents
 - [Data Sources](https://github.com/NYCPlanning/housingpipeline-db#data-sources)
@@ -129,11 +129,17 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 ## Caveats and Limitations
 
-Notes on Analysis:
-- Need to be wary of aggregations using u_net and u_net_complete and _incomplete for aggregations
-- It is better to use the annual incremental changes for most analyses
-- Important filtering criteria for all analyses:
-	- Withdrawn
+#### Gaps in data available for analysis
+- Not all records could be geocoded
+- Not all DOB jobs records provided the initial number of units or proposed number of units, so units from these projects can not be included in any analysis.
+
+#### Important notes on analysis approaches:
+- When calculating total of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during those years. 
+- Users need to be wary of doing data aggregations using u_net and u_net_complete. These really only useful when looking at individual records. Otherwise, the variance in time scale involved for each job can lead to misuse of these totals.
+- Important filtering criteria to consider for all analyses:
+	- Withdrawn job applications (flagged in dcp_status field)
+	- Duplicates (flagged in x_dup_flag field)
+	- Outliers (flagged in x_outlier field)
 	- Applications (depending on degree of confidence you’re looking for — only 30% of job applications progress to getting permits)
-	- Duplicates
-	- Outliers
+	- Inactivity (all jobs where 5+ years have passed since the most recent status update are flagged in the x_inactive field)
+	- Residential vs. Other Accommodations (captured in dcp_occ_type). Remember that the jobs data includes both full-time residential developments and other accomdations like hotels and dorms. Depending on your use case for the data, it could make sense to exclude hotels by filtering using the dob_occ_prop field.

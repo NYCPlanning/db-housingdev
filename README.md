@@ -13,15 +13,15 @@ This repo contains SQL code used to build the Housing Developments Database and 
 
 ### DOB Jobs Data
 - This data is requested from DOB, because the NYC Open Data datasets exclude key fields that are needed for developing the housing pipline dataset.
-- The jobs data provides the more comprehensive list of projects,
-- For each projects, the jobs data captures the initial # of existing units and proposed units.
+- The jobs data provides the more comprehensive list of development projects, including projects where an application has been filed or a permit has been issued but no construction has begun.
+- For each project, the jobs data captures the type of development and the initial # of existing units and proposed units (although some records are missing these values).
 
 ### DOB Certificates of Occupancy (CofOs) Data
 - This data is also requested from DOB. It cannot yet be obtained via [NYC Open data](https://data.cityofnewyork.us/dataset/DOB-Certificate-Of-Occupancy/bs8b-p36w/data), because the open data is critically missing the number of dwelling units that each CofO certifies.
 - The CofOs data captures the legal # of existing units at a given point in time - multiple temporary CofOs can be issued over time for same job before the final CofO is given, meaning there can be multiple rows per job ID.
 - CofOs enable the calculation of incremental change in housing units per year.
 
-The two datasets must be combined, because the jobs data doesn't capture change over time, and the CofOs data lacks context for determining the net change in units. CofO's don't account for how many units already existed or how many outstanding units are still planned to be built.
+The two datasets must be combined, because the jobs data doesn't capture change over time, and the CofOs data lacks context for determining the net change in units. CofO's do not account for how many units already existed or how many outstanding units are still planned to be built.
 
 ## Maintenance
 

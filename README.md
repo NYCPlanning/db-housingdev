@@ -26,19 +26,21 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ## Maintenance
 
 ### Checklist
-- [ ] Obtain updated batch of DOB datasets
-- [ ] Make sure to update year columns in [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql) and [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql).
-- [ ] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)), upload to Carto, and rename to table names used in scripts
-- [ ] Run [1_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/1_cofos_prep.sql)
-- [ ] Run [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql)
-- [ ] Run [3_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql)
-- [ ] Run [4_jobs_supplement.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/4_jobs_supplement.sql)
-- [ ] Run [5_jobs_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/5_jobs_process.sql)
-- [ ] Run [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql)
-- [ ] Run [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)
-- [ ] If any manual geocoding has been done previously, make sure to run [reapply_manual_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/reapply_manual_edits.sql).
-- [ ] Run the queries in [data_quality_checks.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/data_quality_checks.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding.
-- [ ] Update data on cartoprod for the Capital Planning Platform explorer.
+- [x] Obtain updated batch of DOB datasets
+- [x] Update the original, raw field names to be renamed in 2_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_prep.sql) and 3_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql).
+- [x] Make sure to update the year columns in [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql) and [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql), adding the latest year.
+- [x] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)), upload to Carto, and rename to table names used in scripts
+- [x] Run [1_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/1_cofos_prep.sql)
+- [x] Run [2_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/2_cofos_process.sql)
+- [x] Run [3_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/3_jobs_prep.sql)
+- [x] Run [4_jobs_supplement.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/4_jobs_supplement.sql)
+- [x] Run [5_jobs_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/5_jobs_process.sql)
+- [x] Run [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql)
+- [x] Run [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)
+- [x] If any manual geocoding has been done previously, make sure to run [reapply_manual_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/reapply_manual_edits.sql).
+- [x] Run the queries in [data_quality_checks.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/data_quality_checks.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding.
+- [x] Save final data as housingdev-db
+- [x] Update the housingdev-db file on the production server for the Capital Planning Platform explorer.
 
 
 ## Scripts
@@ -129,17 +131,21 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 ## Caveats and Limitations
 
-#### Gaps in data available for analysis
-- Not all records could be geocoded
-- Not all DOB jobs records provided the initial number of units or proposed number of units, so units from these projects can not be included in any analysis.
+### Gaps in data available for analysis
+- Not all records could be geocoded. Many of these are cases where an address was entered incorrectly or a new address is being created that has not yet be incorporated in geocoding programs.
+- There are many cases where DOB jobs records do not provide the initial number of units or proposed number of units, so the proposed net change in units can not be calculated.
 
-#### Important notes on analysis approaches:
+### Important notes on analysis approaches:
 - When calculating total of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during those years. 
 - Users need to be wary of doing data aggregations using u_net and u_net_complete. These really only useful when looking at individual records. Otherwise, the variance in time scale involved for each job can lead to misuse of these totals.
 - Important filtering criteria to consider for all analyses:
 	- Withdrawn job applications (flagged in dcp_status field)
 	- Duplicates (flagged in x_dup_flag field)
 	- Outliers (flagged in x_outlier field)
-	- Applications (depending on degree of confidence you’re looking for — only 30% of job applications progress to getting permits)
+	- Applications (captured in dcp_status). Depending on on the use case and required degree of confidence that a project will come to fruition, it could make sense to exclude projects where there is only an application on file and no permit issued yet. Only 30% of job applications progress to getting permits.
 	- Inactivity (all jobs where 5+ years have passed since the most recent status update are flagged in the x_inactive field)
-	- Residential vs. Other Accommodations (captured in dcp_occ_type). Remember that the jobs data includes both full-time residential developments and other accomdations like hotels and dorms. Depending on your use case for the data, it could make sense to exclude hotels by filtering using the dob_occ_prop field.
+	- Residential vs. Other Accommodations (captured in dcp_occ_type). Remember that the jobs data includes both full-time residential developments and other accomdations, like hotels and dorms. Depending on your use case for the data, it could make sense to exclude hotels by filtering using the dob_occ_prop field.
+
+### Data reliability limitations
+- All dwelling unit counts in the DOB jobs data are self-reported by the applicant.
+- There have been known data inconsistencies in CofO records.

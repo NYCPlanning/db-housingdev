@@ -134,19 +134,19 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ### Gaps in data available for analysis
 - This data does not capture any illegal, non-DOB-permitted alterations or subdivisons of units.
 - Not all records could be geocoded. Many of these are cases where an address was entered incorrectly or a new address is being created that has not yet been incorporated in geocoding programs.
-- There are many cases where DOB jobs records do not provide the initial number of units or proposed number of units, so the proposed net change in units can not be calculated.
+- There are many cases where DOB job records do not provide the initial number of units or proposed number of units, so the proposed net change in units cannot be calculated.
 
 ### Important notes on analysis approaches:
-- When calculating total of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during those years. 
-- Users need to be wary of doing data aggregations using u_net and u_net_complete. These really only useful when looking at individual records. Otherwise, the variance in time scale involved for each job can lead to misuse of these totals.
+- When calculating totals of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during the desired years. 
+- Users should be wary of doing data aggregations using u_net and u_net_complete. These two fields are generally only useful when looking at individual jobs and tracking their progress. Aggregated total of these fields are not meaningful and could easily be misiused, because of the variance in time scale involved between projects.
 - Important filtering criteria to consider for all analyses:
-	- Withdrawn job applications (flagged in dcp_status field)
-	- Duplicates (flagged in x_dup_flag field)
-	- Outliers (flagged in x_outlier field)
-	- Applications (captured in dcp_status). Depending on on the use case and required degree of confidence that a project will come to fruition, it could make sense to exclude projects where there is only an application on file and no permit issued yet. Only 30% of job applications progress to getting permits.
-	- Inactivity (all jobs where 5+ years have passed since the most recent status update are flagged in the x_inactive field)
-	- Residential vs. Other Accommodations (captured in dcp_occ_type). Remember that the jobs data includes both full-time residential developments and other accomdations, like hotels and dorms. Depending on your use case for the data, it could make sense to exclude hotels by filtering using the dob_occ_prop field.
+	- **Withdrawn job applications** (flagged in dcp_status field)
+	- **Duplicates** (flagged in x_dup_flag field)
+	- **Outliers** (flagged in x_outlier field)
+	- **Applications** (captured in dcp_status). Depending on on the use case and required degree of confidence that a project will come to fruition, it could make sense to exclude projects where there is only an application on file and no permit issued yet. Only 30% of job applications progress to getting permits.
+	- **Inactivity** (all jobs where 5+ years have passed since the most recent status update are flagged in the x_inactive field)
+	- **Residential vs. Other Accommodations** (captured in dcp_occ_type). Remember that the jobs data includes both full-time residential developments and other accomdations, like hotels and dorms. Depending on your use case for the data, it could make sense to exclude hotels by filtering using the dob_occ_prop field.
 
 ### Data reliability limitations
 - All dwelling unit counts in the DOB jobs data are self-reported by the applicant.
-- There have been known data inconsistencies in CofO records.
+- There have been known data inconsistencies in CofO records over time.

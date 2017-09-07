@@ -67,7 +67,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 ## Data Dictionary
 
-| Field Name | Definition | Notes of Use for Analysis |
+| Field Name | Definition | Notes on Field Usage |
 | :-- | :-- | :-- |
 | cartodb_id | Unique ID created by Carto | |
 | the_geom | Point geometry for the record | Please note that not all records could be geocoded. |

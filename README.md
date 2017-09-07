@@ -143,7 +143,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 ### Important notes on analysis approaches
 - When calculating totals of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during the desired years. 
-- Users should be wary of doing data aggregations using u_net and u_net_complete. These two fields are generally only useful when looking at individual jobs and tracking their progress. Aggregated total of these fields are not meaningful and could easily be misiused, because of the variance in time scale involved between projects.
+- Users should be wary of doing data aggregations using u_net and u_net_complete. These two fields are generally only useful when looking at individual jobs and tracking their progress. Aggregated total of these fields are not meaningful, because of the variance in time scale involved between projects.
 - **Filtering criteria to consider for all analyses:**
 	- **Withdrawn job applications** (flagged in dcp_status field)
 	- **Duplicates** (flagged in x_dup_flag field)

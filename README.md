@@ -42,7 +42,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 - [x] Run [6_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/6_integrate.sql)
 - [x] Run [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql)
 - [x] If any manual geocoding has been done previously, make sure to run [reapply_manual_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/reapply_manual_edits.sql)
-- [x] Run the queries in [data_quality_checks.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/review_and_analyses/data_quality_checks.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding
+- [x] Run the queries in [8_data_quality.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/8_data_quality.sql) after finishing [7_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/7_geocode.sql). Re-run 7_geocode.sql after applying manual geocoding
 - [x] Save final data as housingdev-db
 - [x] Update the housingdev-db file on the production server for the Capital Planning Platform explorer.
 

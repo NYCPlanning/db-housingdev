@@ -3,11 +3,11 @@ This repo contains SQL code that is used to build the Housing Developments Datab
 
 ## Table of Contents
 - [Data Sources](https://github.com/NYCPlanning/housingpipeline-db#data-sources)
+- [Data Dictionary](https://github.com/NYCPlanning/housingpipeline-db#data-dictionary)
+- [Analysis: Important Caveats and Limitations](https://github.com/NYCPlanning/housingpipeline-db#caveats-and-limitations)
 - [Maintenance](https://github.com/NYCPlanning/housingpipeline-db#maintenance)
 - [Scripts](https://github.com/NYCPlanning/housingpipeline-db#scripts)
 - [Process Diagram](https://github.com/NYCPlanning/housingpipeline-db#process-diagram)
-- [Data Dictionary](https://github.com/NYCPlanning/housingpipeline-db#data-dictionary)
-- [Analysis: Important Caveats and Limitations](https://github.com/NYCPlanning/housingpipeline-db#caveats-and-limitations)
 
 ## Data Sources
 
@@ -23,50 +23,6 @@ This repo contains SQL code that is used to build the Housing Developments Datab
 
 The two datasets must be combined, because the jobs data doesn't capture change over time, and the CofOs data lacks context for determining the net change in units. CofO's do not account for how many units already existed or how many outstanding units are still planned to be built.
 
-## Maintenance
-
-### Checklist
-- [x] Obtain updated batch of DOB datasets and upload to Carto as `dob_cofos_orig` and `dob_jobs_orig`
-- [x] Review the data and make any necessary changes to the DOB-DCP lookup tables: [status](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_status.csv) and [occupancy](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_occupancy.csv). Upload the revised lookup tables as needed.
-- [x] Update the original, raw field names to be renamed in [01_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/01_cofos_prep.sql) and [003_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/03_jobs_prep.sql)
-- [x] Make sure to update the year columns in [02_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/02_cofos_process.sql) and [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql), adding the latest year
-- [x] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql)), upload to Carto, and rename to table names used in scripts
-- [x] Run [01_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/01_cofos_prep.sql)
-- [x] Run [02_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/02_cofos_process.sql)
-- [x] Run [03_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/03_jobs_prep.sql)
-- [x] Run [04_jobs_supplement.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/04_jobs_supplement.sql)
-- [x] Run [05_jobs_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/05_jobs_process.sql)
-- [x] Run [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql)
-- [x] Run [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql)
-- [x] If any manual geocoding has been done previously, make sure to run [08_reapply_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/08_reapply_edits.sql). These edits may need to be reviewed to make sure they're still needed.
-- [x] Run the queries in [09_data_quality.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/09_data_quality.sql) after finishing [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql) or 8_reapply_edits.sql to creates tables of records that need to be reviewed and geocoded mnaually.
-- [x] Re-run all the admin/service boundary spatial joins in 07_geocode.sql after applying the manual geocoding and flagging.
-- [x] Export the final `dob_jobs` table as a CSV.
-- [x] Upload the CSV file to the production Carto server for the Capital Planning Platform and run the commands in [10_import_ccp.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/10_import_ccp.sql) to do cleanup and edits needed for the housing explorer.
-- [x] Save final data table on the production Carto server as `housingdevdb_YYMMDD`
-
-
-## Scripts
-
-| Script | Function |
-| :-- | :-- | 
-| 01_cofos_prep.sql | This script renames the column names in the CofO data to DCP's preferred column names that are used in the rest of the SQL code. |
-| 02_cofos_process.sql | This script aggregates CofOs to the DOB job ID, and transposes the data to capture the number of units reported per year in the CofO data. |
-| 03_jobs_prep.sql | This script renames the column names in the jobs data to DCP's preferred column names that are used in the rest of the SQL code. |
-| 04_jobs_supplement.sql | Non-recurring step: This script supplements the new data with old housing pipeline data to fill in the gaps for records that were accidentially exlcuded during the most recent data transfer from DOB. |
-| 05_jobs_process.sql | This script recodes DOB's labels to match DCP's preferred [status](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_status.csv), type, and [occupancy](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_occupancy.csv) values. It then calculates the proposed net change in units (units proposed - units existing) and flags potential duplicate records. |
-| 06_integrate.sql | This script joins the CofO data onto the jobs data, calculating the incremental yearly net change in units. Demos are accounted for in the incremental net change fields, and the number of net completed and net outstanding, incomplete units is calculated. The job status is updated to "complete" based on whether 80% of units of have completed and the final CofO has been issued.
-| 07_geocode.sql | This script geocodes all the jobs records and assigns their NTA, CD, school district, etc. boundaries. |
-| 08_reapply_edits.sql | If any manual geocoding or flagging was done previously and saved as `dob_jobs_edited`, this script contains a query for reapplying those edits to the jobs data to avoid replicating manual work if the data needs to be processed again. |
-| 09_data_quality.sql | This script contains a series of queries that should be run to 1) check that the data processing worked as expected, and 2) create tables of records that need to be manually reviewed and edited. The script include queries for updating records that were manually researched and edited. It also includes the query for creating a copy of all the manual edits, `dob_jobs_edited` so they can be reapplied in the future. |
-| 10_import_cpp.sql | This script contains a series of queries are used to clean up the imported data on the Carto server so it will work correctly in the Housing Developments Explorer. |
-| review_and_analysis/ housing_analysis.sql | This script contains a series of queries for frequently used analyses: 1) citywide total completed unit counts and incomplete units, 2) baseline unit calculations for each year (2010 census plus incremental completed units), 3) NTAs with greatest housing growth |
-| review_and_analysis/ filtering.sql | This script contains the filter currently being applied by default in the Capital Planning Platform explorer |
-
-
-## Process Diagram
-
-![process](https://github.com/NYCPlanning/housingpipeline-db/blob/master/diagram_housingdb_build.png)
 
 ## Data Dictionary
 
@@ -137,6 +93,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 [Link to old NC data dictionary and use guide](https://github.com/NYCPlanning/cpdocs/blob/master/docs/pipeline.md)
 
+
 ## Caveats and Limitations
 
 ### Gaps in data available for analysis
@@ -158,3 +115,51 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ### Data reliability limitations
 - All dwelling unit counts in the DOB jobs data are self-reported by the applicant.
 - There have been known data inconsistencies in CofO records over time.
+
+
+## Maintenance
+
+### Checklist
+- [x] Obtain updated batch of DOB datasets and upload to Carto as `dob_cofos_orig` and `dob_jobs_orig`
+- [x] Review the data and make any necessary changes to the DOB-DCP lookup tables: [status](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_status.csv) and [occupancy](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_occupancy.csv). Upload the revised lookup tables as needed.
+- [x] Update the original, raw field names to be renamed in [01_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/01_cofos_prep.sql) and [003_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/03_jobs_prep.sql)
+- [x] Make sure to update the year columns in [02_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/02_cofos_process.sql) and [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql), adding the latest year
+- [x] Refresh boundary shapefiles for schools districts, CDs, etc (listed in [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql)), upload to Carto, and rename to table names used in scripts
+- [x] Run [01_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/01_cofos_prep.sql)
+- [x] Run [02_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/02_cofos_process.sql)
+- [x] Run [03_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/03_jobs_prep.sql)
+- [x] Run [04_jobs_supplement.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/04_jobs_supplement.sql)
+- [x] Run [05_jobs_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/05_jobs_process.sql)
+- [x] Run [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql)
+- [x] Run [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql)
+- [x] If any manual geocoding has been done previously, make sure to run [08_reapply_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/08_reapply_edits.sql). These edits may need to be reviewed to make sure they're still needed.
+- [x] Run the queries in [09_data_quality.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/09_data_quality.sql) after finishing [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql) or 8_reapply_edits.sql to creates tables of records that need to be reviewed and geocoded mnaually.
+- [x] Re-run all the admin/service boundary spatial joins in 07_geocode.sql after applying the manual geocoding and flagging.
+- [x] Export the final `dob_jobs` table as a CSV.
+- [x] Upload the CSV file to the production Carto server for the Capital Planning Platform and run the commands in [10_import_ccp.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/10_import_ccp.sql) to do cleanup and edits needed for the housing explorer.
+- [x] Save final data table on the production Carto server as `housingdevdb_YYMMDD`
+
+
+## Scripts
+
+| Script | Function |
+| :-- | :-- | 
+| 01_cofos_prep.sql | This script renames the column names in the CofO data to DCP's preferred column names that are used in the rest of the SQL code. |
+| 02_cofos_process.sql | This script aggregates CofOs to the DOB job ID, and transposes the data to capture the number of units reported per year in the CofO data. |
+| 03_jobs_prep.sql | This script renames the column names in the jobs data to DCP's preferred column names that are used in the rest of the SQL code. |
+| 04_jobs_supplement.sql | Non-recurring step: This script supplements the new data with old housing pipeline data to fill in the gaps for records that were accidentially exlcuded during the most recent data transfer from DOB. |
+| 05_jobs_process.sql | This script recodes DOB's labels to match DCP's preferred [status](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_status.csv), type, and [occupancy](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_occupancy.csv) values. It then calculates the proposed net change in units (units proposed - units existing) and flags potential duplicate records. |
+| 06_integrate.sql | This script joins the CofO data onto the jobs data, calculating the incremental yearly net change in units. Demos are accounted for in the incremental net change fields, and the number of net completed and net outstanding, incomplete units is calculated. The job status is updated to "complete" based on whether 80% of units of have completed and the final CofO has been issued.
+| 07_geocode.sql | This script geocodes all the jobs records and assigns their NTA, CD, school district, etc. boundaries. |
+| 08_reapply_edits.sql | If any manual geocoding or flagging was done previously and saved as `dob_jobs_edited`, this script contains a query for reapplying those edits to the jobs data to avoid replicating manual work if the data needs to be processed again. |
+| 09_data_quality.sql | This script contains a series of queries that should be run to 1) check that the data processing worked as expected, and 2) create tables of records that need to be manually reviewed and edited. The script include queries for updating records that were manually researched and edited. It also includes the query for creating a copy of all the manual edits, `dob_jobs_edited` so they can be reapplied in the future. |
+| 10_import_cpp.sql | This script contains a series of queries are used to clean up the imported data on the Carto server so it will work correctly in the Housing Developments Explorer. |
+| review_and_analysis/ housing_analysis.sql | This script contains a series of queries for frequently used analyses: 1) citywide total completed unit counts and incomplete units, 2) baseline unit calculations for each year (2010 census plus incremental completed units), 3) NTAs with greatest housing growth |
+| review_and_analysis/ filtering.sql | This script contains the filter currently being applied by default in the Capital Planning Platform explorer |
+
+
+## Process Diagram
+
+![process](https://github.com/NYCPlanning/housingpipeline-db/blob/master/diagram_housingdb_build.png)
+
+

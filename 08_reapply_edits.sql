@@ -1,4 +1,4 @@
--- Make sure to save your records with manual edits in a new table, dob_jobs_edited
+-- Edits that were previously saved in the dob_jobs_edited table can be reapplied using the queries below.
 
 -- Reapply corrected geometries
 

@@ -221,7 +221,7 @@ SET
 WHERE
 	dob_job_number='104631720';
 
--- Make sure to save a backup table of your manual edits using the query in the reapply_manual_edits.sql script.
+-- Make sure to save a backup table of your manual edits using the query in the 9_reapply_edits.sql script.
 
 -----------------------------------------------------------
 -- DUPLICATE RECORDS
@@ -243,5 +243,18 @@ WHERE
 	AND (u_net > 50 OR u_net < -50)
 	AND (dcp_status <> 'Withdrawn' OR dcp_status IS NULL)
 
+-----------------------------------------------------------
+-- PART 3 - Save manual edits, so that they can be reappliedif needed
+-----------------------------------------------------------
+-- Make sure to select and thensave the records that were manually edited in a new table called dob_jobs_edited.
+-- These edits can later be reapplied using the 09_reapply_edits.sql code.
+
+SELECT
+	*
+FROM
+	dob_jobs
+WHERE
+	x_edited = TRUE
+	OR x_outlier = TRUE
 
 

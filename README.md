@@ -39,7 +39,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 - [x] Run [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql)
 - [x] Run [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql)
 - [x] If any manual geocoding has been done previously, make sure to run [08_reapply_edits.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/08_reapply_edits.sql). These edits may need to be reviewed to make sure they're still needed.
-- [x] Run the queries in [09_data_quality.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/09_data_quality.sql) after finishing [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql). Re-run 07_geocode.sql after applying manual geocoding
+- [x] Run the queries in [09_data_quality.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/09_data_quality.sql) after finishing [07_geocode.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/07_geocode.sql) or 8_reapply_edits.sql to creates tables of records that need to be reviewed and geocoded mnaually.
+- [x] Re-run all the admin/service boundary spatial joins in 07_geocode.sql after applying the manual geocoding and flagging.
 - [x] Export the final `dob_jobs` table as a CSV.
 - [x] Upload the CSV file to the production Carto server for the Capital Planning Platform and run the commands in [10_import_ccp.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/10_import_ccp.sql) to do cleanup and edits needed for the housing explorer.
 - [x] Save final data table on the production Carto server as `housingdevdb_YYMMDD`

@@ -100,7 +100,7 @@ UPDATE dob_jobs
 -- 7.6
 UPDATE dob_jobs
 	SET f_2050s_100yr = 'Within 2050s 100yr floodplain'
-	FROM cpadmin.f_2050s_100yr
+	FROM cpadmin.f_2050s_100yr as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom);
 
 UPDATE dob_jobs

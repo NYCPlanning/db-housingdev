@@ -20,21 +20,26 @@ FROM dcp_mappluto AS p
 WHERE ST_Intersects(p.the_geom, housing_new_york_units_by_building.the_geom);
 
 -- First as a test of the match rate, left join DCP's housing data onto the Housing NY data using the dcp_bbl field. Ideally all Housing NY building records that have geoms should find a match in DCP's data.
-SELECT
+WITH temp AS (SELECT
   h.*,
   j.dob_job_number
 FROM
   housing_new_york_units_by_building AS h
 LEFT JOIN
-  dob_jobs_20170906 AS j
+  hkates.dob_jobs_20170906 AS j
 ON
   h.dcp_bbl = j.bbl
 WHERE
-  h.the_geom IS NOT NULL;
-  
--- 1486 matched, 1390 did not find match.
+  h.the_geom IS NOT NULL)
+
+SELECT reporting_construction_type, count(*)
+FROM temp
+WHERE dob_job_number IS null
+GROUP BY reporting_construction_type
+ 
+-- 1486 matched, 1390 did not find match. The vast majority (1310) of non-matches are preservation projects.
 -- Potential reasons for mismatch, to discuss with HPD: 
----- Some HPD preservation projects may not have any NB or A1 DOB permit actions.
+---- HPD preservation projects may not have any NB or A1 DOB permit actions.
 ---- BBLs in DCP's housing data may also not reflect that latest MapPLUTO data.
 
 -- Left join Housing NY data onto the jobs data.

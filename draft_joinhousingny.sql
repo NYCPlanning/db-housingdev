@@ -20,24 +20,34 @@ FROM dcp_mappluto AS p
 WHERE ST_Intersects(p.the_geom, housing_new_york_units_by_building.the_geom);
 
 -- First as a test of the match rate, left join DCP's housing data onto the Housing NY data using the dcp_bbl field. Ideally all Housing NY building records that have geoms should find a match in DCP's data.
-WITH temp AS (SELECT
+WITH temp AS (
+SELECT
   h.*,
-  j.dob_job_number
+  array_to_string(array_agg(j.dob_job_number),';') as jobids
 FROM
-  housing_new_york_units_by_building AS h
+  cpadmin.housing_new_york_units_by_building AS h
 LEFT JOIN
   hkates.dob_jobs_20170906 AS j
 ON
   h.dcp_bbl = j.bbl
 WHERE
-  h.the_geom IS NOT NULL)
+  h.the_geom IS not NULL
+GROUP BY project_id, h.cartodb_id
+)
 
-SELECT reporting_construction_type, count(*)
+SELECT
+COUNT(cartodb_id) AS total_hpd,
+COUNT(CASE WHEN jobids <> '' THEN 1 END) AS total_matchdob,
+COUNT(CASE WHEN reporting_construction_type = 'Preservation' THEN 1 END) AS pres,
+COUNT(CASE WHEN reporting_construction_type = 'Preservation' AND jobids <> '' THEN 1 END) AS pres_matchdob,
+COUNT(CASE WHEN reporting_construction_type = 'New Construction' THEN 1 END) AS newcons,
+COUNT(CASE WHEN reporting_construction_type = 'New Construction' AND jobids <> '' THEN 1 END) AS newcons_matchdob
 FROM temp
-WHERE dob_job_number IS null
-GROUP BY reporting_construction_type
- 
--- 1486 matched, 1390 did not find match. The vast majority (1310) of non-matches are preservation projects.
+
+-- Out of the 1864 HPD bldg records with coordinates, only 474 (~25%) found a match in our housing dev data from DOB.
+-- New Construction: 294/374 (79%) found matches
+-- Preservation: 180/1490 (12%) found matches
+
 -- Potential reasons for mismatch, to discuss with HPD: 
 ---- HPD preservation projects may not have any NB or A1 DOB permit actions.
 ---- BBLs in DCP's housing data may also not reflect that latest MapPLUTO data.

@@ -14,8 +14,6 @@ ALTER TABLE dob_jobs_orig
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "job_status_date" to "status_date";
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_date" TYPE date using TO_DATE(status_date, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "existing_occupancy_classification_description" to "dob_occ_init";	
@@ -52,36 +50,40 @@ ALTER TABLE dob_jobs_orig
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "pre_file_date" to "status_a";
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "application_process_date" to "status_d";
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_d" TYPE date using TO_DATE(status_d, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "plan_approval_date" to "status_p"; 
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_p" TYPE date using TO_DATE(status_p, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "first_permit_date" to "status_q"; 
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_q" TYPE date using TO_DATE(status_q, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "fully_permitted_date" to "status_r";
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_r" TYPE date using TO_DATE(status_r, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "signoff_date" to "status_x";
-ALTER TABLE dob_jobs_orig
-	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "proposed_total_far" to "far_prop";
 
 ALTER TABLE dob_jobs_orig
 	RENAME COLUMN "building_type_description" to "dob_bldg_type";
+	
+-- Grouping data conversions together in case date format in source data changes and edits are needed
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_date" TYPE date using TO_DATE(status_date, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_d" TYPE date using TO_DATE(status_d, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_p" TYPE date using TO_DATE(status_p, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_q" TYPE date using TO_DATE(status_q, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_r" TYPE date using TO_DATE(status_r, 'MM/DD/YYYY');
+ALTER TABLE dob_jobs_orig
+	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');

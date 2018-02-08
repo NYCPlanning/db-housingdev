@@ -1,5 +1,12 @@
 -- RUN EACH STEP INDIVIDUALLY
 
+-- STEP 0 Misc filling in of fields and data quality clean up
+
+UPDATE dob_jobs
+	SET address = CONCAT(address_house, ' ', address_street)
+	WHERE address IS NULL;
+
+
 -- STEP 1
 -- Translate to DCP categories and extract Housing developments. Note: this require having supplementary Occupancy table and Status table, which both translate DOB field values to DCP conventions
 
@@ -21,6 +28,14 @@ UPDATE dob_jobs
 		dcp_status = 
 			(SELECT lookup_status.dcp FROM lookup_status
 			WHERE lookup_status.dob = dob_jobs.status_latest);
+
+UPDATE dob_jobs
+	SET dcp_occ_init = 'Empty Lot'
+	WHERE dob_type = 'NB';
+
+UPDATE dob_jobs
+	SET dcp_occ_prop = 'Empty Lot'
+	WHERE dob_type = 'DM';
 
 UPDATE dob_jobs
 	SET

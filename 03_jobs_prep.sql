@@ -46,6 +46,7 @@ SELECT
 	NULL AS address,
 	NULL AS address_house,
 	NULL AS address_street,
+	NULL AS bin,
 	NULL AS bbl,
 	NULL AS boro,
 	NULL AS block,

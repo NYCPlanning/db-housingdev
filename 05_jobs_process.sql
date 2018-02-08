@@ -84,18 +84,3 @@ UPDATE dob_jobs
 			WHEN dob_type = 'A1' AND u_init IS NOT NULL AND u_prop IS NOT NULL THEN u_prop - u_init
 			ELSE NULL 
 		END;
-
-
--- STEP 4
--- Tag projects that have been inactive for at least 5 years
-
-UPDATE dob_jobs
-	SET x_inactive =
-		(CASE
-			WHEN (CURRENT_DATE - status_date)/365 >= 5 THEN TRUE
-			ELSE FALSE
-		END)
-	WHERE
-		dcp_status <> 'Complete'
-		AND dcp_status <> 'Complete (demolition)';
-

@@ -217,7 +217,7 @@ SET
 		(CASE 
 			WHEN c_u_latest IS NULL THEN dcp_status
 			WHEN u_prop = 0 THEN dcp_status
-			WHEN u_net IS NOT NULL AND (c_u_latest / u_prop) >= 0.8 OR status_latest = 'X' OR c_type_latest = 'C- CO' THEN 'Complete'
+			WHEN u_net IS NOT NULL AND (c_u_latest / u_prop) >= 0.8 OR status_latest = 'SIGNED OFF' OR status_latest = 'SIGNED-OFF' OR c_type_latest = 'C- CO' THEN 'Complete'
 			WHEN dob_type <> 'DM' AND u_net IS NOT NULL AND (c_u_latest / u_prop) < 0.8 THEN 'Partial complete'
 			ELSE dcp_status
 		END),
@@ -256,7 +256,8 @@ UPDATE dob_jobs
 	WHERE
 		dcp_status <> 'Complete'
 		AND dcp_status <> 'Complete (demolition)'
-		AND status_latest <> 'X';
+		AND status_latest <> 'SIGNED OFF'
+		AND status_latest <> 'SIGNED-OFF';
 
 UPDATE dob_jobs
 	SET x_inactive = false

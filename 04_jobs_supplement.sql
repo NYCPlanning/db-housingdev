@@ -4,6 +4,7 @@ INSERT INTO dob_jobs
 (
 	the_geom,
 	address,
+	bin,
 	bbl,
 	block,
 	boro,
@@ -38,6 +39,7 @@ ON
 SELECT
 	the_geom,
 	dob_permit_address as address,
+	dob_permit_bin as bin,
 	dob_permit_bbl as bbl,
 	dob_permit_block as block,
 	dob_permit_borough as boro,

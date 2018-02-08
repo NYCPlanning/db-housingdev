@@ -62,9 +62,9 @@ UPDATE dob_jobs
 		-- Add field for creating single category to express occupancy type; order of case/when logic is intended to capture most likely impact of development; extract only residential
 		dcp_occ_category =
 			(CASE
-				WHEN dcp_occ_prop = 'Other Accomodations' THEN 'Other Accomodations'
+				WHEN dcp_occ_prop = 'Other Accommodations' THEN 'Other Accommodations'
 				WHEN dcp_occ_prop = 'Residential' OR dcp_occ_init = 'Residential' THEN 'Residential'
-				WHEN dcp_occ_init = 'Other Accomodations' THEN 'Other Accomodations'
+				WHEN dcp_occ_init = 'Other Accommodations' THEN 'Other Accommodations'
 				ELSE 'Other'
 			END),
 		-- Create field to translate DCP status categories AND flag if job is withdrawn (note: demolitions considered complete if status is permit issued)

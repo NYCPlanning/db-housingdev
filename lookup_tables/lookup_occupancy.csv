@@ -33,12 +33,12 @@ MERCANTILE,Retail and Leisure
 MISCELLANEOUS,Misc
 PUBLIC BLDG - OLD CODE,Civic
 RESID. BLDG - OLD CODE,Residential
-RESIDENTIAL (HOTELS),Other Accomodations
+RESIDENTIAL (HOTELS),Other Accommodations
 RESIDENTIAL 1-2 FAMILY HOUSES,Residential
 RESIDENTIAL APT HOUSE,Residential
 RESIDENTIAL: 1 & 2 FAMILY HOUSES,Residential
 RESIDENTIAL: APARTMENT HOUSES,Residential
-"RESIDENTIAL: HOTELS, DORMITORIES",Other Accomodations
+"RESIDENTIAL: HOTELS, DORMITORIES",Other Accommodations
 STORAGE (LOW HAZARD),Storage
 STORAGE (MODERATE HAZARD),Storage
 STORAGE: LOW HAZARD,Storage
@@ -76,13 +76,13 @@ I-2,Civic
 I-3,Civic
 I-4,Civic
 J-0,Residential
-J-1,Other Accomodations
+J-1,Other Accommodations
 J-2,Residential
 J-3,Residential
 K,Misc
 M,Retail and Leisure
 PUB,Civic
-R-1,Other Accomodations
+R-1,Other Accommodations
 R-2,Residential
 R-3,Residential
 RES,Residential

@@ -33,7 +33,7 @@ SELECT
 FROM dob_jobs_20161231 as a
 	LEFT JOIN dob_jobs_orig as b
 ON
-	a.dob_job_number = b.dob_job_number
+	a.dob_job_number::text = b.dob_job_number::text
 )
 
 SELECT
@@ -86,7 +86,7 @@ UPDATE dob_jobs
 			END);
 			
 UPDATE dob_jobs
-	SET status_latest = 'SIGNED-OFF'
+	SET status_latest = 'SIGNED OFF'
 	WHERE status_latest = 'X';
 
 UPDATE dob_jobs

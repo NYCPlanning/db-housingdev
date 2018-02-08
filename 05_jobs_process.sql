@@ -2,9 +2,29 @@
 
 -- STEP 0 Misc filling in of fields and data quality clean up
 
+
+UPDATE dob_jobs
+	SET address_house = 
+		(CASE 
+			WHEN split_part(address_house, '-', 1) = 'Jan' THEN CONCAT(1, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Feb' THEN CONCAT(2, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Mar' THEN CONCAT(3, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Apr' THEN CONCAT(4, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'May' THEN CONCAT(5, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Jun' THEN CONCAT(6, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Jul' THEN CONCAT(7, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Aug' THEN CONCAT(8, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Sep' THEN CONCAT(9, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Oct' THEN CONCAT(10, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Nov' THEN CONCAT(11, '-', split_part(address_house, '-', 2))
+			WHEN split_part(address_house, '-', 1) = 'Dec' THEN CONCAT(12, '-', split_part(address_house, '-', 2))
+			ELSE address_house
+		END);
+
 UPDATE dob_jobs
 	SET address = CONCAT(address_house, ' ', address_street)
-	WHERE address IS NULL;
+	WHERE address IS NULL
+	AND address_street IS NOT NULL;
 
 
 -- STEP 1
@@ -99,3 +119,4 @@ UPDATE dob_jobs
 			WHEN dob_type = 'A1' AND u_init IS NOT NULL AND u_prop IS NOT NULL THEN u_prop - u_init
 			ELSE NULL 
 		END;
+		

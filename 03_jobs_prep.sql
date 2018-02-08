@@ -194,7 +194,7 @@ SELECT
 	zoningarea_prop,
 	xunits_init_raw,
 	xunits_prop_raw
-FROM dob_jobs_orig
+FROM dob_jobs_orig;
 
 DELETE FROM dob_jobs WHERE cartodb_id = 1;
 

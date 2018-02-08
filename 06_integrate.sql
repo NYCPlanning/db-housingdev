@@ -1,53 +1,6 @@
 -- RUN EACH STEP INDIVIDUALLY
 
 -- STEP 1
--- Add unit calculation columns to dob_jobs table
-ALTER TABLE dob_jobs
-	ADD COLUMN c_u_latest integer,
-	ADD COLUMN u_net_complete integer,
-	ADD COLUMN u_net_incomplete integer,
-	ADD COLUMN c_date_latest date,
-	ADD COLUMN c_date_earliest date,
-	ADD COLUMN c_type_latest text,
-
-	ADD COLUMN u_2007_existtotal integer,
-	ADD COLUMN u_2008_existtotal integer,
-	ADD COLUMN u_2009_existtotal integer,
-	ADD COLUMN u_2010_existtotal integer,
-	ADD COLUMN u_2011_existtotal integer,
-	ADD COLUMN u_2012_existtotal integer,
-	ADD COLUMN u_2013_existtotal integer,
-	ADD COLUMN u_2014_existtotal integer,
-	ADD COLUMN u_2015_existtotal integer,
-	ADD COLUMN u_2016_existtotal integer,
-	ADD COLUMN u_2017_existtotal integer,
-
-	ADD COLUMN u_2007_netcomplete integer,
-	ADD COLUMN u_2008_netcomplete integer,
-	ADD COLUMN u_2009_netcomplete integer,
-	ADD COLUMN u_2010_netcomplete integer,
-	ADD COLUMN u_2011_netcomplete integer,
-	ADD COLUMN u_2012_netcomplete integer,
-	ADD COLUMN u_2013_netcomplete integer,
-	ADD COLUMN u_2014_netcomplete integer,
-	ADD COLUMN u_2015_netcomplete integer,
-	ADD COLUMN u_2016_netcomplete integer,
-	ADD COLUMN u_2017_netcomplete integer,
-
-	ADD COLUMN u_2007_increm integer,
-	ADD COLUMN u_2008_increm integer,
-	ADD COLUMN u_2009_increm integer,
-	ADD COLUMN u_2010_increm integer,
-	ADD COLUMN u_2011_increm integer,
-	ADD COLUMN u_2012_increm integer,
-	ADD COLUMN u_2013_increm integer,
-	ADD COLUMN u_2014_increm integer,
-	ADD COLUMN u_2015_increm integer,
-	ADD COLUMN u_2016_increm integer,
-	ADD COLUMN u_2017_increm integer;
-
-
--- STEP 2
 -- Fill in gaps in total existing units between CofOs and before first CofO. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
 UPDATE dob_jobs
 	SET
@@ -125,7 +78,7 @@ UPDATE dob_jobs
 	WHERE dob_jobs.dob_job_number = b.cofo_job_number;
 
 
--- STEP 3
+-- STEP 2
 -- Capture demolitions in a given year and proxy for CofO date
 UPDATE dob_jobs
 	SET
@@ -227,7 +180,7 @@ UPDATE dob_jobs
 	WHERE dcp_status = 'Complete (demolition)';
 
 
--- STEP 4
+-- STEP 3
 -- Calculate cummulative completed units for each year and annual incremental changes
 UPDATE dob_jobs 
 	SET
@@ -256,7 +209,7 @@ UPDATE dob_jobs
 	;
 
 
--- STEP 5
+-- STEP 4
 -- Update status based on CofO data and assign number of completed units
 UPDATE dob_jobs
 SET
@@ -278,7 +231,7 @@ SET
 		END);
 
 
--- STEP 6
+-- STEP 5
 -- Update column to capture outstanding (non-complete) units
 
 UPDATE dob_jobs
@@ -289,5 +242,25 @@ UPDATE dob_jobs
 			WHEN u_init IS NULL AND u_prop IS NOT NULL AND c_u_latest IS NOT NULL THEN u_prop - c_u_latest
 			ELSE u_net
 		END;
+
+
+-- STEP 6
+-- Tag projects that have been inactive for at least 5 years
+
+UPDATE dob_jobs
+	SET x_inactive =
+		(CASE
+			WHEN (CURRENT_DATE - status_date)/365 >= 5 THEN TRUE
+			ELSE FALSE
+		END)
+	WHERE
+		dcp_status <> 'Complete'
+		AND dcp_status <> 'Complete (demolition)'
+		AND status_latest <> 'X';
+
+UPDATE dob_jobs
+	SET x_inactive = false
+	WHERE
+		x_inactive IS NULL;
 
 		

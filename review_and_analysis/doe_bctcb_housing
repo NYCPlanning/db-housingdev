@@ -12,7 +12,7 @@ SELECT
     sum(u_2017_increm) AS u_2017_increm,
     sum(u_net_incomplete) AS u_permitted
 FROM
-    dob_housing_20180126
+	capitalplanning.dob_jobs_20180208
 WHERE
     1=1
     AND the_geom is not null
@@ -21,12 +21,10 @@ WHERE
     AND dcp_status <> 'Suspended'
     AND dcp_status not like '%Application%'
     AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')
-    AND x_dup_flag <> 'Possible duplicate'
+    AND x_dup_flag is null
     AND x_outlier is null
-    AND x_inactive IS NOT TRUE
+    AND x_inactive <> 'true'
 GROUP BY
     geo_censusblock
 ORDER BY
     geo_censusblock
-    
-    

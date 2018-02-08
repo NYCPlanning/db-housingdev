@@ -18,7 +18,7 @@ SET
 FROM gbat_jobs AS b
 WHERE
 	dob_jobs.dob_job_number = b.dob_job_number::text
-	AND dob_jobs.the_geom IS NULL
+	AND dob_jobs.the_geom IS NULL;
 
 -- Apply geoms from Function E GBAT results
 UPDATE dob_jobs

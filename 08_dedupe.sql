@@ -1,25 +1,91 @@
--- Flag suspected duplicates; create unique ID (x_dup_id) based on matching job types, address and BBL; identify most recent status update date associated with unique ID; if records status update date does not match, flagged as potential duplicate
-
 ALTER TABLE dob_jobs
-	ADD COLUMN x_dup_id text,
-	ADD COLUMN x_dup_id_maxdate date,
-	ADD COLUMN x_dup_flag text;	
+ADD COLUMN x_dup_notes text;
 
-UPDATE dob_jobs
+UPDATE capitalplanning.dob_jobs
 	SET
-		address = CONCAT(address_house,' ',address_street),
-		x_dup_id = CONCAT(dob_type,bbl,CONCAT(address_house,' ',address_street));
+		x_dup_id = CONCAT(dob_type,bbl,CONCAT(address_house,' ',address_street))
+	WHERE
+		dcp_status <> 'Withdrawn'
+		AND dcp_status <> 'Disapproved'
+		AND dcp_status <> 'Suspended'
+		AND x_inactive <> 'true'
+		AND xunits_binary = 'Y';
 
--- Assign the maximum status date for each duplicate ID
-UPDATE dob_jobs
+
+UPDATE capitalplanning.dob_jobs
 	SET
-		x_dup_id_maxdate = maxdate
+		x_dup_maxstatusdate = maxdate
 	FROM (SELECT 
        	x_dup_id,
        	MAX(status_date) AS maxdate
-       FROM dob_jobs
+       FROM capitalplanning.dob_jobs
+       WHERE x_dup_id IS NOT NULL
        GROUP BY x_dup_id) AS a
-	WHERE dob_jobs.x_dup_id = a.x_dup_id;
+	WHERE capitalplanning.dob_jobs.x_dup_id = a.x_dup_id;
 
-UPDATE dob_jobs
-	SET x_dup_flag = 'Possible duplicate' WHERE x_dup_id_maxdate <> status_date;
+
+UPDATE capitalplanning.dob_jobs
+	SET
+		x_dup_maxcofodate = maxdate
+	FROM (SELECT
+       	x_dup_id,
+       	MAX(c_date_latest) AS maxdate
+       FROM capitalplanning.dob_jobs
+       WHERE x_dup_id IS NOT NULL
+       GROUP BY x_dup_id) AS a
+	WHERE capitalplanning.dob_jobs.x_dup_id = a.x_dup_id;
+
+
+UPDATE capitalplanning.dob_jobs
+	SET
+		x_dup_flag = 'Possible duplicate',
+		x_dup_notes = 'No CofOs - Job status is earlier than latest job status update'
+	WHERE
+		x_dup_id IS NOT NULL
+		AND x_dup_maxstatusdate > status_date
+		AND x_dup_maxcofodate IS NULL
+		AND c_date_latest IS NULL
+		AND dcp_status <> 'Complete';
+
+
+UPDATE capitalplanning.dob_jobs
+	SET
+		x_dup_flag = 'Possible duplicate',
+		x_dup_notes = 'CofOs - Job status is earlier than latest CofO update'
+	WHERE
+		x_dup_id IS NOT NULL
+		AND x_dup_maxcofodate > status_date
+		AND x_dup_maxcofodate IS NOT NULL
+		AND c_date_latest IS NULL
+		AND dcp_status <> 'Complete';
+
+
+-- -- Tests
+-- -- How many sets of dup_ids found duplicates? 442
+-- SELECT count(distinct x_dup_id) FROM capitalplanning.dob_jobs
+-- where x_dup_flag is not null
+
+
+-- -- Look at all duplicate sets
+-- with dups AS (SELECT distinct x_dup_id FROM capitalplanning.dob_jobs
+-- where x_dup_flag is not null
+-- and bbl <> '1000010001' )
+
+-- select
+-- x_dup_id,
+-- x_dup_flag,
+-- x_dup_notes,
+-- dcp_status,
+-- x_inactive,
+-- dob_job_number,
+-- dob_type,
+-- dob_occ_init,
+-- dob_occ_prop,
+-- dcp_occ_prop,
+-- status_date,
+-- c_date_latest,
+-- c_u_latest,
+-- u_init,
+-- u_prop
+-- from dob_jobs where x_dup_id in (select x_dup_id from dups)
+-- order by x_dup_id, status_date desc

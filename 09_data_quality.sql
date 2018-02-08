@@ -110,7 +110,8 @@ SET
 WHERE
 	dob_job_number = '402681175'
 	OR dob_job_number = '220014400'
-	OR dob_job_number = '110080787';
+	OR dob_job_number = '110080787'
+	OR dob_job_number = '121712405';
 
 
 -----------------------------------------------------------

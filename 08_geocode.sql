@@ -122,15 +122,15 @@ WHERE
 
 
 -- Reapply reapply previous geoms from points that were manually moved
-update dob_jobs
-set
+UPDATE dob_jobs
+SET
 	the_geom = ST_SetSRID(ST_MakePoint(-73.96792173,40.7148463),4326),
 	x_edited = 'Manual-Move'
-where dob_job_number = '320917503';
+WHERE dob_job_number = '320917503';
 
-update dob_jobs
-set
+UPDATE dob_jobs
+SET
 	the_geom = ST_SetSRID(ST_MakePoint(-74.01180267,40.70082104),4326),
 	x_edited = 'Manual-Move'
-where dob_job_number = '121324129';
+WHERE dob_job_number = '121324129';
 

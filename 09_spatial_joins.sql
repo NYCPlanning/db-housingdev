@@ -36,24 +36,24 @@ UPDATE dob_jobs
 	FROM dcpadmin.nyc_census_blocks_2010_wi as b
 	WHERE ST_Within(dob_jobs.the_geom,b.the_geom); 
 
--- -- 7.5
--- UPDATE dob_jobs
--- 	SET f_firms2007_100yr = b.fld_zone
--- 	FROM cpadmin.f_firms2007_100yr as b
--- 	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
+-- 7.5
+UPDATE dob_jobs
+	SET f_firms2007_100yr = b.fld_zone
+	FROM dcpadmin.fema_firms2007_100yr as b
+	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
 
 UPDATE dob_jobs
 	SET f_pfirms2015_100yr = b.fld_zone
 	FROM dcpadmin.fema_pfirms_100yr_2015 as b
 	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
 
--- -- 7.6
--- UPDATE dob_jobs
--- 	SET f_2050s_100yr = 'Within 2050s 100yr floodplain'
--- 	FROM cpadmin.f_2050s_100yr as b
--- 	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
+-- 7.6
+UPDATE dob_jobs
+	SET f_2050s_100yr = 'Within 2050s 100yr floodplain'
+	FROM dcpadmin.sealevel_2050s_100yr as b
+	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
 
--- UPDATE dob_jobs
---  	SET f_2050s_hightide = 'Within 2050s high tide 30in'
---  	FROM cpadmin.f_2050s_hightide as b
---  	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);
+UPDATE dob_jobs
+ 	SET f_2050s_hightide = 'Within 2050s high tide 30in'
+ 	FROM dcpadmin.sealevel_2050s_hightide as b
+ 	WHERE ST_Intersects(dob_jobs.the_geom,b.the_geom);

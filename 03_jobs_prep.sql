@@ -116,13 +116,17 @@ SELECT
 	NULL::numeric AS u_2016_netcomplete,
 	NULL::numeric AS u_2017_netcomplete,
 	NULL AS geo_cd,
-	NULL AS geo_censusblock,
-	NULL AS geo_csd,
-	NULL AS geo_mszone201718,
 	NULL AS geo_ntacode,
 	NULL AS geo_ntaname,
-	NULL AS geo_pszone201718,
+	NULL AS geo_censusblock,
+	NULL AS geo_csd,
 	NULL AS geo_subdistrict,
+	NULL AS geo_pszone201718,
+	NULL AS geo_mszone201718,
+ 	NULL AS f_firms2007_100yr,
+ 	NULL AS f_pfirms2015_100yr,
+	NULL AS f_2050s_100yr,
+  	NULL AS f_2050s_hightide,	
 	NULL AS x_datafreshness,
 	NULL AS xunits_binary,
 	NULL AS x_dup_flag,
@@ -135,6 +139,7 @@ SELECT
 	NULL AS x_withdrawal,
 	NULL AS xunits_init_raw,
 	NULL AS xunits_prop_raw
+
 
 -- Then insert the contents from dob_jobs_orig
 INSERT INTO dob_jobs

@@ -5,8 +5,6 @@ ALTER TABLE dob_cofos_orig
 
 ALTER TABLE dob_cofos_orig
 	RENAME COLUMN "effective_date" to "cofo_date";
-ALTER TABLE dob_cofos_orig
-	ALTER COLUMN "cofo_date" TYPE date using TO_DATE(cofo_date, 'MM/DD/YYYY');
 
 ALTER TABLE dob_cofos_orig
 	RENAME COLUMN "__of_dwelling_units" to "cofo_units";	
@@ -20,3 +18,6 @@ ALTER TABLE dob_cofos_orig
 	ADD COLUMN cofo_year text;
 UPDATE dob_cofos_orig
 	SET cofo_year = left(cofo_date::text,4);
+
+ALTER TABLE dob_cofos_orig
+	ALTER COLUMN "cofo_date" TYPE date using TO_DATE(cofo_date, 'MM/DD/YYYY');

@@ -2,10 +2,6 @@
 
 -- This is an extra step given limitations of last round of DOB data -- append data with completions from prior datasets, which do not appear in latest dataset
 
-ALTER TABLE dob_jobs
-	ADD COLUMN x_datafreshness text,
-	ADD COLUMN address text;
-
 INSERT INTO dob_jobs
 (
 	the_geom,
@@ -36,7 +32,7 @@ SELECT
 	a.*,
 	b.dob_job_number as a_july2017match
 FROM dob_jobs_20161231 as a
-	LEFT JOIN dob_jobs as b
+	LEFT JOIN dob_jobs_orig as b
 ON
 	a.dob_job_number = b.dob_job_number
 )

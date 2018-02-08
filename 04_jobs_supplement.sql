@@ -35,7 +35,7 @@ WITH joined AS (
 SELECT 
 	a.*,
 	b.dob_job_number as a_july2017match
-FROM nchatterjee.q42016_permits_dates_cofos_v4 as a
+FROM dob_jobs_20161231 as a
 	LEFT JOIN dob_jobs as b
 ON
 	a.dob_job_number = b.dob_job_number
@@ -88,3 +88,11 @@ UPDATE dob_jobs
 				WHEN dob_type = 'Demolition' THEN 'DM'
 				ELSE dob_type
 			END);
+			
+UPDATE dob_jobs
+	SET status_latest = 'SIGNED-OFF'
+	WHERE status_latest = 'X';
+
+UPDATE dob_jobs
+	SET status_latest = 'PERMIT ISSUED - ENTIRE JOB/WORK'
+	WHERE status_latest = 'R';

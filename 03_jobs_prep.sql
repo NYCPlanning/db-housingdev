@@ -215,15 +215,15 @@ SELECT
 	status_r,
 	status_x,
 	dob_bldg_type,
-	far_prop,
-	stories_init,
-	stories_prop,
+	far_prop::numeric,
+	stories_init::numeric,
+	stories_prop::numeric,
 	zoningarea_init,
 	zoningarea_prop,
 	xunits_init_raw,
 	xunits_prop_raw
 FROM dob_jobs_orig;
 
-DELETE FROM dob_jobs WHERE cartodb_id = 1;
+DELETE FROM dob_jobs WHERE cartodb_id = 1 AND dob_job_number IS NULL;
 
 

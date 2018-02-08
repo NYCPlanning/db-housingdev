@@ -120,17 +120,17 @@ WHERE
 	dob_jobs.the_geom IS NULL
 	AND dob_jobs.bbl= b.appbbl::text;
 
--- Fill in missing address using PLUTO
-UPDATE dob_jobs
-SET address = b.address
-FROM dcpadmin.dcp_mappluto_2017v1 AS b
-WHERE 
-	dob_jobs.address = ' '
-	AND dob_jobs.bbl= b.bbl::text;
 
+-- Reapply reapply previous geoms from points that were manually moved
+update dob_jobs
+set
+	the_geom = ST_SetSRID(ST_MakePoint(-73.96792173,40.7148463),4326),
+	x_edited = 'Manual-Move'
+where dob_job_number = '320917503';
 
--- Backup option: Pull in geometries from previous data
--- UPDATE dob_jobs
--- SET the_geom = b.the_geom
--- FROM dob_jobs_20161231 AS b
--- WHERE dob_jobs.dob_job_number = b.dob_job_number;
+update dob_jobs
+set
+	the_geom = ST_SetSRID(ST_MakePoint(-74.01180267,40.70082104),4326),
+	x_edited = 'Manual-Move'
+where dob_job_number = '121324129';
+

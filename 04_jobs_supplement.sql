@@ -1,6 +1,4 @@
--- CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS
-
--- This is an extra step given limitations of last round of DOB data -- append data with completions from prior datasets, which do not appear in latest dataset
+-- This is an extra step given limitations of July 2017 round of DOB data -- append data with completions from prior Jan 2017, which do not appear in latest dataset
 
 INSERT INTO dob_jobs
 (
@@ -92,3 +90,5 @@ UPDATE dob_jobs
 UPDATE dob_jobs
 	SET status_latest = 'PERMIT ISSUED - ENTIRE JOB/WORK'
 	WHERE status_latest = 'R';
+
+	

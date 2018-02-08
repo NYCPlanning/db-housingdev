@@ -123,6 +123,7 @@ SELECT
 	NULL AS geo_pszone201718,
 	NULL AS geo_subdistrict,
 	NULL AS x_datafreshness,
+	NULL AS xunits_binary,
 	NULL AS x_dup_flag,
 	NULL AS x_dup_id,
 	NULL AS x_dup_maxstatusdate,

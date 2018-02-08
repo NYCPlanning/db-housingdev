@@ -1,23 +1,7 @@
--- If skipping over 4_jobs_supplement.sql, CREATE COPY OF ORIGINAL DATA AS dob_jobs BEFORE RUNNING THE FOLLOWING COMMANDS and uncomment the addition of the address field.
-
 -- RUN EACH STEP INDIVIDUALLY
 
 -- STEP 1
 -- Translate to DCP categories and extract Housing developments. Note: this require having supplementary Occupancy table and Status table, which both translate DOB field values to DCP conventions
-
-
-ALTER TABLE dob_jobs
-	ADD COLUMN dcp_dev_category text,
-	ADD COLUMN dcp_occ_init text,
-	ADD COLUMN dcp_occ_prop text,
-	ADD COLUMN dcp_occ_category text,
-	ADD COLUMN u_init integer,
-	ADD COLUMN u_prop integer,
-	ADD COLUMN u_net integer,
-	ADD COLUMN dcp_status text
-	-- ,
-	-- ADD COLUMN address text
-	;
 
 UPDATE dob_jobs
 	SET
@@ -59,10 +43,19 @@ UPDATE dob_jobs
 
 
 -- STEP 2
--- Drop commercial and other non-residential records from jobs data
-DELETE FROM dob_jobs
-WHERE dcp_occ_category NOT in ('Other Accomodations', 'Residential');
+-- Now that we know that some buildings are likely mixed residential,
+-- create binary field to see if there are units proposed rather than relying on DOF Occupancy values
 
+UPDATE dob_jobs
+	SET
+		xunits_binary =
+			(CASE
+				WHEN xunits_init_raw = '0' AND xunits_prop_raw = '0' THEN 'N'
+				WHEN xunits_init_raw = '0' AND xunits_prop_raw = '' THEN 'N'
+				WHEN xunits_init_raw = '' AND xunits_prop_raw = '0' THEN 'N'
+				WHEN xunits_init_raw = '' AND xunits_prop_raw = '' THEN 'N'
+				ELSE 'Y'
+			END);
 
 
 -- STEP 3

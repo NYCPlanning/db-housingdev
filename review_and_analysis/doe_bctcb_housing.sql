@@ -1,6 +1,6 @@
-/**1. Aggregate dob jobs by census block, with exclusions to capture changes in residential units only and jobs that are complete/partially complete/or permit issued**/
+/**1. Aggregate dob jobs by census block, with exclusions to capture changes in residential units only**/
  
- - Aggregate completions (not screening out jobs with the inactive flag)
+--Aggregate completions (not screening out jobs with the inactive flag)
 
 SELECT
     geo_censusblock,
@@ -29,9 +29,9 @@ GROUP BY
 ORDER BY
     geo_censusblock
 
- - Export as csv and upload to Carto as temp_completions
+--Export as csv and upload to Carto as temp_completions
 
- - Aggregate permitted, but incomplete units (screening out jobs with the inactive flag)
+--Aggregate permitted, but incomplete units (screening out jobs with the inactive flag)
 
 SELECT
     geo_censusblock,
@@ -91,12 +91,12 @@ LEFT JOIN
 ON c.bctcb2010 = temp_permitted.geo_censusblock::numeric
 ORDER BY c.bctcb2010 ASC
 
--- Export as geojson and upload to Carto to perform checks
+-- Export as geojson and upload to Carto as shared_doe_housing_20180209 to perform checks
 
-/*1. check total baseline units = 3.37M*/
+/**1. check total baseline units = 3.37M**/
 SELECT sum(baseline_units_2010) FROM capitalplanning.shared_doe_housing_20180209
 
-/*2. check no units from DOB where the geom is null*/
+/**2. check no units from DOB where the geom is null**/
 SELECT 
     sum(baseline_units_2010) AS baseline_units_2010,
     sum(u_2010_increm) AS u_2010_increm,

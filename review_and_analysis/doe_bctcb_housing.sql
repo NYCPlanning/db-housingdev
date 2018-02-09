@@ -110,3 +110,14 @@ SELECT
     sum(u_permitted) AS u_permitted
 FROM capitalplanning.shared_doe_housing_20180209
 WHERE the_geom is null
+
+/*3. check whether blocks with geom exist in censusblock boundary file*/
+
+alter table shared_doe_housing_20180209
+add column x_match text
+
+update shared_doe_housing_20180209
+set x_match = 'Y'
+from dcpadmin.dcp_nycbctcb2010 AS t
+where shared_doe_housing_20180209.the_geom is null
+and shared_doe_housing_20180209.bctcb2010 = t.bctcb2010::numeric

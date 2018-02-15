@@ -40,14 +40,14 @@ UPDATE dobdev_jobs
 				ELSE null
 			END),
 		dcp_occ_init =
-			(SELECT lookup_occupancy.dcp FROM lookup_occupancy
-			WHERE lookup_occupancy.dob = dob_occ_init),
+			(SELECT dobdev_lookup_occupancy.dcp FROM dobdev_lookup_occupancy
+			WHERE dobdev_lookup_occupancy.dob = dob_occ_init),
 		dcp_occ_prop =
-			(SELECT lookup_occupancy.dcp FROM lookup_occupancy
-			WHERE lookup_occupancy.dob = dob_occ_prop),
+			(SELECT dobdev_lookup_occupancy.dcp FROM dobdev_lookup_occupancy
+			WHERE dobdev_lookup_occupancy.dob = dob_occ_prop),
 		dcp_status = 
-			(SELECT lookup_status.dcp FROM lookup_status
-			WHERE lookup_status.dob = dobdev_jobs.status_latest);
+			(SELECT dobdev_lookup_status.dcp FROM dobdev_lookup_status
+			WHERE dobdev_lookup_status.dob = dobdev_jobs.status_latest);
 
 UPDATE dobdev_jobs
 	SET dcp_occ_init = 'Empty Lot'

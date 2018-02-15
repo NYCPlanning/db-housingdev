@@ -15,7 +15,7 @@ SET
 	bbl = b.bbl,
 	bin = b.bin,
 	x_edited = 'GBAT-A'
-FROM gbat_jobs AS b
+FROM dobdev_gbat_jobs AS b
 WHERE
 	dobdev_jobs.dob_job_number = b.dob_job_number::text
 	AND dobdev_jobs.the_geom IS NULL;
@@ -27,7 +27,7 @@ SET
 	bbl = b.bbl,
 	bin = b.bin,
 	x_edited = 'GBAT-E'
-FROM gbat_jobs AS b
+FROM dobdev_gbat_jobs AS b
 WHERE
 	dobdev_jobs.dob_job_number = b.dob_job_number::text
 	AND dobdev_jobs.the_geom IS NULL;
@@ -61,7 +61,7 @@ SET
 	-- 		ELSE bin
 	-- 	END),
 	x_edited = 'Manual-Jackie'
-FROM jackie_mangeo AS b
+FROM dobdev_jackie_mangeo AS b
 WHERE
 	dobdev_jobs.the_geom IS NULL
 	AND dobdev_jobs.dob_job_number = b.dob_job_number::text;
@@ -93,7 +93,7 @@ SET
 	-- 		ELSE bin
 	-- 	END),
 	x_edited = 'Manual-Bill'
-FROM bill_mangeo AS b
+FROM dobdev_bill_mangeo AS b
 WHERE
 	dobdev_jobs.the_geom IS NULL
 	AND dobdev_jobs.dob_job_number = b.dob_job_number::text;

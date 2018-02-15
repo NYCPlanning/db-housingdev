@@ -1,60 +1,60 @@
--- Import original data as CSV to Carto, naming the table "dob_jobs_orig", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
+-- Import original data as CSV to Carto, naming the table "dobdev_jobs_orig", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
 
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "job_number" TO "dob_job_number";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "job_type" TO "dob_type";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "borough_name" TO "boro";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "job_location_house_number" TO "address_house";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "job_location_street_name" TO "address_street";
 
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "existing_occupancy_classification_description" TO "dob_occ_init";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "proposed_occupancy_classification_description" TO "dob_occ_prop";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "existing_dwelling_units" TO "xunits_init_raw";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "proposed_dwelling_units" TO "xunits_prop_raw";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "existing_stories" TO "stories_init";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "proposed_stories" TO "stories_prop";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "existing_zoning_floor_area" TO "zoningarea_init";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "proposed_zoning_floor_area" TO "zoningarea_prop";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "proposed_total_far" TO "far_prop";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "building_type_description" TO "dob_bldg_type";
 
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "job_status_date" TO "status_date";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "current_job_status_description" TO "status_latest";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "withdrawal_description" TO "x_withdrawal";
 
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "pre_file_date" TO "status_a";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "application_process_date" TO "status_d";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "plan_approval_date" TO "status_p";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "first_permit_date" TO "status_q";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "fully_permitted_date" TO "status_r";
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	RENAME COLUMN "signoff_date" TO "status_x";
 
 	
 -- Grouping date conversions together in case date format in source data changes and edits are needed
-ALTER TABLE dob_jobs_orig
+ALTER TABLE dobdev_jobs_orig
 	ALTER COLUMN "status_date" TYPE date using TO_DATE(status_date, 'MM/DD/YYYY'),
 	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY'),
 	ALTER COLUMN "status_d" TYPE date using TO_DATE(status_d, 'MM/DD/YYYY'),
@@ -63,7 +63,7 @@ ALTER TABLE dob_jobs_orig
 	ALTER COLUMN "status_r" TYPE date using TO_DATE(status_r, 'MM/DD/YYYY'),
 	ALTER COLUMN "status_x" TYPE date using TO_DATE(status_x, 'MM/DD/YYYY');
 
--- Create empty dob_jobs table with columns in preferred order using the following query.
+-- Create empty dobdev_jobs table with columns in preferred order using the following query.
 SELECT
 	NULL AS dob_job_number,
 	NULL AS address,
@@ -164,8 +164,8 @@ SELECT
 	NULL AS xunits_prop_raw
 
 
--- Then insert the contents from dob_jobs_orig
-INSERT INTO dob_jobs
+-- Then insert the contents from dobdev_jobs_orig
+INSERT INTO dobdev_jobs
 (
 	dob_job_number,
 	address_house,
@@ -222,8 +222,8 @@ SELECT
 	zoningarea_prop,
 	xunits_init_raw,
 	xunits_prop_raw
-FROM dob_jobs_orig;
+FROM dobdev_jobs_orig;
 
-DELETE FROM dob_jobs WHERE cartodb_id = 1 AND dob_job_number IS NULL;
+DELETE FROM dobdev_jobs WHERE cartodb_id = 1 AND dob_job_number IS NULL;
 
 

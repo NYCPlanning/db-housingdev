@@ -1,7 +1,7 @@
 -- These queries are used to cleanup the data after it's been imported into the production carto server to be used for the Capital Planning Platform.
 
 -- NULL values in the data get converted to fake '00001/01/01' dates when the csv file is reimported. This query fixes those and sets them to NULL again.
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		status_a = (CASE WHEN LEFT(status_a::text, 4) = '0001' THEN NULL ELSE status_a END),
 		status_d = (CASE WHEN LEFT(status_d::text, 4) = '0001' THEN NULL ELSE status_d END),

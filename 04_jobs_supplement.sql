@@ -1,6 +1,6 @@
 -- This is an extra step given limitations of July 2017 round of DOB data -- append data with completions from prior Jan 2017, which do not appear in latest dataset
 
-INSERT INTO dob_jobs
+INSERT INTO dobdev_jobs
 (
 	the_geom,
 	address,
@@ -30,8 +30,8 @@ WITH joined AS (
 SELECT 
 	a.*,
 	b.dob_job_number as a_july2017match
-FROM dob_jobs_20161231 as a
-	LEFT JOIN dob_jobs_orig as b
+FROM dobdev_jobs_20161231 as a
+	LEFT JOIN dobdev_jobs_orig as b
 ON
 	a.dob_job_number::text = b.dob_job_number::text
 )
@@ -66,7 +66,7 @@ WHERE
 	AND dcp_pipeline_status in ('Complete', 'Demolition (complete)','Partial complete');
 
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		boro =
 			(CASE
@@ -85,11 +85,11 @@ UPDATE dob_jobs
 				ELSE dob_type
 			END);
 			
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET status_latest = 'SIGNED OFF'
 	WHERE status_latest = 'X';
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET status_latest = 'PERMIT ISSUED - ENTIRE JOB/WORK'
 	WHERE status_latest = 'R';
 

@@ -27,7 +27,7 @@ SELECT
 FROM
   cpadmin.housing_new_york_units_by_building AS h
 LEFT JOIN
-  hkates.dob_jobs_20170906 AS j
+  hkates.dobdev_jobs_20170906 AS j
 ON
   h.dcp_bbl = j.bbl
 WHERE
@@ -57,7 +57,7 @@ SELECT
   h.*,
   j.dob_job_number
 FROM
-  dob_jobs_20170906 AS j
+  dobdev_jobs_20170906 AS j
 LEFT JOIN
   housing_new_york_units_by_building AS h
 ON

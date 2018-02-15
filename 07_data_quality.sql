@@ -4,33 +4,33 @@
 
 -- Check to make sure these queries produce no results
 
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE u_net IS NOT NULL AND u_init IS NULL)
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE u_net IS NOT NULL AND u_prop IS NULL)
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE u_net IS NOT NULL AND u_net_complete IS NULL)
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE u_net IS NULL AND u_net_complete IS NOT NULL)
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE c_u_latest IS NOT NULL AND u_prop IS NOT NULL AND u_net_incomplete IS NULL)
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE dob_type = 'DM' AND (u_prop <> 0 or u_prop IS NULL))
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE dob_type = 'NB' AND (u_init <> 0 or u_init IS NULL))
 UNION
-(SELECT * FROM dob_jobs
+(SELECT * FROM dobdev_jobs
 WHERE dcp_status IS NULL)
 
 -- ALTERATIONS WITHOUT AN INITIAL NUMBER OF UNITS REPORTED
 -- Check to make sure u_XXXX_increm calculations aren't being done when first CofO appears on record for A1 records where u_init is null
-SELECT * FROM dob_jobs
+SELECT * FROM dobdev_jobs
 WHERE
 dob_type = 'A1'
 AND u_2007_existtotal IS NULL
@@ -42,7 +42,7 @@ LIMIT 10
 -- ALTERATIONS WITH AN INITIAL NUMBER OF UNITS REPORTED
 -- Check to make sure u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete are filled in with u_init until first CofO, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward.
 
-SELECT * FROM dob_jobs
+SELECT * FROM dobdev_jobs
 WHERE
 dob_type = 'A1'
 AND c_date_latest IS NOT NULL
@@ -53,7 +53,7 @@ LIMIT 10
 -- NEW BUILDINGS
 -- Check to make sure u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete are filled in with 0 until first CofO, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward.
 
-SELECT * FROM dob_jobs
+SELECT * FROM dobdev_jobs
 WHERE
 dob_type = 'NB'
 AND c_date_latest IS NOT NULL
@@ -63,7 +63,7 @@ LIMIT 10
 -- DEMOLITIONS WITH AN INITIAL NUMBER OF UNITS REPORTED
 -- Check to make sure u_XXXX_existtotal fields iare filled in with u_init until demolition is completed, and that u_XXXX_increm, u_XXXX_existtotal, and u_XXXX_netcomplete all continue to add up afterward with u_XXXX_existtotal=0.
 
-SELECT * FROM dob_jobs
+SELECT * FROM dobdev_jobs
 WHERE
 dob_type = 'DM'
 AND u_init IS NOT NULL
@@ -80,7 +80,7 @@ LIMIT 10
 (SELECT
 	* 
 FROM
-	hkates.dob_jobs
+	hkates.dobdev_jobs
 WHERE
 	u_net IS NOT NULL
 	AND (dcp_status <> 'Withdrawn' OR dcp_status IS NULL)
@@ -92,7 +92,7 @@ UNION
 (SELECT
 	* 
 FROM
-	hkates.dob_jobs
+	hkates.dobdev_jobs
 WHERE
 	u_net IS NOT NULL
 	AND (dcp_status <> 'Withdrawn' OR dcp_status IS NULL)
@@ -104,7 +104,7 @@ ORDER by u_net
 
 -- To flag the records that are outliers (DOB data entry errors) and should be excluded from analysis, include their dob_job_number in this update query:
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 SET 
 	x_outlier = TRUE
 WHERE

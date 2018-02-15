@@ -1,4 +1,4 @@
--- Create table dob_cofos as the results of the following query. 
+-- Create table dobdev_cofos as the results of the following query. 
 
 -- This selects the largest CofO per job, for each year. Multiple temporary CofOs could be issued in one year. We select the largest in order to get a single value for each year. If no CofO were issued in a given year, the u_20XX_existtotal field will be blank
 -- Note: Make sure to check that cofo_type is still in same format and the complete status is earlier in ABC
@@ -20,14 +20,14 @@ SELECT
  	min(cofo_date) AS c_date_earliest,
  	min(cofo_type) AS c_type_latest,
  	NULL::numeric AS c_u_latest
-FROM dob_cofos_orig
+FROM dobdev_cofos_orig
 GROUP BY cofo_job_number
 
--- ^ Save as dob_cofos
+-- ^ Save as dobdev_cofos
 
--- Update dob_cofos to capture the latest dwelling unit count on the CofO from the most recent year
+-- Update dobdev_cofos to capture the latest dwelling unit count on the CofO from the most recent year
 
-UPDATE dob_cofos
+UPDATE dobdev_cofos
 	SET 
 		c_u_latest = COALESCE(
 			u_2017_existtotal,

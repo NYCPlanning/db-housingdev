@@ -3,7 +3,7 @@
 -- STEP 0 Misc filling in of fields and data quality clean up
 
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET address_house = 
 		(CASE 
 			WHEN split_part(address_house, '-', 1) = 'Jan' THEN CONCAT(1, '-', split_part(address_house, '-', 2))
@@ -21,7 +21,7 @@ UPDATE dob_jobs
 			ELSE address_house
 		END);
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET address = CONCAT(address_house, ' ', address_street)
 	WHERE address IS NULL
 	AND address_street IS NOT NULL;
@@ -30,7 +30,7 @@ UPDATE dob_jobs
 -- STEP 1
 -- Translate to DCP categories and extract Housing developments. Note: this require having supplementary Occupancy table and Status table, which both translate DOB field values to DCP conventions
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		dcp_dev_category =
 			(CASE
@@ -47,17 +47,17 @@ UPDATE dob_jobs
 			WHERE lookup_occupancy.dob = dob_occ_prop),
 		dcp_status = 
 			(SELECT lookup_status.dcp FROM lookup_status
-			WHERE lookup_status.dob = dob_jobs.status_latest);
+			WHERE lookup_status.dob = dobdev_jobs.status_latest);
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET dcp_occ_init = 'Empty Lot'
 	WHERE dob_type = 'NB';
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET dcp_occ_prop = 'Empty Lot'
 	WHERE dob_type = 'DM';
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		-- Add field for creating single category to express occupancy type; order of case/when logic is intended to capture most likely impact of development; extract only residential
 		dcp_occ_category =
@@ -81,7 +81,7 @@ UPDATE dob_jobs
 -- Now that we know that some buildings are likely mixed residential,
 -- create binary field to see if there are units proposed rather than relying on DOF Occupancy values
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		xunits_binary =
 			(CASE
@@ -96,7 +96,7 @@ UPDATE dob_jobs
 -- STEP 3
 -- Create new fields for existing and proposed units, which is integer but also maintains null values from original DOB field (since this may imply erroneous record)
 -- Assumes all new buildings have a u_init=0 and all demos have a u_prop=0
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		u_init = 
 			(CASE
@@ -111,7 +111,7 @@ UPDATE dob_jobs
 
 
 -- Create field to capture proposed net change in units: negative for demolitions, proposed for new buildings, and net change for alterations (note: if an alteration is missing value for existing or proposed units, value set to null)
-UPDATE dob_jobs 
+UPDATE dobdev_jobs 
 	SET u_net =
 		CASE
 			WHEN dob_type = 'DM' THEN u_init * -1

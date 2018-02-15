@@ -2,7 +2,7 @@
 
 -- STEP 1
 -- Fill in gaps in total existing units between CofOs and before first CofO. Looks for most recent CofO value and fills that in. If a CofO value doesn't exist, fills in the initial number of exisiting units from the job application.
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		c_u_latest = b.c_u_latest,
 		c_date_latest = b.c_date_latest,
@@ -74,13 +74,13 @@ UPDATE dob_jobs
 				THEN COALESCE(u_init)
 				WHEN b.u_2007_existtotal IS NOT NULL THEN b.u_2007_existtotal
 			END)
-	FROM dob_cofos AS b
-	WHERE dob_jobs.dob_job_number = b.cofo_job_number;
+	FROM dobdev_cofos AS b
+	WHERE dobdev_jobs.dob_job_number = b.cofo_job_number;
 
 
 -- STEP 2
 -- Capture demolitions in a given year and proxy for CofO date
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		c_date_earliest = status_q,
 		c_date_latest = status_q,
@@ -109,7 +109,7 @@ UPDATE dob_jobs
 	WHERE dcp_status = 'Complete (demolition)';
 
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET
 		u_2017_existtotal = 
 			(CASE
@@ -182,7 +182,7 @@ UPDATE dob_jobs
 
 -- STEP 3
 -- Calculate cummulative completed units for each year and annual incremental changes
-UPDATE dob_jobs 
+UPDATE dobdev_jobs 
 	SET
 		u_2017_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2017_existtotal - u_init END),
 		u_2016_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2016_existtotal - u_init END),
@@ -211,7 +211,7 @@ UPDATE dob_jobs
 
 -- STEP 4
 -- Update status based on CofO data and assign number of completed units
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 SET
 	dcp_status =
 		(CASE 
@@ -234,7 +234,7 @@ SET
 -- STEP 5
 -- Update column to capture outstanding (non-complete) units
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET u_net_incomplete =
 		CASE 
 			WHEN u_net IS NOT NULL AND dcp_status LIKE '%Complete%' THEN 0
@@ -247,7 +247,7 @@ UPDATE dob_jobs
 -- STEP 6
 -- Tag projects that have been inactive for at least 5 years
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET x_inactive =
 		(CASE
 			WHEN (CURRENT_DATE - status_date)/365 >= 5 THEN TRUE
@@ -259,7 +259,7 @@ UPDATE dob_jobs
 		AND status_latest <> 'SIGNED OFF'
 		AND status_latest <> 'SIGNED-OFF';
 
-UPDATE dob_jobs
+UPDATE dobdev_jobs
 	SET x_inactive = false
 	WHERE
 		x_inactive IS NULL;

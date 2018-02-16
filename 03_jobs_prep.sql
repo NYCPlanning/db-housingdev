@@ -1,60 +1,60 @@
--- Import original data as CSV to Carto, naming the table "dobdev_jobs_orig", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
+-- Import original data as CSV to Carto, naming the table "dobdev_jobs_orig_20171231", and replace column names with preferred columns names that will be used for rest of processing. Carto automatically makes everything lower case and replaces spaces and special characters with "_".
 
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "job_number" TO "dob_job_number";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "job_type" TO "dob_type";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "borough_name" TO "boro";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "job_location_house_number" TO "address_house";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "job_location_street_name" TO "address_street";
 
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "existing_occupancy_classification_description" TO "dob_occ_init";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_occupancy_classification_description" TO "dob_occ_prop";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "existing_dwelling_units" TO "xunits_init_raw";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_dwelling_units" TO "xunits_prop_raw";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "existing_stories" TO "stories_init";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_stories" TO "stories_prop";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "existing_zoning_floor_area" TO "zoningarea_init";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_zoning_floor_area" TO "zoningarea_prop";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_total_far" TO "far_prop";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "building_type_description" TO "dob_bldg_type";
 
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "job_status_date" TO "status_date";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "current_job_status_description" TO "status_latest";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "withdrawal_description" TO "x_withdrawal";
 
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "pre_file_date" TO "status_a";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "application_process_date" TO "status_d";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "plan_approval_date" TO "status_p";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "first_permit_date" TO "status_q";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "fully_permitted_date" TO "status_r";
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "signoff_date" TO "status_x";
 
 	
 -- Grouping date conversions together in case date format in source data changes and edits are needed
-ALTER TABLE dobdev_jobs_orig
+ALTER TABLE dobdev_jobs_orig_20171231
 	ALTER COLUMN "status_date" TYPE date using TO_DATE(status_date, 'MM/DD/YYYY'),
 	ALTER COLUMN "status_a" TYPE date using TO_DATE(status_a, 'MM/DD/YYYY'),
 	ALTER COLUMN "status_d" TYPE date using TO_DATE(status_d, 'MM/DD/YYYY'),
@@ -108,7 +108,8 @@ SELECT
 	NULL::numeric AS u_2007_existtotal,
 	NULL::numeric AS u_2008_existtotal,
 	NULL::numeric AS u_2009_existtotal,
-	NULL::numeric AS u_2010_existtotal,
+	NULL::numeric AS u_2010pre_existtotal,
+	NULL::numeric AS u_2010post_existtotal,
 	NULL::numeric AS u_2011_existtotal,
 	NULL::numeric AS u_2012_existtotal,
 	NULL::numeric AS u_2013_existtotal,
@@ -119,7 +120,8 @@ SELECT
 	NULL::numeric AS u_2007_increm,
 	NULL::numeric AS u_2008_increm,
 	NULL::numeric AS u_2009_increm,
-	NULL::numeric AS u_2010_increm,
+	NULL::numeric AS u_2010pre_increm,
+	NULL::numeric AS u_2010post_increm,
 	NULL::numeric AS u_2011_increm,
 	NULL::numeric AS u_2012_increm,
 	NULL::numeric AS u_2013_increm,
@@ -130,7 +132,8 @@ SELECT
 	NULL::numeric AS u_2007_netcomplete,
 	NULL::numeric AS u_2008_netcomplete,
 	NULL::numeric AS u_2009_netcomplete,
-	NULL::numeric AS u_2010_netcomplete,
+	NULL::numeric AS u_2010pre_netcomplete,
+	NULL::numeric AS u_2010post_netcomplete,
 	NULL::numeric AS u_2011_netcomplete,
 	NULL::numeric AS u_2012_netcomplete,
 	NULL::numeric AS u_2013_netcomplete,
@@ -156,7 +159,7 @@ SELECT
 	NULL AS x_dup_id,
 	NULL::date AS x_dup_maxstatusdate,
 	NULL::date AS x_dup_maxcofodate,
-	NULL AS x_edited,
+	NULL AS x_geomsource,
 	NULL AS x_inactive,
 	NULL AS x_outlier,
 	NULL AS x_withdrawal,
@@ -164,7 +167,7 @@ SELECT
 	NULL AS xunits_prop_raw
 
 
--- Then insert the contents from dobdev_jobs_orig
+-- Then insert the contents from dobdev_jobs_orig_20171231
 INSERT INTO dobdev_jobs
 (
 	dob_job_number,
@@ -192,7 +195,8 @@ INSERT INTO dobdev_jobs
 	zoningarea_init,
 	zoningarea_prop,
 	xunits_init_raw,
-	xunits_prop_raw
+	xunits_prop_raw,
+	x_withdrawal
 )
 
 SELECT
@@ -221,8 +225,9 @@ SELECT
 	zoningarea_init,
 	zoningarea_prop,
 	xunits_init_raw,
-	xunits_prop_raw
-FROM dobdev_jobs_orig;
+	xunits_prop_raw,
+	x_withdrawal
+FROM dobdev_jobs_orig_20171231;
 
 DELETE FROM dobdev_jobs WHERE cartodb_id = 1 AND dob_job_number IS NULL;
 

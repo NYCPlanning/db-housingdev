@@ -31,7 +31,7 @@ SELECT
 	a.*,
 	b.dob_job_number as a_july2017match
 FROM dobdev_jobs_20161231 as a
-	LEFT JOIN dobdev_jobs_orig as b
+	LEFT JOIN dobdev_jobs_orig_20171231 as b
 ON
 	a.dob_job_number::text = b.dob_job_number::text
 )

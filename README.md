@@ -120,7 +120,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 ## Maintenance
 
 ### Checklist
-- [x] Obtain updated batch of DOB datasets and upload to Carto as `dobdev_cofos_orig` and `dobdev_jobs_orig`
+- [x] Obtain updated batch of DOB datasets and upload to Carto as `dobdev_cofos_orig_20171231` and `dobdev_jobs_orig_20171231`
 - [x] Review the data and make any necessary changes to the DOB-DCP lookup tables: [status](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_status.csv) and [occupancy](https://github.com/NYCPlanning/housingdev-db/blob/master/lookup_tables/lookup_occupancy.csv). Upload the revised lookup tables as needed.
 - [x] Update the original, raw field names to be renamed in [01_cofos_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/01_cofos_prep.sql) and [003_jobs_prep.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/03_jobs_prep.sql)
 - [x] Make sure to update the year columns in [02_cofos_process.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/02_cofos_process.sql) and [06_integrate.sql](https://github.com/NYCPlanning/housingpipeline-db/blob/master/06_integrate.sql), adding the latest year

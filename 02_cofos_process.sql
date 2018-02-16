@@ -8,7 +8,8 @@ SELECT
 	max(CASE WHEN cofo_year = '2007' THEN cofo_units END) as u_2007_existtotal,
 	max(CASE WHEN cofo_year = '2008' THEN cofo_units END) as u_2008_existtotal,
 	max(CASE WHEN cofo_year = '2009' THEN cofo_units END) as u_2009_existtotal,
-	max(CASE WHEN cofo_year = '2010' THEN cofo_units END) as u_2010_existtotal,
+	max(CASE WHEN cofo_year = '2010-PreCensus' THEN cofo_units END) as u_2010pre_existtotal,
+	max(CASE WHEN cofo_year = '2010-PostCensus' THEN cofo_units END) as u_2010post_existtotal,
  	max(CASE WHEN cofo_year = '2011' THEN cofo_units END) as u_2011_existtotal,
  	max(CASE WHEN cofo_year = '2012' THEN cofo_units END) as u_2012_existtotal,
 	max(CASE WHEN cofo_year = '2013' THEN cofo_units END) as u_2013_existtotal,
@@ -20,14 +21,14 @@ SELECT
  	min(cofo_date) AS c_date_earliest,
  	min(cofo_type) AS c_type_latest,
  	NULL::numeric AS c_u_latest
-FROM dobdev_cofos_orig
+FROM dobdev_cofos_orig_20171231
 GROUP BY cofo_job_number
 
 -- ^ Save as dobdev_cofos
 
 -- Update dobdev_cofos to capture the latest dwelling unit count on the CofO from the most recent year
 
-UPDATE dobdev_cofos
+UPDATE dobdev_cofos_20171231
 	SET 
 		c_u_latest = COALESCE(
 			u_2017_existtotal,
@@ -37,7 +38,8 @@ UPDATE dobdev_cofos
 			u_2013_existtotal,
 			u_2012_existtotal,
 			u_2011_existtotal,
-			u_2010_existtotal,
+			u_2010post_existtotal,
+			u_2010pre_existtotal,
 			u_2009_existtotal,
 			u_2008_existtotal,
 			u_2007_existtotal);

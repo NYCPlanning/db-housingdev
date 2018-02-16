@@ -11,50 +11,56 @@ UPDATE dobdev_jobs
 		u_2017_existtotal = 
 			(CASE 
 				WHEN b.u_2017_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2016_existtotal, b.u_2015_existtotal, b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2016_existtotal, b.u_2015_existtotal, b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2017_existtotal IS NOT NULL THEN b.u_2017_existtotal
 			END),
 		u_2016_existtotal = 
 			(CASE 
 				WHEN b.u_2016_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2015_existtotal, b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2015_existtotal, b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2016_existtotal IS NOT NULL THEN b.u_2016_existtotal
 			END),
 		u_2015_existtotal = 
 			(CASE 
 				WHEN b.u_2015_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2014_existtotal, b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2015_existtotal IS NOT NULL THEN b.u_2015_existtotal
 			END),
 		u_2014_existtotal = 
 			(CASE 
 				WHEN b.u_2014_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2013_existtotal, b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2014_existtotal IS NOT NULL THEN b.u_2014_existtotal
 			END),
 		u_2013_existtotal = 
 			(CASE 
 				WHEN b.u_2013_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2012_existtotal, b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2013_existtotal IS NOT NULL THEN b.u_2013_existtotal
 			END),
 		u_2012_existtotal = 
 			(CASE 
 				WHEN b.u_2012_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2011_existtotal, b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2011_existtotal, b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2012_existtotal IS NOT NULL THEN b.u_2012_existtotal
 			END),
 		u_2011_existtotal = 
 			(CASE 
 				WHEN b.u_2011_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
-				THEN COALESCE(b.u_2010_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				THEN COALESCE(b.u_2010post_existtotal, b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
 				WHEN b.u_2011_existtotal IS NOT NULL THEN b.u_2011_existtotal 
 			END),
-		u_2010_existtotal = 
+		u_2010post_existtotal = 
 			(CASE 
-				WHEN b.u_2010_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
+				WHEN b.u_2010post_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
+				THEN COALESCE(b.u_2010pre_existtotal, b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
+				WHEN b.u_2010post_existtotal IS NOT NULL THEN b.u_2010post_existtotal 
+			END),
+		u_2010pre_existtotal = 
+			(CASE 
+				WHEN b.u_2010pre_existtotal IS NULL AND dcp_status <> 'Complete (demolition)'
 				THEN COALESCE(b.u_2009_existtotal, b.u_2008_existtotal, b.u_2007_existtotal, u_init)
-				WHEN b.u_2010_existtotal IS NOT NULL THEN b.u_2010_existtotal 
+				WHEN b.u_2010pre_existtotal IS NOT NULL THEN b.u_2010pre_existtotal 
 			END),
 		u_2009_existtotal = 
 			(CASE 
@@ -74,7 +80,7 @@ UPDATE dobdev_jobs
 				THEN COALESCE(u_init)
 				WHEN b.u_2007_existtotal IS NOT NULL THEN b.u_2007_existtotal
 			END)
-	FROM dobdev_cofos AS b
+	FROM dobdev_cofos_20171231_test AS b
 	WHERE dobdev_jobs.dob_job_number = b.cofo_job_number;
 
 
@@ -90,8 +96,10 @@ UPDATE dobdev_jobs
 			(CASE WHEN LEFT (status_q::text, 4) = '2008' THEN 0 ELSE u_2008_existtotal END),
 		u_2009_existtotal = 
 			(CASE WHEN LEFT (status_q::text, 4) = '2009' THEN 0 ELSE u_2009_existtotal END),
-		u_2010_existtotal = 
-			(CASE WHEN LEFT (status_q::text, 4) = '2010' THEN 0 ELSE u_2010_existtotal END),
+		u_2010pre_existtotal = 
+			(CASE WHEN status_q < TO_DATE('04/01/2010', 'MM/DD/YYYY') AND status_q >= TO_DATE('01/01/2010', 'MM/DD/YYYY') THEN 0 ELSE u_2010pre_existtotal END),
+		u_2010post_existtotal = 
+			(CASE WHEN status_q >= TO_DATE('04/01/2010', 'MM/DD/YYYY') AND status_q < TO_DATE('01/01/2011', 'MM/DD/YYYY') THEN 0 ELSE u_2010post_existtotal END),
 		u_2011_existtotal = 
 			(CASE WHEN LEFT (status_q::text, 4) = '2011' THEN 0 ELSE u_2011_existtotal END),
 		u_2012_existtotal = 
@@ -108,56 +116,61 @@ UPDATE dobdev_jobs
 			(CASE WHEN LEFT (status_q::text, 4) = '2017' THEN 0 ELSE u_2017_existtotal END)
 	WHERE dcp_status = 'Complete (demolition)';
 
-
 UPDATE dobdev_jobs
 	SET
 		u_2017_existtotal = 
 			(CASE
 				WHEN u_2017_existtotal IS NULL 
-				THEN COALESCE(u_2016_existtotal, u_2015_existtotal, u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2016_existtotal, u_2015_existtotal, u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2017_existtotal
 			END),
 		u_2016_existtotal = 
 			(CASE
 				WHEN u_2016_existtotal IS NULL 
-				THEN COALESCE(u_2015_existtotal, u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2015_existtotal, u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2016_existtotal
 			END),
 		u_2015_existtotal = 
 			(CASE
 				WHEN u_2015_existtotal IS NULL 
-				THEN COALESCE(u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2014_existtotal, u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2015_existtotal
 			END),
 		u_2014_existtotal = 
 			(CASE
 				WHEN u_2014_existtotal IS NULL 
-				THEN COALESCE(u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2013_existtotal, u_2012_existtotal, u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2014_existtotal
 			END),
 		u_2013_existtotal = 
 			(CASE
 				WHEN u_2013_existtotal IS NULL 
-				THEN COALESCE(u_2012_existtotal, u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2012_existtotal, u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2013_existtotal
 			END),
 		u_2012_existtotal = 
 			(CASE
 				WHEN u_2012_existtotal IS NULL 
-				THEN COALESCE(u_2011_existtotal, u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2011_existtotal, u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2012_existtotal
 			END),
 		u_2011_existtotal = 
 			(CASE
 				WHEN u_2011_existtotal IS NULL 
-				THEN COALESCE(u_2010_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				THEN COALESCE(u_2010post_existtotal, u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
 				ELSE u_2011_existtotal
 			END),
-		u_2010_existtotal = 
+		u_2010post_existtotal = 
 			(CASE
-				WHEN u_2010_existtotal IS NULL 
+				WHEN u_2010post_existtotal IS NULL 
+				THEN COALESCE(u_2010pre_existtotal, u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
+				ELSE u_2010post_existtotal
+			END),
+		u_2010pre_existtotal = 
+			(CASE
+				WHEN u_2010pre_existtotal IS NULL 
 				THEN COALESCE(u_2009_existtotal, u_2008_existtotal, u_2007_existtotal, u_init)
-				ELSE u_2010_existtotal
+				ELSE u_2010pre_existtotal
 			END),
 		u_2009_existtotal = 
 			(CASE
@@ -191,7 +204,8 @@ UPDATE dobdev_jobs
 		u_2013_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2013_existtotal - u_init END),
 		u_2012_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2012_existtotal - u_init END),
 		u_2011_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2011_existtotal - u_init END),
-		u_2010_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2010_existtotal - u_init END),
+		u_2010post_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2010post_existtotal - u_init END),
+		u_2010pre_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2010pre_existtotal - u_init END),		
 		u_2009_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2009_existtotal - u_init END),
 		u_2008_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2008_existtotal - u_init END),
 		u_2007_netcomplete = (CASE WHEN u_init IS NOT NULL THEN u_2007_existtotal - u_init END),
@@ -201,8 +215,9 @@ UPDATE dobdev_jobs
 		u_2014_increm = u_2014_existtotal - u_2013_existtotal,
 		u_2013_increm = u_2013_existtotal - u_2012_existtotal,
 		u_2012_increm = u_2012_existtotal - u_2011_existtotal,
-		u_2011_increm = u_2011_existtotal - u_2010_existtotal,
-		u_2010_increm = u_2010_existtotal - u_2009_existtotal,
+		u_2011_increm = u_2011_existtotal - u_2010post_existtotal,
+		u_2010post_increm = u_2010post_existtotal - u_2010pre_existtotal,
+		u_2010pre_increm = u_2010pre_existtotal - u_2009_existtotal,
 		u_2009_increm = u_2009_existtotal - u_2008_existtotal,
 		u_2008_increm = u_2008_existtotal - u_2007_existtotal,
 		u_2007_increm = u_2007_existtotal - u_init

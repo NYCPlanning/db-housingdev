@@ -160,6 +160,7 @@ SELECT
 	NULL::date AS x_dup_maxstatusdate,
 	NULL::date AS x_dup_maxcofodate,
 	NULL AS x_geomsource,
+	NULL AS x_occsource,
 	NULL AS x_inactive,
 	NULL AS x_outlier,
 	NULL AS x_withdrawal,

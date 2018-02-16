@@ -80,7 +80,7 @@ UPDATE dobdev_jobs
 				THEN COALESCE(u_init)
 				WHEN b.u_2007_existtotal IS NOT NULL THEN b.u_2007_existtotal
 			END)
-	FROM dobdev_cofos_20171231_test AS b
+	FROM dobdev_cofos_20171231 AS b
 	WHERE dobdev_jobs.dob_job_number = b.cofo_job_number;
 
 

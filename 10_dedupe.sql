@@ -3,7 +3,7 @@ ADD COLUMN x_dup_notes text;
 
 UPDATE capitalplanning.dobdev_jobs
 	SET
-		x_dup_id = CONCAT(dob_type,bbl,CONCAT(address_house,' ',address_street))
+		x_dup_id = CONCAT(dob_type,bbl,bin,CONCAT(address_house,' ',address_street))
 	WHERE
 		dcp_status <> 'Withdrawn'
 		AND dcp_status <> 'Disapproved'
@@ -60,10 +60,10 @@ UPDATE capitalplanning.dobdev_jobs
 		AND dcp_status <> 'Complete';
 
 
--- -- Tests
--- -- How many sets of dup_ids found duplicates? 442
--- SELECT count(distinct x_dup_id) FROM capitalplanning.dobdev_jobs
--- where x_dup_flag is not null
+-- Tests
+-- How many sets of dup_ids found duplicates? 237
+SELECT count(distinct x_dup_id) FROM capitalplanning.dobdev_jobs
+where x_dup_flag is not null
 
 
 -- -- Look at all duplicate sets

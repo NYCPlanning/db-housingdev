@@ -60,10 +60,10 @@ UPDATE capitalplanning.dobdev_jobs
 		AND dcp_status <> 'Complete';
 
 
--- Tests
--- How many sets of dup_ids found duplicates? 237
-SELECT count(distinct x_dup_id) FROM capitalplanning.dobdev_jobs
-where x_dup_flag is not null
+-- -- Tests
+-- -- How many sets of dup_ids found duplicates? 237
+-- SELECT count(distinct x_dup_id) FROM capitalplanning.dobdev_jobs
+-- where x_dup_flag is not null
 
 
 -- -- Look at all duplicate sets

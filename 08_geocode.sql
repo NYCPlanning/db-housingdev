@@ -1,4 +1,13 @@
--- First tags geoms that came from Jan 2017 data for tracing purposes
+-- Clean up dummy BBLs and BINs
+UPDATE dobdev_jobs
+SET bbl = NULL
+WHERE bbl = '0';
+
+UPDATE dobdev_jobs
+SET bin = NULL
+WHERE bin = '0' OR RIGHT(bin, 6) = '000000';
+
+-- Tags geoms that came from Jan 2017 data for tracing purposes
 UPDATE dobdev_jobs
 SET x_geomsource = 'Jan2017'
 WHERE
@@ -6,14 +15,26 @@ WHERE
 	AND x_geomsource IS NULL
 	AND x_datafreshness = 'January 2017';
 
+-- Geoclient
+
+-- Pull in Geoclient output
+UPDATE dobdev_jobs
+SET
+	the_geom = (CASE WHEN b.long_geoclient <> 0 THEN ST_SetSRID(ST_MakePoint(b.long_geoclient, b.lat_geoclient),4326) ELSE NULL END),
+	bbl = (CASE WHEN b.bbl_geoclient::text IS NOT NULL THEN b.bbl_geoclient::text ELSE bbl END),
+	bin = (CASE WHEN b.bin_geoclient::text IS NOT NULL THEN b.bin_geoclient::text ELSE bin END),
+	x_geomsource = (CASE WHEN b.long_geoclient <> 0 THEN 'Geoclient' ELSE NULL END)
+FROM dobdev_jobs_geoclient AS b
+WHERE dobdev_jobs.dob_job_number::text = b.dob_job_number::text;
+ 
 -- GBAT
 
 -- Apply geoms from Function A GBAT results
 UPDATE dobdev_jobs
 SET
 	the_geom = ST_SetSRID(ST_MakePoint(b.Along, b.Alat),4326),
-	bbl = b.bbl,
-	bin = b.bin,
+	bbl = (CASE WHEN dobdev_jobs.bbl IS NULL THEN b.bbl::text ELSE dobdev_jobs.bbl END),
+	bin = (CASE WHEN dobdev_jobs.bin IS NULL THEN b.bin::text ELSE dobdev_jobs.bin END),
 	x_geomsource = 'GBAT-A'
 FROM dobdev_gbat_jobs AS b
 WHERE
@@ -23,10 +44,10 @@ WHERE
 -- Apply geoms from Function E GBAT results
 UPDATE dobdev_jobs
 SET
-	the_geom = ST_SetSRID(ST_MakePoint(b.Elong, b.Elat),4326),
-	bbl = b.bbl,
-	bin = b.bin,
-	x_geomsource = 'GBAT-E'
+	the_geom = (CASE WHEN b.Elong <> 0 THEN ST_SetSRID(ST_MakePoint(b.Elong, b.Elat),4326) END),
+	bbl = (CASE WHEN dobdev_jobs.bbl IS NULL THEN b.bbl::text ELSE dobdev_jobs.bbl END),
+	bin = (CASE WHEN dobdev_jobs.bin IS NULL THEN b.bin::text ELSE dobdev_jobs.bin END),
+	x_geomsource = (CASE WHEN b.Elong <> 0 THEN 'GBAT-E' ELSE NULL END)
 FROM dobdev_gbat_jobs AS b
 WHERE
 	dobdev_jobs.dob_job_number = b.dob_job_number::text
@@ -70,28 +91,6 @@ WHERE
 UPDATE dobdev_jobs
 SET
 	the_geom = ST_SetSRID(ST_MakePoint(b.Along::numeric, b.Alat::numeric),4326),
-	-- bbl =
-	-- 	(CASE
-	-- 		WHEN b.bbl <> ''
-	-- 			AND b.bbl IS NOT NULL
-	-- 			AND b.bbl <> 0
-	-- 			THEN b.bbl
-	-- 		ELSE bbl
-	-- 	END),
-	-- bin =
-	-- 	(CASE
-	-- 		WHEN b.bin <> ''
-	-- 			AND b.bin <> ' '
-	-- 			AND b.bin IS NOT NULL
-	-- 			AND b.bin <> 0				
-	-- 			AND b.bin <> 100000
-	-- 			AND b.bin <> 200000
-	-- 			AND b.bin <> 300000
-	-- 			AND b.bin <> 400000
-	-- 			AND b.bin <> 500000
-	-- 			THEN b.bin
-	-- 		ELSE bin
-	-- 	END),
 	x_geomsource = 'Manual-Jackie'
 FROM dobdev_jackie_mangeo AS b
 WHERE
@@ -102,28 +101,6 @@ WHERE
 UPDATE dobdev_jobs
 SET
 	the_geom = ST_SetSRID(ST_MakePoint(b.Along::numeric, b.Alat::numeric),4326),
-	-- bbl =
-	-- 	(CASE
-	-- 		WHEN b.bbl <> ''
-	-- 			AND b.bbl IS NOT NULL
-	-- 			AND b.bbl <> 0
-	-- 			THEN b.bbl
-	-- 		ELSE bbl
-	-- 	END),
-	-- bin =
-	-- 	(CASE
-	-- 		WHEN b.bin <> ''
-	-- 			AND b.bin <> ' '
-	-- 			AND b.bin IS NOT NULL
-	-- 			AND b.bin <> 0
-	-- 			AND b.bin <> 100000
-	-- 			AND b.bin <> 200000
-	-- 			AND b.bin <> 300000
-	-- 			AND b.bin <> 400000
-	-- 			AND b.bin <> 500000
-	-- 			THEN b.bin
-	-- 		ELSE bin
-	-- 	END),
 	x_geomsource = 'Manual-Bill'
 FROM dobdev_bill_mangeo AS b
 WHERE
@@ -132,15 +109,30 @@ WHERE
 
 
 -- Reapply reapply previous geoms from points that were manually moved
-UPDATE dobdev_jobs
-SET
-	the_geom = ST_SetSRID(ST_MakePoint(-73.96792173,40.7148463),4326),
-	x_geomsource = 'Manual-Move'
-WHERE dob_job_number = '320917503';
+-- UPDATE dobdev_jobs
+-- SET
+-- 	the_geom = ST_SetSRID(ST_MakePoint(-73.96792173,40.7148463),4326),
+-- 	x_geomsource = 'Manual-Move'
+-- WHERE dob_job_number = '320917503';
+
+-- UPDATE dobdev_jobs
+-- SET
+-- 	the_geom = ST_SetSRID(ST_MakePoint(-74.01180267,40.70082104),4326),
+-- 	x_geomsource = 'Manual-Move'
+-- WHERE dob_job_number = '121324129';
 
 UPDATE dobdev_jobs
 SET
-	the_geom = ST_SetSRID(ST_MakePoint(-74.01180267,40.70082104),4326),
+	the_geom = ST_SetSRID(ST_MakePoint(-73.962936, 40.719756),4326),
 	x_geomsource = 'Manual-Move'
-WHERE dob_job_number = '121324129';
+WHERE dob_job_number = '302143883';
 
+
+-- Clean up dummy BBLs and BINs
+UPDATE dobdev_jobs
+SET bbl = NULL
+WHERE bbl = '0';
+
+UPDATE dobdev_jobs
+SET bin = NULL
+WHERE bin = '0' OR RIGHT(bin, 6) = '000000';

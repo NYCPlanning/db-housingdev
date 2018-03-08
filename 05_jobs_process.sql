@@ -1,5 +1,6 @@
 -- RUN EACH STEP INDIVIDUALLY
 
+
 -- STEP 0 Misc filling in of fields and data quality clean up
 
 
@@ -75,6 +76,14 @@ UPDATE dobdev_jobs
 				ELSE dcp_status
 			END);
 
+-- Recode dcp occupancy based on Bill's manual findings (Need to fogure out where this step belongs long-term)
+UPDATE dobdev_jobs
+	SET
+		dcp_occ_category = 'Other Accommodations',
+		dcp_occ_prop = 'Other Accommodations',
+		x_occsource = 'Legacy'
+	FROM dobdev_recodedfrom_residental_to_other
+	WHERE dobdev_jobs.dob_job_number = dobdev_recodedfrom_residental_to_other.dob_job_number::text;
 
 
 -- STEP 2

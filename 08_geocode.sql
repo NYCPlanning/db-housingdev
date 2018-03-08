@@ -107,6 +107,17 @@ WHERE
 	dobdev_jobs.the_geom IS NULL
 	AND dobdev_jobs.dob_job_number = b.dob_job_number::text;
 
+-- Final round of manual geocoding
+UPDATE dobdev_jobs
+SET
+	the_geom = ST_SetSRID(ST_MakePoint(b.long::numeric, b.lat::numeric),4326),
+	bin = b.bin,
+	bbl = b.bbl,
+	x_geomsource = (CASE WHEN b.label = 'Legacy' THEN 'Manual-BillLegacy' WHEN b.label = 'SamL-manual' THEN 'Manual-Sam' END)
+FROM dobdev_manualgeo_sl AS b
+WHERE
+	dobdev_jobs.the_geom IS NULL
+	AND dobdev_jobs.dob_job_number = b.dob_job_number::text;
 
 -- Reapply reapply previous geoms from points that were manually moved
 -- UPDATE dobdev_jobs

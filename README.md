@@ -92,7 +92,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_datafreshness | Flag for which batch of DOB data provided the reord | |
 | x_dup_flag | Flag that identifies likely duplicate records that should be excluded from analyses | |
 | x_dup_id | Unique ID, comprised of a concatentation of address, job ID, and project type used to check for duplicates | |
-| x_dup_maxdate | Most recent status date from the most recently updaetd record in the grouping of likely duplicate records | |
+| x_dup_maxstatusdate | Most recent status date from the most recently updaetd record in the grouping of likely duplicate records | |
+| x_dup_maxcofodate | Most recent CofO date from the most recently updaetd record in the grouping of likely duplicate records | |
 | x_geomsource | Flag that indicates the source of the geometry for the record | |
 | x_occsource | Flag that indicates the source of the dcp_occ_category and dcp_occ_prop values for the record | |
 | x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | |

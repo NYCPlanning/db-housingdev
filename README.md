@@ -28,8 +28,9 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 | Field Name | Definition | Notes on Field Usage |
 | :-- | :-- | :-- |
+| dob_job_number | Unique ID per job application | |
 | cartodb_id | Unique ID created by Carto | |
-| the_geom | Point geometry for the record | Please note that not all records could be geocoded. |
+| the_geom | Point geometry for the record | Please note that records were geocoded using multiple methods. |
 | address | Full address of a site | |
 | address_house | The house number of the address | |
 | address_street | The street name of the address | |
@@ -42,21 +43,46 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | boro | Borough | |
 | block | City block ID number | |
 | lot | City lot ID number | |
-| c_date_earliest | Date of earliest CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
-| c_date_latest | Date of most recent CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
-| c_type_latest | Specificies most recent CofO type (Temporary or Final) | |
-| c_u_latest | Number of units captured in most recent CofO issued | Used to determine that latest number of units reported in a CofO. Used to calculated how many units are incomplete based on the number of units proposed in a job application. |
+| dob_type | DOB's type catgory for the job (NB = New Building, A1 = Alteration, Dm = Demolition) | |
 | dcp_dev_category | Field created by DCP to translate the DOB job type (dob_type): New Building, Alteration, or Demolition | |
 | dcp_occ_category | Indicates whether a building is a full-time residential building or another type of accomdation, like a hotel or dormitory | Can be used for filtering out types of developments, like hotels, based on a user's research question. |
 | dcp_occ_init | Simplified label for the initial occupancy type of the building | |
 | dcp_occ_prop | Simplified label for the proposed occupancy type of the building | Can be used for filtering out types of developments, like hotels, based on a user's research question. |
-| dcp_status | Field created by DCP to capture statuses assigned by DCP. Complete: most recent CofO lists >80% of permit proposed units. Partial complete: most recent CofO lists <80% of permit proposed units. Permit outstanding: first permit issued but no CofOs issued. Permit pending: permit application complete but first permit not issued | Can be used for filtering out projects that only have an application on file and therefore have a lower chance of coming to fruition. Only ~30% of applications turn into permitted projects. |
-| dob_bldg_type | DOB's description for the building classification type | |
-| dob_job_number | Unique ID per job application | |
 | dob_occ_init | Exisiting occupancy type at time of job application. This indicates whether a site is/was initially a hotel, 1-2 family home, commercial space, etc. | |
 | dob_occ_prop | Proposed occupancy type at time of job application. This indicates whether the site is being converted into a hotel, 1-2 family home, commercial space, etc. | |
-| dob_type | DOB's type catgory for the job (NB = New Building, A1 = Alteration, Dm = Demolition) | |
+| dcp_status | Field created by DCP to capture statuses assigned by DCP. Complete: most recent CofO lists >80% of permit proposed units. Partial complete: most recent CofO lists <80% of permit proposed units. Permit outstanding: first permit issued but no CofOs issued. Permit pending: permit application complete but first permit not issued | Can be used for filtering out projects that only have an application on file and therefore have a lower chance of coming to fruition. Only ~30% of applications turn into permitted projects. |
+| status_latest | Most recent job status, listed in DOB jobs data. More details on each status label: https://www1.nyc.gov/assets/buildings/pdf/bisjobstatus.pdf | |
+| status_date | Date of most recent job status update | |
+| status_a | Date of pre-filing application | |
+| status_d | Date of completed application on file | |
+| status_p | Date of plan examination approval | |
+| status_q | Date of first partial permit issuance | |
+| status_r | Date of full permit issuance | |
+| status_x | Date of job completion | |
+| dob_bldg_type | DOB's description for the building classification type | |
 | far_prop | The proposed Floor-Area-Ratio (FAR) for the project | |
+| stories_init | Initial number of building stories | |
+| stories_prop | Proposed number of building stories | |
+| zoningarea_init | Initial zoning reported in DOB job application | |
+| zoningarea_prop | Proposed zoning reported in DOB job application | |
+| u_init | Number of units that initially existed in building at time of job application | |
+| u_prop | Number of final units proposed in job application | |
+| u_net | Net change in unit count proposed in application. Note: This value could only be calculated in cases where values were provided for both u_init and u_prop. | |
+| u_net_complete | Cummulative number of proposed units that have been completed to date | |
+| u_net_incomplete | Number of proposed units that have not yet been completed to date | This field should be used for identifying the number of units in the "pipeline" of projects. |
+| c_date_earliest | Date of earliest CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
+| c_date_latest | Date of most recent CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
+| c_type_latest | Specificies most recent CofO type (Temporary or Final) | |
+| c_u_latest | Number of units captured in most recent CofO issued | Used to determine that latest number of units reported in a CofO. Used to calculated how many units are incomplete based on the number of units proposed in a job application. |
+| u_2007_existtotal - u_2017_existtotal | Total legal units that exist in the building in this year. These values are populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2010pre_existtotal | Total legal units that exist in the building in 2010 before April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2010post_existtotal | Total legal units that exist in the building in 2010 after April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2007_increm - u_2017_increm | Incremental change in total units in each year (i.e. u_2017_existtotal - u_2016_existtotal). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
+| u_2010pre_increm | Incremental change in total units in the portion of 2010 before April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
+| u_2010post_increm | Incremental change in total units in the portion of 2010 after April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
+| u_2007_netcomplete - u_2017_netcomplete | Cummulative net units completed in building in this year compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
+| u_2010pre_netcomplete | Cummulative net units completed in building by April 1, 2010 (2010 US Census date) compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
+| u_2010post_netcomplete | Cummulative net units completed in building by end of 2010 compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
 | geo_cd | NYC Community District | |
 | geo_censusblock | US Census Block | |
 | geo_csd | DOE school district | |
@@ -69,30 +95,6 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | f_pfirms2015_100yr | 2015 Preliminary FEMA Flood Insurance Rate Map zone | |
 | f_2050s_100yr | Flags whether the record is inside the FEMA projected 2050s 100-yr floodplain boundary | |
 | f_2050s_hightide | Flags whether the record is inside the FEMA projected 2050s high tide boundary | |
-| status_a | Date of pre-filing application | |
-| status_d | Date of completed application on file | |
-| status_date | Date of most recent job status update | |
-| status_latest | Most recent job status, listed in DOB jobs data. More details on each status label: https://www1.nyc.gov/assets/buildings/pdf/bisjobstatus.pdf | |
-| status_p | Date of plan examination approval | |
-| status_q | Date of first partial permit issuance | |
-| status_r | Date of full permit issuance | |
-| status_x | Date of job completion | |
-| stories_init | Initial number of building stories | |
-| stories_prop | Proposed number of building stories | |
-| u_2007_existtotal - u_2017_existtotal | Total legal units that exist in the building in this year. These values are populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
-| u_2010pre_existtotal | Total legal units that exist in the building in 2010 before April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
-| u_2010post_existtotal | Total legal units that exist in the building in 2010 after April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
-| u_2007_increm - u_2017_increm | Incremental change in total units in each year (i.e. u_2017_existtotal - u_2016_existtotal). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
-| u_2010pre_increm | Incremental change in total units in the portion of 2010 before April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
-| u_2010post_increm | Incremental change in total units in the portion of 2010 after April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
-| u_2007_netcomplete - u_2017_netcomplete | Cummulative net units completed in building in this year compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
-| u_2010pre_netcomplete | Cummulative net units completed in building by April 1, 2010 (2010 US Census date) compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
-| u_2010post_netcomplete | Cummulative net units completed in building by end of 2010 compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
-| u_init | Number of units that initially existed in building at time of job application | |
-| u_net | Net change in unit count proposed in application. Note: This value could only be calculated in cases where values were provided for both u_init and u_prop. | |
-| u_net_complete | Cummulative number of proposed units that have been completed to date | |
-| u_net_incomplete | Number of proposed units that have not yet been completed to date | This field should be used for identifying the number of units in the "pipeline" of projects. |
-| u_prop | Number of final units proposed in job application | |
 | x_datafreshness | Flag for which batch of DOB data provided the reord | |
 | x_dup_flag | Flag that identifies likely duplicate records that should be excluded from analyses | |
 | x_dup_id | Unique ID, comprised of a concatentation of address, job ID, and project type used to check for duplicates | |
@@ -105,8 +107,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_withdrawal | Flag that indicates whether an application or permit has been withdrawn. | These records should be excluded in most analyses. |
 | xunits_init_raw | Raw, unmodified number of initial units reported in DOB jobs data | |
 | xunits_prop_raw | Raw, unmodified number of proposed units reported in DOB jobs data | |
-| zoning_init | Initial zoning reported in DOB job application | |
-| zoning_prop | Proposed zoning reported in DOB job application | |
+
 
 [Link to old NC data dictionary and use guide](https://github.com/NYCPlanning/cpdocs/blob/master/docs/pipeline.md)
 

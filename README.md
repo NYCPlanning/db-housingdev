@@ -96,6 +96,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | f_2050s_100yr | Flags whether the record is inside the FEMA projected 2050s 100-yr floodplain boundary | |
 | f_2050s_hightide | Flags whether the record is inside the FEMA projected 2050s high tide boundary | |
 | x_datafreshness | Flag for which batch of DOB data provided the reord | |
+| xunits_binary | Flag indicating whether a job application indicated dwelling units, including mixed-use records with non-residentual occupancy types | |
 | x_dup_flag | Flag that identifies likely duplicate records that should be excluded from analyses | |
 | x_dup_id | Unique ID, comprised of a concatentation of address, job ID, and project type used to check for duplicates | |
 | x_dup_maxstatusdate | Most recent status date from the most recently updaetd record in the grouping of likely duplicate records | |
@@ -103,7 +104,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_geomsource | Flag that indicates the source of the geometry for the record | |
 | x_occsource | Flag that indicates the source of the dcp_occ_category and dcp_occ_prop values for the record | |
 | x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | |
-| x_outlier | Flag that indicates whether a record is an outlier or DOB data error and should be excluded from analysis calculations | These records should be excluded in most analyses. |
+| x_outlier | Flag that indicates whether a record is a suspected outlier or DOB data error and should be excluded from analysis calculations | These records should be excluded in most analyses. |
 | x_withdrawal | Flag that indicates whether an application or permit has been withdrawn. | These records should be excluded in most analyses. |
 | xunits_init_raw | Raw, unmodified number of initial units reported in DOB jobs data | |
 | xunits_prop_raw | Raw, unmodified number of proposed units reported in DOB jobs data | |

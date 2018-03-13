@@ -109,9 +109,6 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | xunits_prop_raw | Raw, unmodified number of proposed units reported in DOB jobs data | |
 
 
-[Link to old NC data dictionary and use guide](https://github.com/NYCPlanning/cpdocs/blob/master/docs/pipeline.md)
-
-
 ## Caveats and Limitations
 
 ### Gaps in data available for analysis

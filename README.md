@@ -29,8 +29,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | Field Name | Definition | Notes on Field Usage |
 | :-- | :-- | :-- |
 | dob_job_number | Unique ID assigned by DOB per job application | |
-| cartodb_id | Unique ID created by Carto | |
-| the_geom | Point WKT geometry for the record | Please note that records were geocoded using multiple methods. |
+| the_geom | Point Well-Known-Text (WKT) geometry for the record in WGS84 / SRID:4326 | Please note that records were geocoded using multiple methods. |
 | address | Full address of a site | |
 | address_house | The house number of the address | |
 | address_street | The street name of the address | |

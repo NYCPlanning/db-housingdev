@@ -33,10 +33,10 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | address | Full address of a site | |
 | address_house | The house number of the address | |
 | address_street | The street name of the address | |
-| latitude | Latitude | Latitude in WGS84 / SRID:4326 | |
-| longitude | Longitude | Longitude in WGS84 / SRID:4326 | |
-| xcoord | X Coordinate | X coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
-| ycoord | Y Coordinate | Y coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
+| latitude | Latitude in WGS84 / SRID:4326 | |
+| longitude | Longitude in WGS84 / SRID:4326 | |
+| xcoord | X coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
+| ycoord | Y coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
 | bin | Building Identification Number | |
 | bbl | Borough-Block-Lot tax lot ID number | |
 | block | City block ID number | |

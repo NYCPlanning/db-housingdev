@@ -103,7 +103,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_dup_maxcofodate | Most recent CofO date from the most recently updaetd record in the grouping of likely duplicate records | |
 | x_geomsource | Flag that indicates the source of the geometry for the record | |
 | x_occsource | Flag that indicates the source of the dcp_occ_category and dcp_occ_prop values for the record | |
-| x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | |
+| x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | These records should be excluded in most analyses. |
 | x_outlier | Flag that indicates whether a record is a suspected outlier or DOB data error and should be excluded from analysis calculations | These records should be excluded in most analyses. |
 | x_withdrawal | Flag that indicates whether an application or permit has been withdrawn. | These records should be excluded in most analyses. |
 | xunits_init_raw | Raw, unmodified number of initial units reported in DOB jobs data | |

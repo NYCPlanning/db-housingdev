@@ -39,8 +39,9 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | ycoord | Y coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
 | bin | Building Identification Number | |
 | bbl | Borough-Block-Lot tax lot ID number | |
-| block | City block ID number | |
 | boro | Borough | |
+| block | City block ID number | |
+| lot | City lot ID number | |
 | c_date_earliest | Date of earliest CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
 | c_date_latest | Date of most recent CofO issued for new buildings and building alterations. For demolitions, this field captures the Q status (permit issued) date. | |
 | c_type_latest | Specificies most recent CofO type (Temporary or Final) | |
@@ -49,7 +50,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | dcp_occ_category | Indicates whether a building is a full-time residential building or another type of accomdation, like a hotel or dormitory | Can be used for filtering out types of developments, like hotels, based on a user's research question. |
 | dcp_occ_init | Simplified label for the initial occupancy type of the building | |
 | dcp_occ_prop | Simplified label for the proposed occupancy type of the building | Can be used for filtering out types of developments, like hotels, based on a user's research question. |
-| dcp_status | Field created by DCP to capture statuses assigned by DCP. Complete: most recent CofO lists >80% of permit proposed units. Partial complete: most recent CofO lists <80% of permit proposed units. Permit outstanding: first permit issued but no CofOs issued. Permit pending: permit application complete but first permit not issued | Can we used for filtering out projects that only have an application on file and therefore have a lower chance of coming to fruition. Only ~30% of applications turn into permitted projects. |
+| dcp_status | Field created by DCP to capture statuses assigned by DCP. Complete: most recent CofO lists >80% of permit proposed units. Partial complete: most recent CofO lists <80% of permit proposed units. Permit outstanding: first permit issued but no CofOs issued. Permit pending: permit application complete but first permit not issued | Can be used for filtering out projects that only have an application on file and therefore have a lower chance of coming to fruition. Only ~30% of applications turn into permitted projects. |
 | dob_bldg_type | DOB's description for the building classification type | |
 | dob_job_number | Unique ID per job application | |
 | dob_occ_init | Exisiting occupancy type at time of job application. This indicates whether a site is/was initially a hotel, 1-2 family home, commercial space, etc. | |
@@ -64,7 +65,10 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | geo_ntaname | NTA Name | |
 | geo_pszone201718 | DOE elementary school zone | |
 | geo_subdistrict | DOE school subdistrict | |
-| lot | City lot ID number | |
+| f_firms2007_100yr | 2007 FEMA Flood Insurance Rate Map zone | |
+| f_pfirms2015_100yr | 2015 Preliminary FEMA Flood Insurance Rate Map zone | |
+| f_2050s_100yr | Flags whether the record is inside the FEMA projected 2050s 100-yr floodplain boundary | |
+| f_2050s_hightide | Flags whether the record is inside the FEMA projected 2050s high tide boundary | |
 | status_a | Date of pre-filing application | |
 | status_d | Date of completed application on file | |
 | status_date | Date of most recent job status update | |

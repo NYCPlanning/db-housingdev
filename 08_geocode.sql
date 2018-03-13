@@ -147,3 +147,12 @@ WHERE bbl = '0';
 UPDATE dobdev_jobs
 SET bin = NULL
 WHERE bin = '0' OR RIGHT(bin, 6) = '000000';
+
+-- Calculate coordinates to fill in columns
+UPDATE dobdev_jobs
+SET
+latitude = ST_Y(the_geom),
+longitude = ST_X(the_geom),
+ycoord = ST_Y(ST_Transform(the_geom, 2263)),
+xcoord = ST_X(ST_Transform(the_geom, 2263));
+

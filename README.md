@@ -33,6 +33,11 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | address | Full address of a site | |
 | address_house | The house number of the address | |
 | address_street | The street name of the address | |
+| latitude | Latitude | Latitude in WGS84 / SRID:4326 | |
+| longitude | Longitude | Longitude in WGS84 / SRID:4326 | |
+| xcoord | X Coordinate | X coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
+| ycoord | Y Coordinate | Y coordinate in NAD83-New York Long Island (ftUS) / SRID:2263 | |
+| bin | Building Identification Number | |
 | bbl | Borough-Block-Lot tax lot ID number | |
 | block | City block ID number | |
 | boro | Borough | |
@@ -70,9 +75,15 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | status_x | Date of job completion | |
 | stories_init | Initial number of building stories | |
 | stories_prop | Proposed number of building stories | |
-| u_2007_existtotal - u_2017_existtotal | Total legal units that exist in the building in this year. This values are populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2007_existtotal - u_2017_existtotal | Total legal units that exist in the building in this year. These values are populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2010pre_existtotal | Total legal units that exist in the building in 2010 before April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
+| u_2010pre_existtotal | Total legal units that exist in the building in 2010 after April 1, 2010 (2010 US Census date). This value is populated using the number of units initially reported at the time of the job application and the subsequent temporary and final CofOs issued. | |
 | u_2007_increm - u_2017_increm | Incremental change in total units in each year (i.e. u_2017_existtotal - u_2016_existtotal). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
-| u_2007_netcomplete - u_2017_netcomplete | Cummulative net units completed in building in this year compared to number that initially existed when job application was filed (units_totalexist_XXXX - units_init) | These fields should not be used for aggregate calculations around completed units. |
+| u_2010pre_increm | Incremental change in total units in the portion of 2010 before April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
+| u_2010post_increm | Incremental change in total units in the portion of 2010 after April 1, 2010 (2010 US Census date). If no previous CofO was issued by this date and the initial number of units was not reported in the DOB job application, the incremental change is assumed to be zero. | These fields should be used for summing up the number of units completed during a specific time range. |
+| u_2007_netcomplete - u_2017_netcomplete | Cummulative net units completed in building in this year compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
+| u_2010pre_netcomplete | Cummulative net units completed in building by April 1, 2010 (2010 US Census date) compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
+| u_2010post_netcomplete | Cummulative net units completed in building by end of 2010 compared to number that initially existed when job application was filed (u_XXXX_existtotal - u_init) | These fields should not be used for aggregate calculations around completed units. |
 | u_init | Number of units that initially existed in building at time of job application | |
 | u_net | Net change in unit count proposed in application. Note: This value could only be calculated in cases where values were provided for both u_init and u_prop. | |
 | u_net_complete | Cummulative number of proposed units that have been completed to date | |
@@ -82,7 +93,8 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_dup_flag | Flag that identifies likely duplicate records that should be excluded from analyses | |
 | x_dup_id | Unique ID, comprised of a concatentation of address, job ID, and project type used to check for duplicates | |
 | x_dup_maxdate | Most recent status date from the most recently updaetd record in the grouping of likely duplicate records | |
-| x_edited | Flag that indicates whether the geometry or geographic intersection assignments were manually edited for the record | |
+| x_geomsource | Flag that indicates the source of the geometry for the record | |
+| x_occsource | Flag that indicates the source of the dcp_occ_category and dcp_occ_prop values for the record | |
 | x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | |
 | x_outlier | Flag that indicates whether a record is an outlier or DOB data error and should be excluded from analysis calculations | These records should be excluded in most analyses. |
 | x_withdrawal | Flag that indicates whether an application or permit has been withdrawn. | These records should be excluded in most analyses. |

@@ -100,7 +100,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | x_dup_flag | Flag that identifies likely duplicate records that should be excluded from analyses | |
 | x_dup_id | Unique ID, comprised of a concatentation of address, job ID, and project type used to check for duplicates | |
 | x_dup_maxstatusdate | Most recent status date from the most recently updaetd record in the grouping of likely duplicate records | |
-| x_dup_maxcofodate | Most recent CofO date from the most recently updaetd record in the grouping of likely duplicate records | |
+| x_dup_maxcofodate | Most recent CofO date from the most recently updated record in the grouping of likely duplicate records | |
 | x_geomsource | Flag that indicates the source of the geometry for the record | |
 | x_occsource | Flag that indicates the source of the dcp_occ_category and dcp_occ_prop values for the record | |
 | x_inactive | Flag that indicates if more than 5 years have passed since a permit was issued and there have still been no changes to the count of units in the building | These records should be excluded in most analyses. |
@@ -121,7 +121,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 - When calculating totals of completed units (i.e. real growth that has occured during a time range), users should take the sum of the annual incremental changes during the desired years. 
 - Users should be wary of doing data aggregations using u_net and u_net_complete. These two fields are generally only useful when looking at individual jobs and tracking their progress. Aggregated total of these fields are not meaningful, because of the variance in time scale involved between projects.
 - **Filtering criteria to consider for all analyses:**
-	- **Withdrawn job applications** (flagged in dcp_status field)
+	- **Withdrawn, suspended, and disapproved job applications** (flagged in dcp_status field)
 	- **Duplicates** (flagged in x_dup_flag field)
 	- **Outliers** (flagged in x_outlier field)
 	- **Applications** (captured in dcp_status). Depending on on the use case and required degree of confidence that a project will come to fruition, it could make sense to exclude projects where there is only an application on file and no permit issued yet. Only 30% of job applications progress to getting permits.

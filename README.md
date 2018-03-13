@@ -28,7 +28,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 
 | Field Name | Definition | Notes on Field Usage |
 | :-- | :-- | :-- |
-| dob_job_number | Unique ID per job application | |
+| dob_job_number | Unique ID assigned by DOB per job application | |
 | cartodb_id | Unique ID created by Carto | |
 | the_geom | Point geometry for the record | Please note that records were geocoded using multiple methods. |
 | address | Full address of a site | |

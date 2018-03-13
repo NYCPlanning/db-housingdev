@@ -43,7 +43,7 @@ The two datasets must be combined, because the jobs data doesn't capture change 
 | boro | Borough | |
 | block | City block ID number | |
 | lot | City lot ID number | |
-| dob_type | DOB's type catgory for the job (NB = New Building, A1 = Alteration, Dm = Demolition) | |
+| dob_type | DOB's type catgory for the job (NB = New Building, A1 = Alteration, DM = Demolition) | |
 | dcp_dev_category | Field created by DCP to translate the DOB job type (dob_type): New Building, Alteration, or Demolition | |
 | dcp_occ_category | Indicates whether a building is a full-time residential building or another type of accomdation, like a hotel or dormitory | Can be used for filtering out types of developments, like hotels, based on a user's research question. |
 | dcp_occ_init | Simplified label for the initial occupancy type of the building | |

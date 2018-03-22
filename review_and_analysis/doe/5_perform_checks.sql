@@ -6,7 +6,8 @@ SELECT sum(baseline_units_2010) FROM capitalplanning.temp_doe_housing_20180209
 /*2. check no units from DOB where the geom is null*/
 SELECT 
     sum(baseline_units_2010) AS baseline_units_2010,
-    sum(u_2010_increm) AS u_2010_increm,
+    sum(u_2010pre_increm) AS u_2010pre_increm,
+    sum(u_2010post_increm) AS u_2010post_increm,
     sum(u_2011_increm) AS u_2011_increm,
     sum(u_2012_increm) AS u_2012_increm,
     sum(u_2013_increm) AS u_2013_increm,
@@ -15,12 +16,8 @@ SELECT
     sum(u_2016_increm) AS u_2016_increm,
     sum(u_2017_increm) AS u_2017_increm,
     sum(u_permitted) AS u_permitted
-FROM capitalplanning.temp_doe_housing_20180209
+FROM capitalplanning.temp_doe_housing_20180322
 WHERE the_geom is null
-
-SELECT * FROM capitalplanning.temp_doe_housing_20180209
-where the_geom is null
-order by baseline_units_2010 desc
 
 /*3. check magnitude of invalid geoms from Bytes of the Big Apple censusblock file, add in non-valid geoms and make valid*/
 
@@ -45,7 +42,7 @@ where geo_subdist is null
 and the_geom is not null
 
 SELECT * FROM capitalplanning.temp_doe_housing_20180209
-where geo_pszone201718 is null
+where geo_pszone201718 is null and geo_pszone_remarks is null
 and the_geom is not null
 
 SELECT * FROM capitalplanning.temp_doe_housing_20180209

@@ -8,7 +8,8 @@ SELECT
     h.borough,
     h.bctcb AS bctcb2010,
     h.total_housing_units AS baseline_units_2010,
-    temp_completions.u_2010_increm,
+    temp_completions.u_2010pre_increm,
+    temp_completions.u_2010post_increm,
     temp_completions.u_2011_increm,
     temp_completions.u_2012_increm,
     temp_completions.u_2013_increm,
@@ -21,6 +22,7 @@ FROM
 LEFT JOIN
     temp_completions
 ON h.bctcb = temp_completions.geo_censusblock::numeric
+WHERE h.the_geom is not null
 ORDER BY h.bctcb ASC)
 
 SELECT

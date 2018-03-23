@@ -34,13 +34,14 @@ SELECT
   c_date_latest,
   c_type_latest,
   geo_censusblock,
-  geo_ps_zone201718,
-  geo_ms_zone201718,
+  geo_pszone201718,
+  geo_mszone201718,
   geo_subdistrict,
   geo_csd,
-  geo_nta,
-  x_dupe_flag,
-  x_dupe_notes,
+  geo_ntacode,
+  x_dup_flag,
+  x_dup_maxstatusdate,
+  x_dup_maxcofodate,
   x_outlier,
   x_inactive
 FROM capitalplanning.dobdev_jobs_20180316
@@ -51,7 +52,7 @@ WHERE
     AND dcp_status <> 'Disapproved'
     AND dcp_status <> 'Suspended'
     AND dcp_status not like '%Application%'
-    AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')   
+    AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')
     
 -- All residential job applications (with exclusions, except dupes and outliers left in)
 
@@ -75,13 +76,14 @@ SELECT
   dcp_dev_category,
   address
   geo_censusblock,
-  geo_ps_zone201718,
-  geo_ms_zone201718,
+  geo_pszone201718,
+  geo_mszone201718,
   geo_subdistrict,
   geo_csd,
-  geo_nta,
-  x_dupe_flag,
-  x_dupe_notes,
+  geo_ntacode,
+  x_dup_flag,
+  x_dup_maxstatusdate,
+  x_dup_maxcofodate,
   x_outlier,
   x_inactive
 FROM capitalplanning.dobdev_jobs_20180316

@@ -4,7 +4,7 @@ SELECT
     geo_censusblock,
     sum(u_net_incomplete) AS u_permitted
 FROM
-    capitalplanning.dob_jobs_20180208
+    capitalplanning.dobdev_jobs_20180316
 WHERE
     1=1
     AND the_geom is not null

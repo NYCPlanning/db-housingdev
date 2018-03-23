@@ -1,5 +1,4 @@
-
-
+-- All residential jobs that have received permit (with exclusions, except dupes and outliers left in)
 SELECT
   cartodb_id,
   the_geom,
@@ -46,3 +45,51 @@ SELECT
   x_inactive
 FROM capitalplanning.dobdev_jobs_20180316
 WHERE 
+    1=1
+    AND the_geom is not null
+    AND dcp_status <> 'Withdrawn'
+    AND dcp_status <> 'Disapproved'
+    AND dcp_status <> 'Suspended'
+    AND dcp_status not like '%Application%'
+    AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')   
+    
+-- All residential job applications (with exclusions, except dupes and outliers left in)
+
+SELECT
+  cartodb_id,
+  the_geom,
+  dob_job_number,
+  bbl,
+  bin,
+  dcp_occ_category,
+  dcp_occ_init,
+  dcp_occ_prop,
+  u_init,
+  u_prop,
+  u_net,
+  u_net_complete,
+  u_net_incomplete,
+  stories_init,
+  stories_prop,
+  dcp_status,
+  dcp_dev_category,
+  address
+  geo_censusblock,
+  geo_ps_zone201718,
+  geo_ms_zone201718,
+  geo_subdistrict,
+  geo_csd,
+  geo_nta,
+  x_dupe_flag,
+  x_dupe_notes,
+  x_outlier,
+  x_inactive
+FROM capitalplanning.dobdev_jobs_20180316
+WHERE 
+    1=1
+    AND the_geom is not null
+    AND dcp_status <> 'Withdrawn'
+    AND dcp_status <> 'Disapproved'
+    AND dcp_status <> 'Suspended'
+    AND dcp_status like '%Application%'
+    AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')   

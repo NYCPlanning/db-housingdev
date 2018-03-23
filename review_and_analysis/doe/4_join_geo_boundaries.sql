@@ -11,7 +11,7 @@ ADD COLUMN geo_nta text,
 ADD COLUMN geo_ntaname text
 
 -- Add boundaries (first by centroid)
-
+-- CSD
 UPDATE capitalplanning.temp_doe_housing_20180322
 SET geo_csd = b.school_dis
 FROM dcpadmin.doe_schooldistricts AS b
@@ -23,8 +23,9 @@ SET geo_csd = b.school_dis
 FROM dcpadmin.doe_schooldistricts AS b
 WHERE ST_Intersects(temp_doe_housing_20180322.the_geom, b.the_geom)
 AND ST_IsValid(temp_doe_housing_20180322.the_geom)
-AND geo_csd is null;
+AND geo_csd is null
 
+-- Subdistrict
 UPDATE capitalplanning.temp_doe_housing_20180322
 SET geo_subdist = b.distzone
 FROM dcpadmin.doe_schoolsubdistricts AS b
@@ -38,6 +39,7 @@ WHERE ST_Intersects(temp_doe_housing_20180322.the_geom, b.the_geom)
 AND ST_IsValid(temp_doe_housing_20180322.the_geom)
 AND geo_subdist is null;
 
+-- Primary school zone (2017-18 school year)
 UPDATE capitalplanning.temp_doe_housing_20180322
 SET geo_pszone201718 = b.dbn
 FROM dcpadmin.doe_school_zones_es_2017 AS b
@@ -64,6 +66,7 @@ WHERE ST_Intersects(temp_doe_housing_20180322.the_geom, b.the_geom)
 AND ST_IsValid(temp_doe_housing_20180322.the_geom)
 AND geo_pszone_remarks is null;
 
+-- Intermediate school zone (2017-18 school year)
 UPDATE capitalplanning.temp_doe_housing_20180322
 SET geo_mszone201718 = b.dbn
 FROM dcpadmin.doe_school_zones_ms_2017 AS b
@@ -90,6 +93,7 @@ WHERE ST_Intersects(temp_doe_housing_20180322.the_geom, b.the_geom)
 AND ST_IsValid(temp_doe_housing_20180322.the_geom)
 AND geo_mszone_remarks is null;
 
+-- NTA
 UPDATE capitalplanning.temp_doe_housing_20180322
 SET geo_nta = b.ntacode
 FROM dcpadmin.support_admin_ntaboundaries AS b

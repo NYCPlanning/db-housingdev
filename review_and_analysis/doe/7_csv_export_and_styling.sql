@@ -97,7 +97,7 @@ SELECT
     geo_mszone_remarks,
     geo_nta,
     geo_ntaname
-FROM capitalplanning.temp_doe_housing_20180322
+FROM capitalplanning.capitalplanning.doe_housing_20180322
 ORDER BY borough, bctcb2010 ASC
 
 -- Styling for map (based on # of permitted units)

@@ -16,9 +16,9 @@ ALTER TABLE dobdev_jobs_orig_20171231
 ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "proposed_occupancy_classification_description" TO "dob_occ_prop";
 ALTER TABLE dobdev_jobs_orig_20171231
-	RENAME COLUMN "existing_dwelling_units" TO "xunits_init_raw";
+	RENAME COLUMN "existing_dwelling_units" TO "x_units_init_raw";
 ALTER TABLE dobdev_jobs_orig_20171231
-	RENAME COLUMN "proposed_dwelling_units" TO "xunits_prop_raw";
+	RENAME COLUMN "proposed_dwelling_units" TO "x_units_prop_raw";
 ALTER TABLE dobdev_jobs_orig_20171231
 	RENAME COLUMN "existing_stories" TO "stories_init";
 ALTER TABLE dobdev_jobs_orig_20171231
@@ -158,7 +158,7 @@ SELECT
 	NULL AS f_2050s_100yr,
   	NULL AS f_2050s_hightide,	
 	NULL AS x_datafreshness,
-	NULL AS xunits_binary,
+	NULL AS x_units_binary,
 	NULL AS x_dup_flag,
 	NULL AS x_dup_id,
 	NULL::date AS x_dup_maxstatusdate,
@@ -168,8 +168,8 @@ SELECT
 	NULL AS x_inactive,
 	NULL AS x_outlier,
 	NULL AS x_withdrawal,
-	NULL AS xunits_init_raw,
-	NULL AS xunits_prop_raw
+	NULL AS x_units_init_raw,
+	NULL AS x_units_prop_raw
 
 
 -- Then insert the contents from dobdev_jobs_orig_20171231
@@ -199,8 +199,8 @@ INSERT INTO dobdev_jobs
 	stories_prop,
 	zoningarea_init,
 	zoningarea_prop,
-	xunits_init_raw,
-	xunits_prop_raw,
+	x_units_init_raw,
+	x_units_prop_raw,
 	x_withdrawal
 )
 
@@ -229,8 +229,8 @@ SELECT
 	stories_prop::numeric,
 	zoningarea_init,
 	zoningarea_prop,
-	xunits_init_raw,
-	xunits_prop_raw,
+	x_units_init_raw,
+	x_units_prop_raw,
 	x_withdrawal
 FROM dobdev_jobs_orig_20171231;
 

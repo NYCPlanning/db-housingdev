@@ -9,7 +9,7 @@ UPDATE capitalplanning.dobdev_jobs
 		AND dcp_status <> 'Disapproved'
 		AND dcp_status <> 'Suspended'
 		AND x_inactive <> 'true'
-		AND xunits_binary = 'Y';
+		AND x_units_binary = 'Y';
 
 
 UPDATE capitalplanning.dobdev_jobs

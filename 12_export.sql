@@ -93,7 +93,7 @@ SELECT
 	f_2050s_100yr,
   	f_2050s_hightide,	
 	x_datafreshness,
-	xunits_binary,
+	x_units_binary,
 	x_dup_flag,
 	x_dup_id,
 	x_dup_maxstatusdate,
@@ -103,6 +103,6 @@ SELECT
 	x_inactive,
 	x_outlier,
 	x_withdrawal,
-	xunits_init_raw,
-	xunits_prop_raw
+	x_units_init_raw,
+	x_units_prop_raw
 FROM dobdev_jobs

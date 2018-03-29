@@ -92,12 +92,12 @@ UPDATE dobdev_jobs
 
 UPDATE dobdev_jobs
 	SET
-		xunits_binary =
+		x_units_binary =
 			(CASE
-				WHEN xunits_init_raw = '0' AND xunits_prop_raw = '0' THEN 'N'
-				WHEN xunits_init_raw = '0' AND xunits_prop_raw = '' THEN 'N'
-				WHEN xunits_init_raw = '' AND xunits_prop_raw = '0' THEN 'N'
-				WHEN xunits_init_raw = '' AND xunits_prop_raw = '' THEN 'N'
+				WHEN x_units_init_raw = '0' AND x_units_prop_raw = '0' THEN 'N'
+				WHEN x_units_init_raw = '0' AND x_units_prop_raw = '' THEN 'N'
+				WHEN x_units_init_raw = '' AND x_units_prop_raw = '0' THEN 'N'
+				WHEN x_units_init_raw = '' AND x_units_prop_raw = '' THEN 'N'
 				ELSE 'Y'
 			END);
 
@@ -109,13 +109,13 @@ UPDATE dobdev_jobs
 	SET
 		u_init = 
 			(CASE
-				WHEN xunits_init_raw <> '' THEN xunits_init_raw::integer
-				WHEN dob_type = 'NB' AND (xunits_init_raw = '' OR xunits_init_raw IS NULL) THEN 0
+				WHEN x_units_init_raw <> '' THEN x_units_init_raw::integer
+				WHEN dob_type = 'NB' AND (x_units_init_raw = '' OR x_units_init_raw IS NULL) THEN 0
 			END),
 		u_prop =
 			(CASE
-				WHEN xunits_prop_raw <> '' THEN xunits_prop_raw::integer
-				WHEN dob_type = 'DM' AND (xunits_prop_raw = '' OR xunits_prop_raw IS NULL) THEN 0
+				WHEN x_units_prop_raw <> '' THEN x_units_prop_raw::integer
+				WHEN dob_type = 'DM' AND (x_units_prop_raw = '' OR x_units_prop_raw IS NULL) THEN 0
 			END);
 
 

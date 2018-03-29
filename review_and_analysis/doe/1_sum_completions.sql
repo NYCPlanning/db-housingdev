@@ -3,7 +3,8 @@
 
 SELECT
     geo_censusblock,
-    sum(u_2010_increm) AS u_2010_increm,
+    sum(u_2010pre_increm) AS u_2010pre_increm,
+    sum(u_2010post_increm) AS u_2010post_increm,
     sum(u_2011_increm) AS u_2011_increm,
     sum(u_2012_increm) AS u_2012_increm,
     sum(u_2013_increm) AS u_2013_increm,
@@ -12,7 +13,7 @@ SELECT
     sum(u_2016_increm) AS u_2016_increm,
     sum(u_2017_increm) AS u_2017_increm
 FROM
-	capitalplanning.dob_jobs_20180208
+	capitalplanning.dobdev_jobs_20180316
 WHERE
     1=1
     AND the_geom is not null

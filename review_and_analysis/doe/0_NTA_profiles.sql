@@ -1,5 +1,5 @@
 -- NTA profiles
-
+-- completions
 SELECT
     geo_ntacode,
     dob_type,
@@ -18,6 +18,31 @@ WHERE
     AND x_dup_flag is null
     AND x_outlier is null
     AND geo_ntacode in ('QN31','QN63','QN28','QN27','QN26','QN68','QN70','QN71','QN72')
+GROUP BY
+   geo_ntacode, dob_type
+ORDER BY
+   geo_ntacode, dob_type
+
+-- permitted
+
+SELECT
+    geo_ntacode,
+    dob_type,
+    sum(u_net_complete) AS u_permitted
+FROM
+	capitalplanning.dobdev_jobs_20180316_old
+WHERE
+    1=1
+    AND the_geom is not null
+    AND dcp_status <> 'Withdrawn'
+    AND dcp_status <> 'Disapproved'
+    AND dcp_status <> 'Suspended'
+    AND dcp_status not like '%Application%'
+    AND (dcp_occ_init = 'Residential' OR dcp_occ_prop = 'Residential')
+    AND x_dup_flag is null
+    AND x_outlier is null
+    AND geo_ntacode in ('QN31','QN63','QN28','QN27','QN26','QN68','QN70','QN71','QN72')
+    AND x_inactive <> 'true'
 GROUP BY
    geo_ntacode, dob_type
 ORDER BY

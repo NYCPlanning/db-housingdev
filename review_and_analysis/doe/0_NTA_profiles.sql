@@ -28,7 +28,7 @@ ORDER BY
 SELECT
     geo_ntacode,
     dob_type,
-    sum(u_net_complete) AS u_permitted
+    sum(u_net_incomplete) AS u_permitted
 FROM
 	capitalplanning.dobdev_jobs_20180316_old
 WHERE

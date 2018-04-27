@@ -2,7 +2,7 @@
 -- Select all DoB jobs that fall within a re-zoning area from 2015 onwards
 
 SELECT
-	j.*,
+    j.*,
     z.ulurpno,
     z.project_na,
     z.status,
@@ -20,13 +20,14 @@ WHERE
     AND (j.dcp_occ_init = 'Residential' OR j.dcp_occ_prop = 'Residential')
     AND j.x_dup_flag <> 'Possible Duplicate'
     AND j.x_outlier <> 'true'
+    AND j.dob_type = 'NB'
     AND z.effective >= '2015-01-01'
     AND ST_Intersects(j.the_geom,z.the_geom)
 
 -- Create dataset from query
 -- Calculate units since rezoning
 SELECT
-	boro,
+    boro,
     ulurpno,
     project_na,
     effective,

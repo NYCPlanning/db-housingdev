@@ -24,9 +24,6 @@ AND j.x_outlier <> 'true'
 AND j.dob_type = 'NB')
 
 SELECT
-    z.cartodb_id,
-    z.the_geom,
-    z.the_geom_webmercator,
     temp.ulurpno,
     temp.project_na,
     temp.effective,
@@ -41,10 +38,8 @@ SELECT
     sum(temp.u_2017_increm) AS u_2017_increm,
     sum(temp.u_net_incomplete) AS u_permitted
 FROM 
-	temp,
-	capitalplanning.zoningchangesindexmarch2018 AS z
+	temp
 WHERE temp.status_a >= temp.effective
-AND temp.ulurpno = z.ulurpno
 GROUP BY 
-	z.cartodb_id, z.the_geom, z.the_geom_webmercator, temp.ulurpno, temp.project_na, temp.effective
+	temp.ulurpno, temp.project_na, temp.effective
 ORDER BY temp.effective

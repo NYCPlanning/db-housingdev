@@ -1,5 +1,6 @@
--- Download nyzma from Bytes of the Big Apple
--- Select all DoB jobs that fall within a re-zoning area from 2010 onwards
+-- Use latest NYZI (Zoning Change Index) available on M drive
+-- Select all DCP-initiated rezonings from 2010 onwards
+-- Select all DoB jobs that fall within a rezoning area where status a is on or after rezoning effective date
 
 WITH temp AS (
 SELECT
@@ -8,7 +9,7 @@ SELECT
     z.project_na,
     z.effective
 FROM 
-	capitalplanning.dobdev_jobs_20180316 AS j,
+    capitalplanning.dobdev_jobs_20180316 AS j,
     capitalplanning.zoningchangesindexmarch2018 AS z
 WHERE ST_Intersects(z.the_geom,j.the_geom)
 AND z.applicant_ = '1'
